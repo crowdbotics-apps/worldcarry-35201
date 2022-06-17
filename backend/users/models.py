@@ -3,7 +3,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 import uuid
-
+from home.models import UUIDModel
 
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -14,3 +14,13 @@ class User(AbstractUser):
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
+
+
+class Profile(UUIDModel):
+    """
+    A user profile model that holds any fields irrelavant to authentcation
+    """
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE
+    )

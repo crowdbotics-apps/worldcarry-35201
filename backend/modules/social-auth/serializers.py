@@ -1,10 +1,11 @@
 from rest_auth.registration.serializers import SocialLoginSerializer, SocialConnectMixin
 from rest_framework import serializers
 from django.http import HttpRequest
-from django.contrib.auth import get_user_model
 from allauth.socialaccount.providers.oauth2.client import OAuth2Error
 from allauth.socialaccount.helpers import complete_social_login
 from allauth.account import app_settings as allauth_settings
+
+from users.models import Profile
 
 
 class CustomAppleSocialLoginSerializer(SocialLoginSerializer):
@@ -125,6 +126,20 @@ class CustomAppleSocialLoginSerializer(SocialLoginSerializer):
             login.save(request, connect=True)
 
         attrs["user"] = login.account.user
+        user = attrs["user"]
+        profile, created = Profile.objects.get_or_create(user=user)
+        if created:
+            if user.name == '' or user.name == None:
+                if user.first_name:
+                    first_name = user.first_name
+                else:
+                    first_name = ''
+                if user.last_name:
+                    last_name = user.last_name
+                else:
+                    last_name = ''
+                user.name = first_name + ' ' + last_name
+                user.save()
         return attrs
 
 
@@ -132,3 +147,24 @@ class CustomAppleConnectSerializer(
     SocialConnectMixin, CustomAppleSocialLoginSerializer
 ):
     pass
+
+
+class CustomSocialLoginSerializer(SocialLoginSerializer):
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        user = attrs["user"]
+        profile, created = Profile.objects.get_or_create(user=user)
+        if created:
+            if user.name == '' or user.name == None:
+                if user.first_name:
+                    first_name = user.first_name
+                else:
+                    first_name = ''
+                if user.last_name:
+                    last_name = user.last_name
+                else:
+                    last_name = ''
+                user.name = first_name + ' ' + last_name
+                user.save()
+        return attrs
