@@ -140,7 +140,8 @@ function LoginScreen ({ navigation }) {
       return
     }
     const data = await AccessToken.getCurrentAccessToken()
-
+    
+    console.warn('data', data)
     if (!data) {
       Toast.show('Something went wrong obtaining access token')
       handleChange('loading', false)
@@ -153,7 +154,7 @@ function LoginScreen ({ navigation }) {
       'content-type': 'application/json'
     }
     // const res = facebookLoginUser(payload)
-    fetch(API_URL() + 'users/facebook/login/', {
+    fetch(API_URL() + 'modules/social-auth/facebook/login/', {
       method: 'POST', // or 'PUT'
       headers: headers,
       body: JSON.stringify(payload)
@@ -229,7 +230,7 @@ function LoginScreen ({ navigation }) {
       const headers = {
         'content-type': 'application/json'
       }
-      fetch(API_URL() + 'users/apple/login/', {
+      fetch(API_URL() + 'modules/social-auth/apple/login/', {
         method: 'POST', // or 'PUT'
         headers: headers,
         body: JSON.stringify(payload)
@@ -286,7 +287,7 @@ function LoginScreen ({ navigation }) {
     const headers = {
       'content-type': 'application/json'
     }
-    fetch(API_URL() + 'users/google/login/', {
+    fetch(API_URL() + 'modules/social-auth/google/login/', {
       method: 'POST', // or 'PUT'
       headers: headers,
       body: JSON.stringify(payload)

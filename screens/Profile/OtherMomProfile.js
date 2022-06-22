@@ -17,11 +17,8 @@ import {
 import { Rating } from 'react-native-elements'
 import { AppButton, Header, ReviewModal } from '../../components'
 import { COLORS, FONT1BOLD, FONT1REGULAR } from '../../constants'
-import userProfile from '../../assets/images/userProfile.png'
-import ImagePicker from 'react-native-image-crop-picker'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Toast from 'react-native-simple-toast'
-import { updateProfile } from '../../api/auth'
 import AppContext from '../../store/Context'
 import { useFocusEffect } from '@react-navigation/native'
 import { getBuyerUser } from '../../api/buyer'
@@ -82,7 +79,6 @@ function OtherMomProfile ({ navigation, route }) {
       <Header back />
       <View style={styles.mainBody}>
         <TouchableOpacity style={{ marginTop: -10 }}>
-          <Image source={userProfile} style={styles.profileIcon} />
         </TouchableOpacity>
         <View style={styles.whiteBox}>
           <Text style={styles.text}>{'Wanda Smith'}</Text>

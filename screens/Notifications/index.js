@@ -11,8 +11,6 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen'
-import userProfile from '../../assets/images/userProfile.png'
-import settingHeader from '../../assets/images/settingHeader.png'
 import { AppButton, Header } from '../../components'
 import { COLORS, FONT1BOLD, FONT1REGULAR } from '../../constants'
 import { allNotificationRead, notificationRead } from '../../api/order'
@@ -80,7 +78,6 @@ function Notifications ({ navigation }) {
     <View style={styles.container}>
       <Header
         back
-        rightImage={<Image source={settingHeader} style={{ opacity: 0.5 }} />}
       />
       <View style={styles.mainBody}>
         <Text style={styles.headingText}>Notifications</Text>
@@ -106,7 +103,6 @@ function Notifications ({ navigation }) {
                 ]}
               >
                 <View style={styles.imageView}>
-                  <Image source={userProfile} style={styles.image} />
                   <Text style={styles.name}>{'item?.mom?.name'}</Text>
                 </View>
                 <View style={styles.rightView}>

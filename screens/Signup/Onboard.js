@@ -3,10 +3,10 @@ import { View, Text, StyleSheet, Dimensions, Image } from 'react-native'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import Carousel from 'react-native-snap-carousel'
 import { SvgXml } from 'react-native-svg'
-import onboarding1 from '../../assets/images/onboard1.png'
-import onboarding2 from '../../assets/images/onboard2.png'
-import onboarding3 from '../../assets/images/onboard3.png'
-import onboarding4 from '../../assets/images/onboard4.png'
+// import onboarding1 from '../../assets/images/onboard1.png'
+// import onboarding2 from '../../assets/images/onboard2.png'
+// import onboarding3 from '../../assets/images/onboard3.png'
+// import onboarding4 from '../../assets/images/onboard4.png'
 import LogoSplash from '../../assets/svg/onboardLogo.svg'
 import Udderly from '../../assets/svg/udderly.svg'
 import { AppButton } from '../../components'
@@ -17,18 +17,18 @@ function Onboarding ({ navigation }) {
   const sliderWidth = Dimensions.get('window').width
   const [state, setState] = useState({
     entries: [
-      {
-        image: onboarding1
-      },
-      {
-        image: onboarding2
-      },
-      {
-        image: onboarding3
-      },
-      {
-        image: onboarding4
-      }
+      // {
+      //   image: onboarding1
+      // },
+      // {
+      //   image: onboarding2
+      // },
+      // {
+      //   image: onboarding3
+      // },
+      // {
+      //   image: onboarding4
+      // }
     ],
     activeSlide: 0
   })

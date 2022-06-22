@@ -95,6 +95,7 @@ export default function AppInput ({
                   onBlur && onBlur()
                 }}
                 returnKeyType={'done'}
+                autoCapitalize='none'
                 secureTextEntry={secureTextEntry}
                 value={value}
                 multiline={multiline}
