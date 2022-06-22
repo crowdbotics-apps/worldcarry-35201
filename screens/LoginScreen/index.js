@@ -204,7 +204,7 @@ function LoginScreen ({ navigation }) {
       webClientId:
         Platform.OS === 'ios'
           ? '1000910722709-brqkdolabrn3h53svr7u10dq4684n1ee.apps.googleusercontent.com'
-          : '1014921932745-0dkggq29v8d3bb604fb7q8997959ov4k.apps.googleusercontent.com',
+          : '487069185100-0efu4a6j3jlip0498hge9gaepj8lhdv1.apps.googleusercontent.com',
       iosClientId:
         '1000910722709-brqkdolabrn3h53svr7u10dq4684n1ee.apps.googleusercontent.com',
       offlineAccess: false
@@ -306,11 +306,11 @@ function LoginScreen ({ navigation }) {
           )
           return
         }
-        if (res?.client) {
+        if (res?.user) {
           handleChange('loading', false)
-          setUser(res?.client)
+          setUser(res?.user)
           await AsyncStorage.setItem('token', res?.token)
-          await AsyncStorage.setItem('user', JSON.stringify(res?.client))
+          await AsyncStorage.setItem('user', JSON.stringify(res?.user))
           navigation.navigate('AuthLoading')
           Toast.show('Login Successfully!')
         } else {

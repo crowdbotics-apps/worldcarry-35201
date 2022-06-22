@@ -380,7 +380,7 @@ function Home ({ navigation }) {
       )}
       {active === 1 && (
         <>
-          <View
+          {/* <View
             style={[
               styles.rowBetween,
               { width: '90%', marginTop: 20, marginBottom: 20 }
@@ -396,7 +396,7 @@ function Home ({ navigation }) {
           ))}
           <View style={{ width: '90%', marginTop: -10 }}>
             <AppButton title={'Create Order'} />
-          </View>
+          </View> */}
           <View
             style={[
               styles.rowBetween,
