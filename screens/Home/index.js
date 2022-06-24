@@ -170,6 +170,8 @@ function Home ({ navigation }) {
   } = state
   const { user } = context
 
+  console.warn('user',user);
+
   useEffect(() => {}, [])
 
   const handleChange = (name, value) => {
@@ -253,7 +255,7 @@ function Home ({ navigation }) {
       >
         <View style={[styles.rowBetween, { width: '90%' }]}>
           <Text style={styles.welcomeText}>
-            Welcome <Text style={{ fontFamily: FONT1BOLD }}>Rachel!</Text>
+            Welcome <Text style={{ fontFamily: FONT1BOLD }}>{user?.name}!</Text>
           </Text>
           <Image source={userProfile} style={styles.userProfile} />
         </View>

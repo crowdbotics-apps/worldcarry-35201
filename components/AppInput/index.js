@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   View,
   StyleSheet,
@@ -30,7 +30,11 @@ export default function AppInput ({
   disabled,
   multiline,
   borderColor,
-  borderRadius
+  borderRadius,
+  onSubmitEditing,
+  ref,
+  returnKeyType,
+  ...rest
 }) {
   const [focused, setFocused] = useState(false)
   const [open, setOpen] = useState(false)
@@ -88,13 +92,16 @@ export default function AppInput ({
               </TouchableOpacity>
             ) : (
               <TextInput
+                rest
+                onSubmitEditing={onSubmitEditing}
+                ref={ref && ref}
+                returnKeyType={returnKeyType}
                 placeholder={placeholder}
-                onFocus={() => setFocused(true)}
+                // onFocus={() => setFocused(true)}
                 onBlur={() => {
                   setFocused(false)
                   onBlur && onBlur()
                 }}
-                returnKeyType={'done'}
                 autoCapitalize='none'
                 secureTextEntry={secureTextEntry}
                 value={value}
