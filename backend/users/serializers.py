@@ -4,23 +4,36 @@ from rest_framework import serializers
 
 from home.utility import verifyOTP
 
-from users.models import User
+from users.models import Profile, User
 from allauth.account.models import EmailAddress
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    """
+    A data serialization of the non-authenitcation related fields
+    of a User
+    """
+    class Meta:
+        model = Profile
+        exclude = ('user',)
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
     """
     Custom serializer for creating a User
     """
+    profile = ProfileSerializer(required=False)
     is_admin = serializers.SerializerMethodField()
 
     class Meta:
         model = get_user_model()
-        fields = ('id', 'name', 
-                  'email', 'password', 'is_admin')
+        fields = ('id', 'name', 'email', 'password', 'is_admin',
+                  'phone', 'email_verified', 'phone_verified', 'profile')
         extra_kwargs = {'password': {'write_only': True, 'min_length': 5},
                         'email': {'required': True},
                         'name': {'required': True},
+                        'email_verified': {'read_only': True},
+                        'phone_verified': {'read_only': True}
                         }
 
     def create(self, validated_data):
@@ -30,6 +43,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         user = User.objects.create(**validated_data)
         user.set_password(password)
         user.save()
+        Profile.objects.create(user=user)
         email_address, created = EmailAddress.objects.get_or_create(user=user, email=user.email, verified=True, primary=True)
         return user
 
@@ -37,6 +51,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
         email = validated_data.get('email', None)
         if email:
             validated_data['username'] = email
+        if 'profile' in validated_data:
+            nested_serializer = self.fields['profile']
+            nested_instance = instance.profile
+            nested_data = validated_data.pop('profile')
+            nested_serializer.update(nested_instance, nested_data)
         user = super().update(instance, validated_data)
         return user
 

@@ -12,7 +12,7 @@ def generateOTP(email=None, user=None):
         user.otp = otp
         user.save()
         sliced_otp = str(otp)[:4]
-        email = EmailMessage('World Carry - OTP Verification', 'Your OTP is {}'.format(sliced_otp), from_email='sallar.rezaie@crowdbotics.com', to=[email])
+        email = EmailMessage('World Carry - OTP Verification', 'Your OTP is {}'.format(sliced_otp), from_email='admin@worldcarry.com', to=[email])
         email.send()
         return user
 
@@ -48,7 +48,7 @@ def send_otp(user):
             </body>
             </html>
             """ % (sliced_otp)
-    email_msg = EmailMessage("Password Reset - World Carry", email_body, from_email='sallar.rezaie@crowdbotics.com', to=[email])
+    email_msg = EmailMessage("Password Reset - World Carry", email_body, from_email='admin@worldcarry.com', to=[email])
     email_msg.content_subtype = "html"
     email_msg.send()
 

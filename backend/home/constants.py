@@ -1,7 +1,10 @@
 PRODUCT_TYPES = (
     ("Electronics", "Electronics"),
-    ("Cosmetics", "Cosmetics"),
-    ("Raw Materials", "Raw Materials")
+    ("Jewelry", "Jewelry"),
+    ("Documents and Books", "Documents and Books"),
+    ("Food items", "Food items"),
+    ("Clothing", "Clothing"),
+    ("Medication", "Medication")
 )
 
 WAIT_TIMES = (
@@ -17,4 +20,9 @@ ORDER_STATUS = (
     ('Requested', 'Requested'),
     ('In transit', 'In transit'),
     ('Recieved', 'Received')
+)
+
+JOURNEY_TYPE = (
+    ('One Way', 'One Way'),
+    ('Round Trip', 'Round Trip')
 )
