@@ -3,3 +3,9 @@ export const validateEmail = value => {
     const isValid = pattern.test(String(value).toLowerCase());
     return isValid;
 };
+
+export const validateName = value => {
+    const pattern = /^[a-zA-Z ]+$/;
+    const isValid = pattern.test(String(value).toLowerCase());
+    return isValid;
+};

@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useRef } from 'react'
 import {
   View,
   Text,
   StyleSheet,
   Image,
   Platform,
-  TouchableOpacity
+  TouchableOpacity,
+  TextInput
 } from 'react-native'
 import {
   widthPercentageToDP as wp,
@@ -15,6 +16,7 @@ import { Icon } from 'react-native-elements'
 import {
   COLORS,
   FONT1BOLD,
+  FONT1LIGHT,
   FONT1MEDIUM,
   FONT1REGULAR,
   FONT1SEMIBOLD
@@ -35,8 +37,13 @@ import { LoginManager, AccessToken } from 'react-native-fbsdk'
 import { appleAuth } from '@invertase/react-native-apple-authentication'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { API_URL } from '../../api/config'
+import { validateEmail, validateName } from '../../utils/ValidateEmail'
 
 function LoginScreen ({ navigation }) {
+  let passwordRef = useRef()
+  let emailRef = useRef()
+  let password1Ref = useRef()
+  let password2Ref = useRef()
   // Context
   const context = useContext(AppContext)
   const { setUser } = context
@@ -67,10 +74,8 @@ function LoginScreen ({ navigation }) {
     active,
     invalidPass,
     showConfirmPassword,
-    last_name,
     name,
     isChecked,
-    isAdmin,
     email
   } = state
 
@@ -98,6 +103,28 @@ function LoginScreen ({ navigation }) {
       console.warn('err', error)
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText[0]}`)
+    }
+  }
+
+  const _isEmailValid = () => {
+    if (email) {
+      const isValid = validateEmail(email)
+      if (!isValid) {
+        handleChange('email', '')
+        Toast.show('Email is not valid!')
+      } else {
+        handleChange('isEmailValid', true)
+      }
+    }
+  }
+
+  const _isNameValid = () => {
+    if (name) {
+      const isValid = validateName(name)
+      if (!isValid) {
+        handleChange('name', '')
+        Toast.show('Username is not valid!')
+      }
     }
   }
 
@@ -141,6 +168,7 @@ function LoginScreen ({ navigation }) {
     }
     const data = await AccessToken.getCurrentAccessToken()
 
+    console.warn('data', data)
     if (!data) {
       Toast.show('Something went wrong obtaining access token')
       handleChange('loading', false)
@@ -153,7 +181,7 @@ function LoginScreen ({ navigation }) {
       'content-type': 'application/json'
     }
     // const res = facebookLoginUser(payload)
-    fetch(API_URL() + 'users/facebook/login/', {
+    fetch(API_URL() + 'modules/social-auth/facebook/login/', {
       method: 'POST', // or 'PUT'
       headers: headers,
       body: JSON.stringify(payload)
@@ -201,11 +229,9 @@ function LoginScreen ({ navigation }) {
   function _configureGoogleSignIn () {
     GoogleSignin.configure({
       webClientId:
-        Platform.OS === 'ios'
-          ? '1000910722709-brqkdolabrn3h53svr7u10dq4684n1ee.apps.googleusercontent.com'
-          : '1014921932745-0dkggq29v8d3bb604fb7q8997959ov4k.apps.googleusercontent.com',
-      iosClientId:
-        '1000910722709-brqkdolabrn3h53svr7u10dq4684n1ee.apps.googleusercontent.com',
+        '487069185100-qsifiakpmm7s8rltmmodipk8klifbbql.apps.googleusercontent.com',
+      // iosClientId:
+      //   '1000910722709-brqkdolabrn3h53svr7u10dq4684n1ee.apps.googleusercontent.com',
       offlineAccess: false
     })
   }
@@ -229,7 +255,7 @@ function LoginScreen ({ navigation }) {
       const headers = {
         'content-type': 'application/json'
       }
-      fetch(API_URL() + 'users/apple/login/', {
+      fetch(API_URL() + 'modules/social-auth/apple/login/', {
         method: 'POST', // or 'PUT'
         headers: headers,
         body: JSON.stringify(payload)
@@ -286,7 +312,7 @@ function LoginScreen ({ navigation }) {
     const headers = {
       'content-type': 'application/json'
     }
-    fetch(API_URL() + 'users/google/login/', {
+    fetch(API_URL() + 'modules/social-auth/google/login/', {
       method: 'POST', // or 'PUT'
       headers: headers,
       body: JSON.stringify(payload)
@@ -305,11 +331,11 @@ function LoginScreen ({ navigation }) {
           )
           return
         }
-        if (res?.client) {
+        if (res?.user) {
           handleChange('loading', false)
-          setUser(res?.client)
+          setUser(res?.user)
           await AsyncStorage.setItem('token', res?.token)
-          await AsyncStorage.setItem('user', JSON.stringify(res?.client))
+          await AsyncStorage.setItem('user', JSON.stringify(res?.user))
           navigation.navigate('AuthLoading')
           Toast.show('Login Successfully!')
         } else {
@@ -344,304 +370,311 @@ function LoginScreen ({ navigation }) {
   }
 
   return (
-    <View style={styles.container}>
-      <KeyboardAwareScrollView
-        style={styles.container}
-        contentContainerStyle={{
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}
-      >
-        <View style={styles.top}>
-          <SvgXml xml={logo} width={100} style={{ marginBottom: 20 }} />
-          <View style={[styles.tabs, { justifyContent: 'center' }]}>
-            <TouchableOpacity
-              style={active === 0 ? styles.activeTab : styles.tab}
-              onPress={() => handleChange('active', 0)}
-            >
-              <Text
-                style={active === 0 ? styles.activeTabText : styles.tabText}
-              >
-                {'Login'}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={active === 1 ? styles.activeTab : styles.tab}
-              onPress={() => handleChange('active', 1)}
-            >
-              <Text
-                style={active === 1 ? styles.activeTabText : styles.tabText}
-              >
-                Signup
-              </Text>
-            </TouchableOpacity>
-          </View>
-          {/* {active === 0 && ( */}
-          <Text style={styles.loginText}>
-            {active ? 'Create ' : 'Login '}
-            <Text style={{ color: COLORS.darkBlack }}>
-              {active ? 'New' : 'to your'}
-              {'\n'}Account
-            </Text>
-          </Text>
-          {/* )} */}
-          {active === 0 ? (
-            <>
-              <View style={styles.textInputContainer}>
-                <AppInput
-                  label={'Email'}
-                  placeholder={'Email'}
-                  name={'email'}
-                  keyboardType={'email-address'}
-                  prefixBGTransparent
-                  value={email}
-                  onChange={handleChange}
-                />
-              </View>
-              <View style={styles.textInputContainer}>
-                <AppInput
-                  label={'Your password'}
-                  placeholder={'Your password'}
-                  prefixBGTransparent
-                  onBlur={checkPass}
-                  name={'password'}
-                  postfix={
-                    <TouchableOpacity
-                      onPress={() =>
-                        handleChange('showPassword', !showPassword)
-                      }
-                    >
-                      {showPassword ? (
-                        <Icon
-                          name={'eye-outline'}
-                          color={COLORS.black}
-                          type={'ionicon'}
-                          size={20}
-                        />
-                      ) : (
-                        <Icon
-                          name={'eye-off-outline'}
-                          color={COLORS.black}
-                          type={'ionicon'}
-                          size={20}
-                        />
-                      )}
-                    </TouchableOpacity>
-                  }
-                  value={password}
-                  onChange={handleChange}
-                  secureTextEntry={!showPassword}
-                />
-              </View>
-              {invalidPass && (
-                <View style={styles.textFieldContainer}>
-                  <Text style={styles.errorText}>
-                    Password at least 6 characters
-                  </Text>
-                </View>
-              )}
-              <View style={{ width: '90%' }}>
-                <BouncyCheckbox
-                  size={20}
-                  fillColor={COLORS.primary}
-                  unfillColor={COLORS.white}
-                  text='Keep me logged in'
-                  iconStyle={{ borderColor: COLORS.primary, borderRadius: 8 }}
-                  textStyle={{
-                    fontFamily: FONT1REGULAR,
-                    fontSize: hp(2),
-                    color: COLORS.darkBlack
-                  }}
-                  onPress={() => handleChange('isChecked', !isChecked)}
-                />
-              </View>
-              <View style={styles.buttonWidth}>
-                <AppButton
-                  title={'SIGN IN'}
-                  loading={loading}
-                  disabled={!email || !password}
-                  onPress={handleLogin}
-                />
-              </View>
-              <View style={[styles.remeberContainer, { marginBottom: 10 }]}>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('ForgotPassword')}
-                >
-                  <Text style={styles.forgotText}>Forgot Password?</Text>
-                </TouchableOpacity>
-              </View>
-            </>
-          ) : (
-            <>
-              <View style={styles.textInputContainer}>
-                <AppInput
-                  label={'Name'}
-                  placeholder={'Name'}
-                  name={'name'}
-                  prefixBGTransparent
-                  value={name}
-                  onChange={handleChange}
-                />
-              </View>
-              <View style={styles.textInputContainer}>
-                <AppInput
-                  label={'Email ID'}
-                  placeholder={'Email ID'}
-                  name={'email'}
-                  prefixBGTransparent
-                  value={email}
-                  onChange={handleChange}
-                />
-              </View>
-              <View style={styles.textInputContainer}>
-                <AppInput
-                  label={'Create password'}
-                  placeholder={'Create password'}
-                  prefixBGTransparent
-                  name={'password'}
-                  onBlur={checkPass}
-                  postfix={
-                    <TouchableOpacity
-                      onPress={() =>
-                        handleChange('showPassword', !showPassword)
-                      }
-                    >
-                      {showPassword ? (
-                        <Icon
-                          name={'eye-outline'}
-                          color={COLORS.black}
-                          type={'ionicon'}
-                          size={20}
-                        />
-                      ) : (
-                        <Icon
-                          name={'eye-off-outline'}
-                          color={COLORS.black}
-                          type={'ionicon'}
-                          size={20}
-                        />
-                      )}
-                    </TouchableOpacity>
-                  }
-                  value={password}
-                  onChange={handleChange}
-                  secureTextEntry={!showPassword}
-                />
-              </View>
-              {invalidPass && (
-                <View style={styles.textFieldContainer}>
-                  <Text style={styles.errorText}>
-                    Password at least 6 characters
-                  </Text>
-                </View>
-              )}
-              <View style={styles.textInputContainer}>
-                <AppInput
-                  label={'Confirm new password'}
-                  placeholder={'Confirm new password'}
-                  prefixBGTransparent
-                  postfix={
-                    <TouchableOpacity
-                      onPress={() =>
-                        handleChange(
-                          'showConfirmPassword',
-                          !showConfirmPassword
-                        )
-                      }
-                    >
-                      {showConfirmPassword ? (
-                        <Icon name={'eye-outline'} type={'ionicon'} size={20} />
-                      ) : (
-                        <Icon
-                          name={'eye-off-outline'}
-                          color={COLORS.black}
-                          type={'ionicon'}
-                          size={20}
-                        />
-                      )}
-                    </TouchableOpacity>
-                  }
-                  name={'confirm_password'}
-                  value={confirm_password}
-                  onChange={handleChange}
-                  secureTextEntry={!showConfirmPassword}
-                />
-              </View>
-              {confirm_password && password !== confirm_password ? (
-                <View style={styles.textFieldContainer}>
-                  <Text style={styles.errorText}>Password doesn't match</Text>
-                </View>
-              ) : null}
-              <View style={{ width: '90%' }}>
-                <BouncyCheckbox
-                  size={20}
-                  fillColor={COLORS.primary}
-                  unfillColor={COLORS.white}
-                  text='Keep me logged in'
-                  iconStyle={{ borderColor: COLORS.primary, borderRadius: 8 }}
-                  textStyle={{
-                    fontFamily: FONT1REGULAR,
-                    fontSize: hp(2),
-                    color: COLORS.darkBlack
-                  }}
-                  onPress={() => handleChange('isChecked', !isChecked)}
-                />
-              </View>
-              <View style={styles.buttonWidth}>
-                <AppButton
-                  title={'Sign Up'}
-                  loading={loading}
-                  disabled={
-                    !name ||
-                    // !last_name ||
-                    !email ||
-                    !password ||
-                    !isChecked ||
-                    password !== confirm_password
-                  }
-                  onPress={handleSignup}
-                />
-              </View>
-            </>
-          )}
-          <View style={styles.row}>
-            <View style={styles.hLine} />
-            <Text style={styles.orText}>OR</Text>
-            <View style={styles.hLine} />
-          </View>
-          <View style={styles.row}>
-            <TouchableOpacity onPress={handleFacebook}>
-              <Image
-                source={facebook}
-                style={{ width: hp('15%'), height: hp('15%') }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleGoogle}>
-              <Image
-                source={google}
-                style={{ width: hp('15%'), height: hp('15%') }}
-              />
-            </TouchableOpacity>
-            {appleAuth.isSupported && (
-              <TouchableOpacity onPress={handleApple}>
-                <Image
-                  source={apple}
-                  style={{ width: hp('15%'), height: hp('15%') }}
-                />
-              </TouchableOpacity>
-            )}
-          </View>
+    // <View style={styles.container}>
+    <KeyboardAwareScrollView
+      style={styles.container}
+      // enableAutomaticScroll={true}
+      // keyboardShouldPersistTaps={'handled'}
+      contentContainerStyle={{
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}
+    >
+      <View style={styles.top}>
+        <SvgXml xml={logo} width={100} style={{ marginBottom: 20 }} />
+        <View style={[styles.tabs, { justifyContent: 'center' }]}>
           <TouchableOpacity
-            onPress={() => handleChange('active', active ? 0 : 1)}
+            style={active === 0 ? styles.activeTab : styles.tab}
+            onPress={() => handleChange('active', 0)}
           >
-            <Text style={styles.dontacount}>
-              {active ? 'Already have an account' : 'Don’t have an account?'}{' '}
-              <Text style={styles.signUp}>{active ? 'Login' : 'Sign Up'}</Text>
+            <Text style={active === 0 ? styles.activeTabText : styles.tabText}>
+              {'Login'}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={active === 1 ? styles.activeTab : styles.tab}
+            onPress={() => handleChange('active', 1)}
+          >
+            <Text style={active === 1 ? styles.activeTabText : styles.tabText}>
+              Signup
             </Text>
           </TouchableOpacity>
         </View>
-      </KeyboardAwareScrollView>
-    </View>
+        {/* {active === 0 && ( */}
+        <Text style={styles.loginText}>
+          {active ? 'Create ' : 'Login '}
+          <Text style={{ color: COLORS.darkBlack }}>
+            {active ? 'New' : 'to your'}
+            {'\n'}Account
+          </Text>
+        </Text>
+        {/* )} */}
+        {active === 0 ? (
+          <>
+            <View style={styles.textInputContainer}>
+              <TextInput
+                onSubmitEditing={() =>
+                  passwordRef.current && passwordRef.current?.focus()
+                }
+                placeholder={'Email'}
+                returnKeyType='go'
+                keyboardType={'email-address'}
+                autoFocus={true}
+                value={email}
+                onBlur={_isEmailValid}
+                autoCapitalize='none'
+                onChangeText={text => handleChange('email', text)}
+                placeholderTextColor={COLORS.navy}
+                style={styles.textInput}
+              />
+            </View>
+            <View style={styles.textInputContainer}>
+              <TextInput
+                label={'Your password'}
+                placeholder={'Your password'}
+                ref={passwordRef}
+                onBlur={checkPass}
+                style={styles.textInput}
+                onChangeText={text => handleChange('password', text)}
+                value={password}
+                secureTextEntry={!showPassword && password != ''}
+              />
+              <TouchableOpacity
+                onPress={() => handleChange('showPassword', !showPassword)}
+              >
+                {showPassword ? (
+                  <Icon
+                    name={'eye-outline'}
+                    color={COLORS.black}
+                    type={'ionicon'}
+                    size={20}
+                  />
+                ) : (
+                  <Icon
+                    name={'eye-off-outline'}
+                    color={COLORS.black}
+                    type={'ionicon'}
+                    size={20}
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
+            {invalidPass && (
+              <View style={styles.textFieldContainer}>
+                <Text style={styles.errorText}>
+                  Password at least 6 characters
+                </Text>
+              </View>
+            )}
+            <View style={{ width: '90%' }}>
+              <BouncyCheckbox
+                size={20}
+                fillColor={COLORS.primary}
+                unfillColor={COLORS.white}
+                text='Keep me logged in'
+                iconStyle={{ borderColor: COLORS.primary, borderRadius: 8 }}
+                textStyle={{
+                  fontFamily: FONT1REGULAR,
+                  fontSize: hp(2),
+                  color: COLORS.darkBlack
+                }}
+                onPress={() => handleChange('isChecked', !isChecked)}
+              />
+            </View>
+            <View style={styles.buttonWidth}>
+              <AppButton
+                title={'SIGN IN'}
+                loading={loading}
+                disabled={!email || !password}
+                onPress={handleLogin}
+              />
+            </View>
+            <View style={[styles.remeberContainer, { marginBottom: 10 }]}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ForgotPassword')}
+              >
+                <Text style={styles.forgotText}>Forgot Password?</Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        ) : (
+          <>
+            <View style={styles.textInputContainer}>
+              <TextInput
+                onSubmitEditing={() =>
+                  emailRef.current && emailRef.current?.focus()
+                }
+                placeholder={'Name'}
+                returnKeyType='go'
+                keyboardType={'email-address'}
+                autoFocus={true}
+                value={name}
+                onBlur={_isNameValid}
+                autoCapitalize='none'
+                onChangeText={text => handleChange('name', text)}
+                placeholderTextColor={COLORS.navy}
+                style={styles.textInput}
+              />
+            </View>
+            <View style={styles.textInputContainer}>
+              <TextInput
+                onSubmitEditing={() =>
+                  password1Ref.current && password1Ref.current?.focus()
+                }
+                ref={emailRef}
+                placeholder={'Email'}
+                returnKeyType='go'
+                keyboardType={'email-address'}
+                value={email}
+                onBlur={_isEmailValid}
+                autoCapitalize='none'
+                onChangeText={text => handleChange('email', text)}
+                placeholderTextColor={COLORS.navy}
+                style={styles.textInput}
+              />
+            </View>
+            <View style={styles.textInputContainer}>
+              <TextInput
+                label={'Create password'}
+                ref={password1Ref}
+                onSubmitEditing={() =>
+                  password2Ref.current && password2Ref.current?.focus()
+                }
+                placeholder={'Create password'}
+                onBlur={checkPass}
+                value={password}
+                style={styles.textInput}
+                onChangeText={text => handleChange('password', text)}
+                secureTextEntry={!showPassword && password != ''}
+              />
+              <TouchableOpacity
+                onPress={() => handleChange('showPassword', !showPassword)}
+              >
+                {showPassword ? (
+                  <Icon
+                    name={'eye-outline'}
+                    color={COLORS.black}
+                    type={'ionicon'}
+                    size={20}
+                  />
+                ) : (
+                  <Icon
+                    name={'eye-off-outline'}
+                    color={COLORS.black}
+                    type={'ionicon'}
+                    size={20}
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
+            {invalidPass && (
+              <View style={styles.textFieldContainer}>
+                <Text style={styles.errorText}>
+                  Password at least 6 characters
+                </Text>
+              </View>
+            )}
+            <View style={styles.textInputContainer}>
+              <TextInput
+                placeholder={'Confirm new password'}
+                ref={password2Ref}
+                value={confirm_password}
+                style={styles.textInput}
+                onChangeText={text => handleChange('confirm_password', text)}
+                secureTextEntry={!showConfirmPassword && confirm_password != ''}
+              />
+              <TouchableOpacity
+                onPress={() =>
+                  handleChange('showConfirmPassword', !showConfirmPassword)
+                }
+              >
+                {showConfirmPassword ? (
+                  <Icon name={'eye-outline'} type={'ionicon'} size={20} />
+                ) : (
+                  <Icon
+                    name={'eye-off-outline'}
+                    color={COLORS.black}
+                    type={'ionicon'}
+                    size={20}
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
+            {confirm_password && password !== confirm_password ? (
+              <View style={styles.textFieldContainer}>
+                <Text style={styles.errorText}>Password doesn't match</Text>
+              </View>
+            ) : null}
+            <View style={{ width: '90%' }}>
+              <BouncyCheckbox
+                size={20}
+                fillColor={COLORS.primary}
+                unfillColor={COLORS.white}
+                text='Keep me logged in'
+                iconStyle={{ borderColor: COLORS.primary, borderRadius: 8 }}
+                textStyle={{
+                  fontFamily: FONT1REGULAR,
+                  fontSize: hp(2),
+                  color: COLORS.darkBlack
+                }}
+                onPress={() => handleChange('isChecked', !isChecked)}
+              />
+            </View>
+            <View style={styles.buttonWidth}>
+              <AppButton
+                title={'Sign Up'}
+                loading={loading}
+                disabled={
+                  !name ||
+                  // !last_name ||
+                  !email ||
+                  !password ||
+                  // !isChecked ||
+                  password !== confirm_password
+                }
+                onPress={handleSignup}
+              />
+            </View>
+          </>
+        )}
+        <View style={styles.row}>
+          <View style={styles.hLine} />
+          <Text style={styles.orText}>OR</Text>
+          <View style={styles.hLine} />
+        </View>
+        <View style={styles.row}>
+          <TouchableOpacity onPress={handleFacebook}>
+            <Image
+              source={facebook}
+              style={{ width: hp('15%'), height: hp('15%') }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleGoogle}>
+            <Image
+              source={google}
+              style={{ width: hp('15%'), height: hp('15%') }}
+            />
+          </TouchableOpacity>
+          {appleAuth.isSupported && (
+            <TouchableOpacity onPress={handleApple}>
+              <Image
+                source={apple}
+                style={{ width: hp('15%'), height: hp('15%') }}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+        <TouchableOpacity
+          onPress={() => handleChange('active', active ? 0 : 1)}
+        >
+          <Text style={styles.dontacount}>
+            {active ? 'Already have an account' : 'Don’t have an account?'}{' '}
+            <Text style={styles.signUp}>{active ? 'Login' : 'Sign Up'}</Text>
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAwareScrollView>
+    // </View>
   )
 }
 
@@ -658,7 +691,19 @@ const styles = StyleSheet.create({
   },
   buttonWidth: { width: '90%', marginBottom: 20 },
   row: { flexDirection: 'row', alignItems: 'center' },
-  textInputContainer: { marginBottom: hp('2%'), width: '90%' },
+  textInputContainer: {
+    marginBottom: hp('2%'),
+    height: hp(7),
+    backgroundColor: COLORS.white,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+    width: '90%'
+  },
   remeberContainer: {
     alignItems: 'flex-end',
     width: '90%',
@@ -746,7 +791,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 10
   },
   dontacount: { color: COLORS.darkGrey, marginBottom: 20 },
-  signUp: { color: COLORS.primary, textDecorationLine: 'underline' }
+  signUp: { color: COLORS.primary, textDecorationLine: 'underline' },
+  textInput: {
+    color: COLORS.inputText,
+    width: '80%',
+    fontFamily: FONT1LIGHT,
+    fontSize: hp(1.8)
+  }
 })
 
 export default LoginScreen

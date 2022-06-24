@@ -7,14 +7,11 @@ import {
   Modal,
   TouchableOpacity
 } from 'react-native'
-import { COLORS, FONT1BOLD, FONT1REGULAR, FONT1SEMIBOLD } from '../../constants'
+import { COLORS, FONT1REGULAR, FONT1SEMIBOLD } from '../../constants'
 import { AppInput, AppButton } from '..'
 import { SvgXml } from 'react-native-svg'
 import lockIcon from '../../assets/svg/lockIcon.svg'
-import tipBG from '../../assets/svg/tipBG.svg'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
-import userProfile from '../../assets/images/userProfile.png'
-import { Rating } from 'react-native-elements'
 
 export default function SuccessModal ({ modalVisible, setModalVisible }) {
   return (

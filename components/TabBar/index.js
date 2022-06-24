@@ -128,9 +128,8 @@ function TabBar ({ state, descriptors, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: hp('8%'),
+    height: hp(10),
     paddingBottom: hp('2%'),
-    backgroundColor: COLORS.white
   },
   inActiveTab: {
     alignItems: 'center',
@@ -139,7 +138,6 @@ const styles = StyleSheet.create({
     height: hp('7%'),
     borderRadius: 20,
     borderTopWidth: 0,
-    backgroundColor: COLORS.white
   }
 })
 
