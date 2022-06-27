@@ -34,6 +34,8 @@ export default function AppInput ({
   onSubmitEditing,
   ref,
   returnKeyType,
+  marginBottom,
+  alignItems,
   ...rest
 }) {
   const [focused, setFocused] = useState(false)
@@ -49,6 +51,7 @@ export default function AppInput ({
         style={[
           styles.container,
           {
+            marginBottom: marginBottom || 0,
             borderRadius: borderRadius || 12,
             borderColor: borderColor || COLORS.primary,
             backgroundColor: backgroundColor ? backgroundColor : COLORS.white,
@@ -62,21 +65,8 @@ export default function AppInput ({
             { borderColor: focused ? COLORS.primary : 'transparent' }
           ]}
         >
-          <View style={styles.left}>
-            {prefix && (
-              <View
-                style={[
-                  styles.prefix,
-                  {
-                    backgroundColor: prefixBGTransparent
-                      ? 'transparent'
-                      : COLORS.inputPrefixBG
-                  }
-                ]}
-              >
-                {prefix}
-              </View>
-            )}
+          <View style={[styles.left, { alignItems: alignItems || 'center' }]}>
+            {prefix && prefix}
             {dropdown && pickerItems ? (
               <TouchableOpacity
                 style={{
@@ -115,6 +105,7 @@ export default function AppInput ({
                 style={[
                   styles.textInput,
                   {
+                    marginTop: multiline ? -10 : 0,
                     textAlignVertical: multiline ? 'top' : 'center',
                     opacity: focused ? 1 : 0.7
                   }
@@ -172,8 +163,7 @@ const styles = StyleSheet.create({
   },
   left: {
     width: '80%',
-    flexDirection: 'row',
-    alignItems: 'center'
+    flexDirection: 'row'
   },
   textInput: {
     color: COLORS.inputText,

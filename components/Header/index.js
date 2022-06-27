@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import { COLORS, FONT1BOLD } from '../../constants'
+import { COLORS, FONT1BOLD, FONT1SEMIBOLD } from '../../constants'
 import { useNavigation } from '@react-navigation/native'
 import { Icon } from 'react-native-elements'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
@@ -13,7 +13,7 @@ export default function Header ({
   title,
   back,
   logo,
-  rightImage,
+  rightItem,
   rightEmpty,
   profile,
   notification,
@@ -26,37 +26,39 @@ export default function Header ({
       style={[
         styles.header,
         {
-          width: rightImage || profile ? '100%' : '90%',
-          paddingLeft: rightImage ? '5%' : 0,
-          alignItems: rightImage
-            ? 'flex-start'
-            : profile
-            ? 'flex-end'
-            : 'center'
+          width: rightItem || profile ? '100%' : '90%',
+          paddingHorizontal: '5%',
+          alignItems: profile ? 'flex-end' : 'center'
         }
       ]}
     >
-      {profile && (
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Settings')}
-          style={styles.profile}
-        >
-          <SvgXml xml={profileIcon} height={60} />
-        </TouchableOpacity>
-      )}
-      {back && (
-        <TouchableOpacity
-          style={{ marginTop: rightImage ? 30 : 0 }}
-          onPress={() => (backPress ? backPress() : navigation.goBack())}
-        >
-          <Icon name='arrow-back' type='material' color={COLORS.inputBorder} />
-          <Text style={styles.backText}>Back</Text>
-        </TouchableOpacity>
-      )}
-      {logo && <SvgXml xml={Udderly} height={60} />}
-      {title && <Text style={styles.title}>{title}</Text>}
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        {profile && (
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Settings')}
+            style={styles.profile}
+          >
+            <SvgXml xml={profileIcon} height={60} />
+          </TouchableOpacity>
+        )}
+        {back && (
+          <TouchableOpacity
+            onPress={() => (backPress ? backPress() : navigation.goBack())}
+          >
+            <Icon
+              name='left'
+              type='antdesign'
+              color={COLORS.darkGrey}
+              size={18}
+              containerStyle={{ marginRight: 5 ,marginTop:2}}
+            />
+          </TouchableOpacity>
+        )}
+        {logo && <SvgXml xml={Udderly} height={60} />}
+        {title && <Text style={styles.title}>{title}</Text>}
+      </View>
       {rightEmpty && <View style={{ width: 50 }} />}
-      {rightImage && rightImage}
+      {rightItem && rightItem}
       {notification && (
         <TouchableOpacity
           onPress={() => navigation.navigate('Notifications')}
@@ -73,7 +75,17 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     justifyContent: 'space-between',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    height: hp(9),
+    backgroundColor: COLORS.white,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
   },
   menuView: {
     alignItems: 'center',
@@ -83,9 +95,8 @@ const styles = StyleSheet.create({
   },
   title: {
     color: COLORS.darkGrey,
-    fontSize: hp('3%'),
-    marginLeft: 20,
-    fontFamily: FONT1BOLD
+    fontSize: hp(2.5),
+    fontFamily: FONT1SEMIBOLD
   },
   backText: {
     color: COLORS.inputBorder,

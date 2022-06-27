@@ -13,6 +13,9 @@ import EditPassword from '../screens/Profile/EditPassword'
 import Account from '../screens/Profile/Account'
 import Notifications from '../screens/Notifications'
 import OTP from '../screens/ForgotPassword/OTP'
+import CreateOrder from '../screens/Order/CreateOrder'
+import PickupLocation from '../screens/Order/PickupLocation'
+import ArrivalLocation from '../screens/Order/ArrivalLocation'
 
 const Stack = createStackNavigator()
 function MainStackNav () {
@@ -35,7 +38,10 @@ function MainStackNav () {
       <Stack.Screen name='LoginScreen' component={LoginScreen} />
       <Stack.Screen name='Signup' component={Signup} />
       <Stack.Screen name='ForgotPassword' component={ForgotPassword} />
+      <Stack.Screen name='PickupLocation' component={PickupLocation} />
+      <Stack.Screen name='ArrivalLocation' component={ArrivalLocation} />
       <Stack.Screen name='MainTabNav' component={MainTabNav} />
+      <Stack.Screen name='CreateOrder' component={CreateOrder} />
     </Stack.Navigator>
   )
 }

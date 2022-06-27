@@ -6,10 +6,13 @@ import { getProfile } from './api/auth'
 import RootStackNav from './navigation/RootStackNav'
 import AppContext from './store/Context'
 import { NavigationContainer } from '@react-navigation/native'
+import { MenuProvider } from 'react-native-popup-menu'
 
 function App () {
   const [user, setUser] = useState(null)
   const [userType, setUserType] = useState('')
+  const [mapLocationForPickup, setMapLocationForPickup] = useState(null)
+  const [mapLocationForArrival, setMapLocationForArrival] = useState(null)
 
   const _getProfile = async () => {
     try {
@@ -32,11 +35,17 @@ function App () {
         setUser,
         _getProfile,
         userType,
-        setUserType
+        setUserType,
+        mapLocationForPickup,
+        setMapLocationForPickup,
+        mapLocationForArrival,
+        setMapLocationForArrival
       }}
     >
       <NavigationContainer>
-        <RootStackNav />
+        <MenuProvider>
+          <RootStackNav />
+        </MenuProvider>
       </NavigationContainer>
     </AppContext.Provider>
   )

@@ -23,7 +23,8 @@ export default function AppButton ({
   borderColor,
   fontSize,
   paddingHorizontal,
-  width
+  width,
+  marginTop
 }) {
   return (
     <TouchableOpacity
@@ -31,6 +32,7 @@ export default function AppButton ({
       style={[
         styles.buttonContainer,
         {
+          marginTop: marginTop || hp('2%'),
           paddingHorizontal: paddingHorizontal ? paddingHorizontal : 20,
           borderWidth: outlined ? 1 : 0,
           justifyContent: postfix ? 'space-between' : 'center',
@@ -69,7 +71,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: '100%',
     borderRadius: 13,
-    marginTop: hp('2%'),
     flexDirection: 'row',
     alignItems: 'center'
   },

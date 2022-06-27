@@ -170,7 +170,6 @@ function Home ({ navigation }) {
   } = state
   const { user } = context
 
-  console.warn('user',user);
 
   useEffect(() => {}, [])
 
