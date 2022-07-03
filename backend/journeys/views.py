@@ -35,7 +35,7 @@ class JourneyViewSet(ModelViewSet):
             journeys = Journey.objects.filter(
                 Q(
                     Q(date_of_journey__lt=order['deliver_before_date']) &
-                    Q(date_of_journey__gt=today)\
+                    Q(date_of_journey__gt=today)
                 ) &
                 (
                     Q(type="Round Trip") &

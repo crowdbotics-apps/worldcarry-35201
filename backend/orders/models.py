@@ -134,7 +134,12 @@ class Order(UUIDModel):
         blank=True,
         null=True
     )
- 
+    qr_code = models.ImageField(
+        upload_to='orders/qr',
+        blank=True,
+        null=True
+    )
+
  
 class OrderImages(UUIDModel):
     """

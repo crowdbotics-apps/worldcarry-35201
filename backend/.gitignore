@@ -6,3 +6,4 @@ staticfiles/
 postgres-data/
 orders/images
 user/profile
+orders/qr

@@ -1,5 +1,6 @@
 from decimal import Decimal
 from rest_framework import serializers
+from django.core.files import File
 from .models import Order, OrderImages
 from users.serializers import UserProfileSerializer
 
@@ -56,6 +57,31 @@ class OrderSerializer(serializers.ModelSerializer):
                 order.deliver_before_date = (order.created_at + timedelta(weeks=12)).date()
         order.subtotal = order.product_price + order.carrier_reward
         order.total = order.subtotal + Decimal(7.99) + Decimal(3.99)
+
+        data = str(order.id)
+        
+        import qrcode
+        import os
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(data)
+        qr.make(fit=True)
+
+        filename = 'qrcode-%s.png' % str(order.id)[:10]
+
+        img = qr.make_image()
+
+        from django.conf import settings
+        img.save(settings.MEDIA_ROOT + filename)
+        with open(settings.MEDIA_ROOT + filename, "rb") as reopen:
+            django_file = File(reopen)
+            order.qr_code.save(filename, django_file, save=False)
+        path = settings.MEDIA_ROOT + filename
+        os.remove(path)
         order.save()
         return order
 
