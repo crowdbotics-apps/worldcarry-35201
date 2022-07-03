@@ -1,6 +1,7 @@
 from decimal import Decimal
 from rest_framework import serializers
 from .models import Order, OrderImages
+from users.serializers import UserProfileSerializer
 
 from datetime import timedelta
 
@@ -24,12 +25,14 @@ class OrderSerializer(serializers.ModelSerializer):
             many=True,
             required=False
         )
+    user = UserProfileSerializer(
+        required=False
+    )
 
 
     class Meta:
         model = Order
         fields = '__all__'
-        extra_kwargs = {'user': {'required': False}}
 
     def create(self, validated_data):
         images_data = validated_data.pop('images', None)
