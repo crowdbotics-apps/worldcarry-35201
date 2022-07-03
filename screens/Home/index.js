@@ -65,10 +65,6 @@ const SECTIONS = [
     content: 'Lorem ipsum...'
   },
   {
-    title: '',
-    content: 'Lorem ipsum...'
-  },
-  {
     title: 'What can I order on WorldCarry?',
     content: 'Lorem ipsum...'
   },

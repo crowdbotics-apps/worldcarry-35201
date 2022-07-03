@@ -38,7 +38,7 @@ import { AppButton, Header } from '../../components'
 import Svg, { SvgXml } from 'react-native-svg'
 import { Icon } from 'react-native-elements'
 import Geocoder from 'react-native-geocoding'
-Geocoder.init('AIzaSyA8qkmVxCJuE2_LSU14ogM1vjnoEsRi_Iw')
+Geocoder.init('AIzaSyAEmKGJ68eGUiasdk3A3Ws5PJ2VvB0wSPg')
 
 const { width, height } = Dimensions.get('window')
 const ASPECT_RATIO = width / height

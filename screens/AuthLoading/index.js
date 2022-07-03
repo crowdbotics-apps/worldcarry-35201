@@ -7,7 +7,7 @@ import AppContext from '../../store/Context'
 function AuthLoading ({ navigation }) {
   // Context
   const context = useContext(AppContext)
-  const { setUser } = context
+  const { setUser, _getOrders, _getJourneys } = context
 
   useEffect(() => {
     _bootstrapAsync()
@@ -21,6 +21,8 @@ function AuthLoading ({ navigation }) {
     if (userUID && user) {
       const userData = JSON.parse(user)
       setUser(userData)
+      _getOrders('')
+      _getJourneys('')
       // if(userData?.)
       navigation.navigate('MainTabNav')
     } else {

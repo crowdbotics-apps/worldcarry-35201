@@ -16,6 +16,7 @@ import OTP from '../screens/ForgotPassword/OTP'
 import CreateOrder from '../screens/Order/CreateOrder'
 import PickupLocation from '../screens/Order/PickupLocation'
 import ArrivalLocation from '../screens/Order/ArrivalLocation'
+import CreateJourney from '../screens/Journey/CreateJourney'
 
 const Stack = createStackNavigator()
 function MainStackNav () {
@@ -42,6 +43,7 @@ function MainStackNav () {
       <Stack.Screen name='ArrivalLocation' component={ArrivalLocation} />
       <Stack.Screen name='MainTabNav' component={MainTabNav} />
       <Stack.Screen name='CreateOrder' component={CreateOrder} />
+      <Stack.Screen name='CreateJourney' component={CreateJourney} />
     </Stack.Navigator>
   )
 }

@@ -65,7 +65,8 @@ function CreateOrder ({ navigation }) {
     mapLocationForPickup,
     mapLocationForArrival,
     setMapLocationForPickup,
-    setMapLocationForArrival
+    setMapLocationForArrival,
+    _getOrders
   } = context
 
   useEffect(() => {
@@ -134,6 +135,7 @@ function CreateOrder ({ navigation }) {
           formData.append(`images[${index}]image`, photo)
         )
       const res = await createOrder(formData, token)
+      _getOrders('')
       handleChange('loading', false)
       Toast.show('Order Created Successfully!')
       navigation.navigate('Orders')
@@ -180,7 +182,7 @@ function CreateOrder ({ navigation }) {
             avatarSourceURLs.push(uploadUri)
           }
           handleChange('avatarSourceURL', avatarSourceURLs)
-          handleChange('photo', photos)
+          handleChange('photos', photos)
           handleChange('uploading', false)
 
           Toast.show('Photos Add Successfully')

@@ -5,6 +5,7 @@ import Home from '../screens/Home'
 import { COLORS } from '../constants'
 import Profile from '../screens/Profile'
 import Order from '../screens/Order'
+import Journey from '../screens/Journey'
 
 function MainTabNav () {
   const Tab = createBottomTabNavigator()
@@ -18,7 +19,7 @@ function MainTabNav () {
       tabBar={props => <TabBar {...props} />}
     >
       <Tab.Screen name='Home' component={Home} />
-      <Tab.Screen name='Journey' component={Home} />
+      <Tab.Screen name='Journey' component={Journey} />
       <Tab.Screen name='Orders' component={Order} />
       <Tab.Screen name='Messages' component={Profile} />
       <Tab.Screen name='Profile' component={Profile} />

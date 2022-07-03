@@ -1,5 +1,9 @@
 import { API } from './'
 
+export const getOrders = (payload, token) => {
+  return API.get(`api/v1/orders/${payload}`, token)
+}
+
 export const getNotification = token => {
   return API.get(`api/v1/notifications/`, token)
 }

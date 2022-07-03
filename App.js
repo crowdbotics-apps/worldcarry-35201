@@ -7,12 +7,16 @@ import RootStackNav from './navigation/RootStackNav'
 import AppContext from './store/Context'
 import { NavigationContainer } from '@react-navigation/native'
 import { MenuProvider } from 'react-native-popup-menu'
+import { getOrders } from './api/order'
+import { getJourneys } from './api/journey'
 
 function App () {
   const [user, setUser] = useState(null)
   const [userType, setUserType] = useState('')
   const [mapLocationForPickup, setMapLocationForPickup] = useState(null)
   const [mapLocationForArrival, setMapLocationForArrival] = useState(null)
+  const [orders, setOrders] = useState([])
+  const [journeys, setJourneys] = useState([])
 
   const _getProfile = async () => {
     try {
@@ -22,6 +26,29 @@ function App () {
       const res = await getProfile(userData?.id, token)
       console.warn('res?.data', res?.data)
       setUser(res?.data)
+    } catch (error) {
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
+
+  const _getOrders = async payload => {
+    try {
+      const token = await AsyncStorage.getItem('token')
+      const qs = payload || ''
+      const res = await getOrders(qs, token)
+      setOrders(res?.data)
+    } catch (error) {
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
+  const _getJourneys = async payload => {
+    try {
+      const token = await AsyncStorage.getItem('token')
+      const qs = payload || ''
+      const res = await getJourneys(qs, token)
+      setJourneys(res?.data)
     } catch (error) {
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText}`)
@@ -39,7 +66,11 @@ function App () {
         mapLocationForPickup,
         setMapLocationForPickup,
         mapLocationForArrival,
-        setMapLocationForArrival
+        setMapLocationForArrival,
+        _getOrders,
+        orders,
+        journeys,
+        _getJourneys
       }}
     >
       <NavigationContainer>

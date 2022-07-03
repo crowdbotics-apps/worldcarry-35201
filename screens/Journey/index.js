@@ -24,6 +24,7 @@ import {
 import { SvgXml } from 'react-native-svg'
 import NoOrder from '../../assets/svg/NoOrder.svg'
 import planIcon from '../../assets/svg/plan.svg'
+import OngoingIcon from '../../assets/svg/Ongoing.svg'
 import userProfile from '../../assets/images/userProfile.png'
 import { AppButton, Header } from '../../components'
 import {
@@ -38,17 +39,16 @@ import AppContext from '../../store/Context'
 import moment from 'moment'
 import momenttimezone from 'moment-timezone'
 
-function Order ({ navigation }) {
+function Journey ({ navigation }) {
   const [state, setState] = useState({
     loading: false,
-    active: 'Requested',
-    activeStatus: 'Unpaid'
+    active: 'Ongoing'
   })
 
   // Context
   const context = useContext(AppContext)
   const { active, activeStatus } = state
-  const { orders } = context
+  const { journeys } = context
 
   useEffect(() => {}, [])
 
@@ -57,10 +57,9 @@ function Order ({ navigation }) {
   }
 
   const tabs = [
-    { title: 'Requested', status: 'Unpaid' },
-    { title: 'In Transit' },
-    { title: 'Recieved' },
-    { title: 'Inactive' }
+    { title: 'Ongoing' },
+    { title: 'Upcoming' },
+    { title: 'Completed' }
   ]
 
   function convertLocalDateToUTCDate (time, toLocal) {
@@ -90,11 +89,11 @@ function Order ({ navigation }) {
     }
   }
 
-  console.warn('orders', orders)
+  console.warn('_getJourneys', journeys)
 
   const getOrderType = status => {
     if (status) {
-      const filtered = orders?.filter(e => e.status === status)
+      const filtered = journeys?.filter(e => e.status === status)
       return filtered || []
     } else return []
   }
@@ -102,27 +101,22 @@ function Order ({ navigation }) {
   return (
     <View style={styles.container}>
       <Header
-        title={'Orders'}
+        title={'Journeys'}
         rightItem={
           <AppButton
             width={80}
             height={hp(5)}
             marginTop={1}
             title={'+ Add'}
-            onPress={() => navigation.navigate('CreateOrder')}
+            onPress={() => navigation.navigate('CreateJourney')}
           />
         }
       />
-      <ScrollView
-        style={styles.tabs}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      >
+      <View style={styles.tabs}>
         {tabs.map((tab, index) => (
           <TouchableOpacity
             onPress={() => {
               handleChange('active', tab?.title)
-              handleChange('activeStatus', tab?.status)
             }}
             key={index}
             style={active === tab.title ? styles.activeTab : styles.inavtive}
@@ -132,13 +126,13 @@ function Order ({ navigation }) {
                 active === tab.title ? styles.activeTabText : styles.tabText
               }
             >
-              {getOrderType(tab?.status)?.length} {tab.title}
+              {tab.title}
             </Text>
           </TouchableOpacity>
         ))}
-      </ScrollView>
+      </View>
       <FlatList
-        data={getOrderType(activeStatus)}
+        data={journeys}
         showsVerticalScrollIndicator={false}
         style={{ width: '100%', height: '100%' }}
         renderItem={({ item, index }) => (
@@ -148,35 +142,19 @@ function Order ({ navigation }) {
           >
             <View style={styles.paper}>
               <View style={[styles.rowBetween, { width: '100%' }]}>
-                <View style={styles.row}>
-                  <Image
-                    style={{
-                      width: 50,
-                      height: 50,
-                      borderRadius: 50,
-                      marginRight: 10
-                    }}
-                    source={
-                      item?.user?.profile?.photo
-                        ? { uri: item?.user?.profile?.photo }
-                        : userProfile
-                    }
+                <View
+                  style={[
+                    styles.ongoingBox,
+                    { backgroundColor: COLORS.ongoing }
+                  ]}
+                >
+                  <SvgXml
+                    xml={OngoingIcon}
+                    style={{ marginLeft: -10, marginTop: 8 }}
                   />
-                  <View>
-                    <Text style={styles.nameText}>{item?.user?.name}</Text>
-                    <Text style={styles.postedText}>
-                      Posted {convertLocalDateToUTCDate(item?.created_at, true)}
-                    </Text>
-                  </View>
-                </View>
-                <View style={{ alignItems: 'flex-end' }}>
-                  <Text style={[styles.nameText, { fontSize: hp(2.4) }]}>
-                    ${item?.carrier_reward}
-                  </Text>
-                  <Text style={styles.postedText}>Reward</Text>
+                  <Text style={styles.nameText}>Ongoing</Text>
                 </View>
               </View>
-              <View style={styles.hline} />
               <View style={[styles.row, { width: '90%' }]}>
                 <Text
                   style={[
@@ -184,54 +162,81 @@ function Order ({ navigation }) {
                     { color: COLORS.primary, maxWidth: '40%' }
                   ]}
                 >
-                  {item?.pickup_address_country}
+                  {item?.departure_country}
                 </Text>
-                <SvgXml xml={planIcon} />
+                <SvgXml xml={planIcon} style={{ marginTop: 5 }} />
                 <Text
                   style={[
                     styles.nameText,
                     { color: COLORS.primary, maxWidth: '60%' }
                   ]}
                 >
-                  {item?.arrival_address_country}
+                  {item?.arrival_country}
                 </Text>
               </View>
-              <Text
-                style={[styles.nameText, { fontSize: hp(2.5), width: '90%' }]}
-              >
-                {item?.product_name}
-              </Text>
-              <Text style={styles.postedText}>
-                Deliver Before :{' '}
-                {moment(item?.deliver_before_date).format('DD / MM / YYYY')}
-              </Text>
+              <FlatList
+                // style={{ width: '100%' }}
+                data={item?.willing_to_carry}
+                numColumns={2}
+                renderItem={({ item: res, index }) => (
+                  <View
+                    key={index}
+                    style={{
+                      marginRight: 10,
+                      paddingHorizontal: 8,
+                      height: 30,
+                      borderRadius: 50,
+                      borderWidth: 1,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderColor: COLORS.grey
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: FONT1REGULAR,
+                        fontSize: hp(1.8),
+                        color: COLORS.black
+                      }}
+                    >
+                      {res}
+                    </Text>
+                  </View>
+                )}
+              />
+              <View style={styles.hline} />
               <View style={styles.rowBetween}>
-                {item?.images?.length > 0 && (
-                  <Image
-                    source={{ uri: item?.images[0]?.image }}
-                    style={styles.product_image}
-                  />
-                )}
-                {item?.images?.length > 1 && (
-                  <Image
-                    source={{ uri: item?.images[1]?.image }}
-                    style={styles.product_image}
-                  />
-                )}
+                <Text style={[styles.postedText]}>Journey Date</Text>
+                <Text style={styles.nameText}>
+                  {moment(item?.deliver_before_date).format('DD / MM / YYYY')}
+                </Text>
               </View>
-              <AppButton title={'View Journeys'} />
+              <View style={[styles.rowBetween, { marginTop: 10 }]}>
+                <Text style={[styles.postedText]}>Weight</Text>
+                <Text style={styles.nameText}>{item?.total_weight}</Text>
+              </View>
+              <View style={styles.hline} />
+              <View style={styles.rowBetween}>
+                <Text style={[styles.postedText]}>To Deliver</Text>
+                <Text style={styles.nameText}>
+                  {moment(item?.deliver_before_date).format('DD / MM / YYYY')}
+                </Text>
+              </View>
+              <View style={[styles.rowBetween, { marginTop: 10 }]}>
+                <Text style={[styles.postedText]}>Reward</Text>
+                <Text style={styles.nameText}>{item?.total_weight}</Text>
+              </View>
+              {/* <AppButton title={'View Journeys'} /> */}
             </View>
           </View>
         )}
         ListEmptyComponent={() => (
           <View style={{ width: '100%', alignItems: 'center' }}>
             <SvgXml xml={NoOrder} />
-            <Text style={styles.timetext}>
-              You don’t have new order requests
-            </Text>
+            <Text style={styles.timetext}>You don’t have new journey</Text>
             <AppButton
-              title={'Create Order'}
-              onPress={() => navigation.navigate('CreateOrder')}
+              title={'Create Journey'}
+              onPress={() => navigation.navigate('CreateJourney')}
               width={150}
               color={COLORS.primary}
               backgroundColor={COLORS.lightblue}
@@ -263,6 +268,13 @@ const styles = StyleSheet.create({
   rowBetween: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  ongoingBox: {
+    height: 30,
+    borderRadius: 30,
+    paddingHorizontal: 10,
+    flexDirection: 'row',
     alignItems: 'center'
   },
   paper: {
@@ -342,9 +354,11 @@ const styles = StyleSheet.create({
     width: 50
   },
   tabs: {
-    width: '100%',
+    width: '90%',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 20,
-    paddingLeft: 15,
     height: hp(7),
     marginBottom: 20
   },
@@ -407,4 +421,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Order
+export default Journey
