@@ -34,7 +34,7 @@ function Welcome ({ navigation }) {
   })
   const { entries, activeSlide } = state
   const handleNavigate = (route, type) => {
-    navigation.navigate(route, { type })
+    navigation.navigate(route, { isType: type })
   }
 
   const _renderItem = ({ item, index }) => {
@@ -102,12 +102,12 @@ function Welcome ({ navigation }) {
           width={'48%'}
           backgroundColor={'transparent'}
           color={COLORS.primary}
-          onPress={() => handleNavigate('LoginScreen')}
+          onPress={() => handleNavigate('LoginScreen', 0)}
         />
         <AppButton
           width={'48%'}
           title={'Sign up'}
-          onPress={() => handleNavigate('LoginScreen')}
+          onPress={() => handleNavigate('LoginScreen', 1)}
         />
       </View>
     </ImageBackground>

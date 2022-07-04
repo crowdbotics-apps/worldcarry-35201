@@ -39,7 +39,8 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { API_URL } from '../../api/config'
 import { validateEmail, validateName } from '../../utils/ValidateEmail'
 
-function LoginScreen ({ navigation }) {
+function LoginScreen ({ navigation, route }) {
+  const isType = route?.params?.isType
   let passwordRef = useRef()
   let emailRef = useRef()
   let password1Ref = useRef()
@@ -47,6 +48,7 @@ function LoginScreen ({ navigation }) {
   // Context
   const context = useContext(AppContext)
   const { setUser } = context
+
 
   const [state, setState] = useState({
     email: '',
@@ -61,7 +63,7 @@ function LoginScreen ({ navigation }) {
     showPassword: false,
     isChecked: false,
     showConfirmPassword: false,
-    active: 0,
+    active: isType || 0,
     isAdmin: false
   })
 
@@ -437,6 +439,7 @@ function LoginScreen ({ navigation }) {
                 style={styles.textInput}
                 onChangeText={text => handleChange('password', text)}
                 value={password}
+                placeholderTextColor={COLORS.navy}
                 secureTextEntry={!showPassword && password != ''}
               />
               <TouchableOpacity
@@ -544,6 +547,7 @@ function LoginScreen ({ navigation }) {
                 onBlur={checkPass}
                 value={password}
                 style={styles.textInput}
+                placeholderTextColor={COLORS.navy}
                 onChangeText={text => handleChange('password', text)}
                 secureTextEntry={!showPassword && password != ''}
               />
