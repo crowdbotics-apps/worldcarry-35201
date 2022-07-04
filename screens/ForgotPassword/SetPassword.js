@@ -119,7 +119,7 @@ function SetPassword ({ navigation, route }) {
             }
             value={password}
             onChange={handleChange}
-            secureTextEntry={!showPassword}
+            secureTextEntry={!showPassword && password != ''}
           />
         </View>
         {invalidPass && (
@@ -158,7 +158,7 @@ function SetPassword ({ navigation, route }) {
             name={'confirm_password'}
             value={confirm_password}
             onChange={handleChange}
-            secureTextEntry={!showConfirmPassword}
+            secureTextEntry={!showConfirmPassword && password != ''}
           />
         </View>
         {confirm_password && password !== confirm_password ? (

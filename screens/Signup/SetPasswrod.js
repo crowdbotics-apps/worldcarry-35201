@@ -119,7 +119,8 @@ function SetPasswrod ({ navigation, route }) {
               </TouchableOpacity>
             }
             onChange={handleChange}
-            secureTextEntry={!showPassword}
+            secureTextEntry={!showPassword && password != ''}
+            // secureTextEntry={!showPassword}
           />
         </View>
         {invalidPass && (
@@ -153,7 +154,7 @@ function SetPasswrod ({ navigation, route }) {
             name={'confirm_password'}
             value={confirm_password}
             onChange={handleChange}
-            secureTextEntry={!showConfirmPassword}
+            secureTextEntry={!showConfirmPassword && confirm_password != ''}
           />
         </View>
         {confirm_password && password !== confirm_password ? (
