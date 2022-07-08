@@ -109,3 +109,11 @@ class OrderSerializer(serializers.ModelSerializer):
         order.total = order.subtotal + Decimal(7.99) + Decimal(3.99)
         order.save()
         return order
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        if instance.pickup_address_coordinates:
+            rep['pickup_coords'] = instance.pickup_address_coordinates.coords
+        if instance.arrival_address_coordinates:
+            rep['arrival_coords'] = instance.arrival_address_coordinates.coords
+        return rep

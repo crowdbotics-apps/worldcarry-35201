@@ -6,6 +6,7 @@ from home.api.v1.viewsets import (
     LoginViewSet,
 )
 from journeys.views import JourneyViewSet
+from locations.views import LocationViewSet
 from orders.views import OrderViewSet
 from users.viewsets import UserViewSet
 
@@ -15,6 +16,7 @@ router.register("login", LoginViewSet, basename="login")
 router.register("users", UserViewSet, basename="users")
 router.register("orders", OrderViewSet, basename="orders")
 router.register("journeys", JourneyViewSet, basename="journeys")
+router.register("locations", LocationViewSet, basename="locations")
 
 urlpatterns = [
     path("", include(router.urls)),

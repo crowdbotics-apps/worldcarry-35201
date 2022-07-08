@@ -71,7 +71,8 @@ LOCAL_APPS = [
     'home',
     'users.apps.UsersConfig',
     'orders',
-    'journeys'
+    'journeys',
+    'locations'
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',
