@@ -76,7 +76,7 @@ function Signup ({ navigation, route }) {
       handleChange('loading', false)
       await AsyncStorage.setItem('token', res?.data?.token)
       await AsyncStorage.setItem('user', JSON.stringify(res?.data?.user))
-      Toast.show('Sign Up Successfully!')
+      Toast.show('Signed up Successfully!')
       navigation.navigate('Subscriptions')
     } catch (error) {
       handleChange('loading', false)

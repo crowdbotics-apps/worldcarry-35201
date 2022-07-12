@@ -40,7 +40,10 @@ export default function JourneyStep1 ({
   handleSearch1,
   handleSearch,
   date_of_return,
-  date_of_journey
+  date_of_journey,
+  isFocus,
+  isFocus1,
+  handleOpen
 }) {
   const [modalVisible, setModalVisible] = useState(false)
   const [showReturnCalendar, setShowReturnCalendar] = useState(false)
@@ -80,7 +83,6 @@ export default function JourneyStep1 ({
     handleChange('date_of_return', serviceDate)
     setMarkedDates1(markedDates)
   }
-  console.warn('date_of_journey', date_of_journey)
   return (
     <ScrollView
       keyboardShouldPersistTaps={'handled'}
@@ -104,70 +106,87 @@ export default function JourneyStep1 ({
           fillOpacity={0.6}
           style={{ marginLeft: 10, marginTop: hp(2) }}
         />
-        <GooglePlacesAutocomplete
-          placeholder={'Departure City'}
-          fetchDetails={true}
-          onPress={(data, details) => {
-            // 'details' is provided when fetchDetails = true
-            console.log(data, details)
-            handleSearch(data, details)
-          }}
-          textInputProps={{
-            placeholderTextColor: COLORS.placeholder,
-            value: departure_city_state,
-            onFocus: () => handleChange('isFocus', true),
-            onBlur: () => handleChange('isFocus', false),
-            onChangeText: text => handleChange('departure_city_state', text)
-          }}
-          styles={{
-            // container: styles.textInput,
-            textInput: {
-              // flex: 1,
-              fontSize: hp(1.8),
-              backgroundColor: 'transparent',
-              // width: '85%',
-              height: '100%',
-              color: COLORS.darkGrey,
-              fontFamily: FONT1REGULAR
-            },
-            poweredContainer: { backgroundColor: COLORS.white },
-            row: { backgroundColor: COLORS.white }
-          }}
-          query={{
-            key: 'AIzaSyAEmKGJ68eGUiasdk3A3Ws5PJ2VvB0wSPg',
-            language: 'en'
-          }}
-          GooglePlacesDetailsQuery={{
-            fields: 'geometry'
-          }}
-          filterReverseGeocodingByTypes={['locality']}
-          keyboardShouldPersistTaps={'handled'}
-          listViewDisplayed={false}
-          renderRow={data => (
-            <View style={{ width: '100%', flexDirection: 'row' }}>
-              <View
-                style={{
-                  width: 30,
-                  height: 30,
-                  borderRadius: 30,
-                  backgroundColor: COLORS.grey,
-                  marginRight: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <SvgXml xml={pinBlack} />
-              </View>
-              <Text style={{ color: COLORS.black, fontFamily: FONT1REGULAR }}>
-                {data.description}
+        <View style={{ width: '90%' }}>
+          <GooglePlacesAutocomplete
+            placeholder={'Departure City'}
+            fetchDetails={true}
+            onPress={(data, details) => {
+              // 'details' is provided when fetchDetails = true
+              console.log(data, details)
+              handleSearch(data, details)
+            }}
+            textInputProps={{
+              placeholderTextColor: COLORS.placeholder,
+              value: departure_city_state,
+              onFocus: () => handleChange('isFocus', true),
+              onBlur: () => handleChange('isFocus', false),
+              onChangeText: text => handleChange('departure_city_state', text)
+            }}
+            styles={{
+              // container: styles.textInput,
+              textInput: {
+                // flex: 1,
+                fontSize: hp(1.8),
+                backgroundColor: 'transparent',
+                // width: '85%',
+                height: '100%',
+                color: COLORS.darkGrey,
+                fontFamily: FONT1REGULAR
+              },
+              poweredContainer: { backgroundColor: COLORS.white },
+              row: { backgroundColor: COLORS.white }
+            }}
+            query={{
+              key: 'AIzaSyAEmKGJ68eGUiasdk3A3Ws5PJ2VvB0wSPg',
+              language: 'en'
+            }}
+            GooglePlacesDetailsQuery={{
+              fields: 'geometry'
+            }}
+            filterReverseGeocodingByTypes={['locality']}
+            keyboardShouldPersistTaps={'handled'}
+            listViewDisplayed={false}
+            enablePoweredByContainer={false}
+            renderRow={data => {
+              return (
+                <View style={{ width: '100%', flexDirection: 'row' }}>
+                  <View
+                    style={{
+                      width: 30,
+                      height: 30,
+                      borderRadius: 30,
+                      backgroundColor: COLORS.grey,
+                      marginRight: 10,
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <SvgXml xml={pinBlack} />
+                  </View>
+                  <Text
+                    style={{ color: COLORS.black, fontFamily: FONT1REGULAR }}
+                  >
+                    {data.description}
+                  </Text>
+                </View>
+              )
+            }}
+            debounce={200}
+            currentLocation={false}
+            currentLocationLabel='Current location'
+            nearbyPlacesAPI='GooglePlacesSearch'
+          />
+          {isFocus && (
+            <TouchableOpacity
+              onPress={() => handleOpen('departure')}
+              style={{ width: '90%', marginBottom: 10, alignItems: 'center' }}
+            >
+              <Text style={{ fontFamily: FONT1REGULAR, color: COLORS.primary }}>
+                Choose from Address
               </Text>
-            </View>
+            </TouchableOpacity>
           )}
-          debounce={200}
-          currentLocation={false}
-          currentLocationLabel='Current location'
-          nearbyPlacesAPI='GooglePlacesSearch'
-        />
+        </View>
       </View>
       <View
         style={{
@@ -186,70 +205,82 @@ export default function JourneyStep1 ({
           fillOpacity={0.6}
           style={{ marginLeft: 10, marginTop: hp(2) }}
         />
-        <GooglePlacesAutocomplete
-          placeholder={'Arrival City'}
-          fetchDetails={true}
-          onPress={(data, details) => {
-            // 'details' is provided when fetchDetails = true
-            console.log(data, details)
-            handleSearch1(data, details)
-          }}
-          textInputProps={{
-            placeholderTextColor: COLORS.placeholder,
-            value: arrival_city_state,
-            onFocus: () => handleChange('isFocus', true),
-            onBlur: () => handleChange('isFocus', false),
-            onChangeText: text => handleChange('arrival_city_state', text)
-          }}
-          styles={{
-            // container: styles.textInput,
-            textInput: {
-              // flex: 1,
-              fontSize: hp(1.8),
-              backgroundColor: 'transparent',
-              // width: '85%',
-              height: '100%',
-              color: COLORS.darkGrey,
-              fontFamily: FONT1REGULAR
-            },
-            poweredContainer: { backgroundColor: COLORS.white },
-            row: { backgroundColor: COLORS.white }
-          }}
-          query={{
-            key: 'AIzaSyAEmKGJ68eGUiasdk3A3Ws5PJ2VvB0wSPg',
-            language: 'en'
-          }}
-          GooglePlacesDetailsQuery={{
-            fields: 'geometry'
-          }}
-          filterReverseGeocodingByTypes={['locality']}
-          keyboardShouldPersistTaps={'handled'}
-          listViewDisplayed={false}
-          renderRow={data => (
-            <View style={{ width: '100%', flexDirection: 'row' }}>
-              <View
-                style={{
-                  width: 30,
-                  height: 30,
-                  borderRadius: 30,
-                  backgroundColor: COLORS.grey,
-                  marginRight: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <SvgXml xml={pinBlack} />
+        <View style={{ width: '90%' }}>
+          <GooglePlacesAutocomplete
+            placeholder={'Arrival City'}
+            fetchDetails={true}
+            onPress={(data, details) => {
+              // 'details' is provided when fetchDetails = true
+              console.log(data, details)
+              handleSearch1(data, details)
+            }}
+            textInputProps={{
+              placeholderTextColor: COLORS.placeholder,
+              value: arrival_city_state,
+              onFocus: () => handleChange('isFocus1', true),
+              onBlur: () => handleChange('isFocus1', false),
+              onChangeText: text => handleChange('arrival_city_state', text)
+            }}
+            styles={{
+              // container: styles.textInput,
+              textInput: {
+                // flex: 1,
+                fontSize: hp(1.8),
+                backgroundColor: 'transparent',
+                // width: '85%',
+                height: '100%',
+                color: COLORS.darkGrey,
+                fontFamily: FONT1REGULAR
+              },
+              poweredContainer: { backgroundColor: COLORS.white },
+              row: { backgroundColor: COLORS.white }
+            }}
+            query={{
+              key: 'AIzaSyAEmKGJ68eGUiasdk3A3Ws5PJ2VvB0wSPg',
+              language: 'en'
+            }}
+            GooglePlacesDetailsQuery={{
+              fields: 'geometry'
+            }}
+            filterReverseGeocodingByTypes={['locality']}
+            keyboardShouldPersistTaps={'handled'}
+            listViewDisplayed={false}
+            renderRow={data => (
+              <View style={{ width: '100%', flexDirection: 'row' }}>
+                <View
+                  style={{
+                    width: 30,
+                    height: 30,
+                    borderRadius: 30,
+                    backgroundColor: COLORS.grey,
+                    marginRight: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <SvgXml xml={pinBlack} />
+                </View>
+                <Text style={{ color: COLORS.black, fontFamily: FONT1REGULAR }}>
+                  {data.description}
+                </Text>
               </View>
-              <Text style={{ color: COLORS.black, fontFamily: FONT1REGULAR }}>
-                {data.description}
+            )}
+            debounce={200}
+            currentLocation={false}
+            currentLocationLabel='Current location'
+            nearbyPlacesAPI='GooglePlacesSearch'
+          />
+          {isFocus1 && (
+            <TouchableOpacity
+              onPress={() => handleOpen('')}
+              style={{ width: '90%', marginBottom: 10, alignItems: 'center' }}
+            >
+              <Text style={{ fontFamily: FONT1REGULAR, color: COLORS.primary }}>
+                Choose from Address
               </Text>
-            </View>
+            </TouchableOpacity>
           )}
-          debounce={200}
-          currentLocation={false}
-          currentLocationLabel='Current location'
-          nearbyPlacesAPI='GooglePlacesSearch'
-        />
+        </View>
       </View>
       <TouchableOpacity
         onPress={() => setModalVisible(true)}

@@ -25,10 +25,8 @@ import {
 import { SvgXml } from 'react-native-svg'
 import NoOrder from '../../assets/svg/NoOrder.svg'
 import planIcon from '../../assets/svg/plan.svg'
-import OngoingIcon from '../../assets/svg/Ongoing.svg'
-import UpcomingIcon from '../../assets/svg/Upcoming.svg'
-import menuJourney from '../../assets/svg/menuJourney.svg'
-import usersIcon from '../../assets/svg/users.svg'
+import calendarIcon from '../../assets/svg/calendar.svg'
+import weightIcon from '../../assets/svg/weight.svg'
 import userProfile from '../../assets/images/userProfile.png'
 import { AppButton, Header } from '../../components'
 import {
@@ -50,30 +48,77 @@ import {
 } from 'react-native-popup-menu'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Toast from 'react-native-simple-toast'
-import { deleteJourney } from '../../api/journey'
+import {
+  deleteJourney,
+  getJourneyDetails,
+  getOnrouteJourneys
+} from '../../api/journey'
+import { getOrderDetails } from '../../api/order'
 
-function Journey ({ navigation }) {
+function OrderDetails ({ navigation, route }) {
+  const item = route?.params?.item
   const [state, setState] = useState({
     loading: false,
-    active: 'Ongoing'
+    active: 'Offers',
+    onRouteJourneys: [],
+    orderData: null
   })
 
   // Context
   const context = useContext(AppContext)
-  const { active, loading } = state
+  const { onRouteJourneys, loading, orderData, active } = state
   const { journeys, _getJourneys } = context
-
-  useEffect(() => {}, [])
 
   const handleChange = (name, value) => {
     setState(pre => ({ ...pre, [name]: value }))
   }
 
   const tabs = [
-    { title: 'Ongoing' },
-    { title: 'Upcoming' },
-    { title: 'Completed' }
+    { title: 'Offers' },
+    { title: 'Accepted' },
+    { title: 'In Transit' },
+    { title: 'Delivered' }
   ]
+
+  useEffect(() => {
+    if (item) {
+      const id = `?order_id=${item?.id}`
+      _getOnrouteJourneys(id)
+      _getOrderDetails()
+    }
+  }, [item])
+
+  const _getOnrouteJourneys = async payload => {
+    try {
+      const token = await AsyncStorage.getItem('token')
+      const qs = payload || ''
+      const res = await getOnrouteJourneys(qs, token)
+      handleChange('onRouteJourneys', res?.data)
+    } catch (error) {
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
+
+  const _getOrderDetails = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token')
+      const res = await getOrderDetails(item?.id, token)
+      handleChange('orderData', res?.data)
+    } catch (error) {
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
+
+  console.warn('_getJourneys', orderData)
+
+  const getOrderType = status => {
+    if (status) {
+      const filtered = journeys?.filter(e => e.status === status)
+      return filtered || []
+    } else return []
+  }
 
   function convertLocalDateToUTCDate (time, toLocal) {
     const todayDate = moment(new Date()).format('YYYY-MM-DD')
@@ -101,70 +146,37 @@ function Journey ({ navigation }) {
       return utcTime
     }
   }
-  const handleDelete = async id => {
-    try {
-      handleChange('loading', true)
-      const token = await AsyncStorage.getItem('token')
-      await deleteJourney(id, token)
-      _getJourneys('')
-      handleChange('loading', false)
-      Toast.show('Journey Deleted Successfully!')
-    } catch (error) {
-      console.warn('error', error)
-      handleChange('loading', false)
-      console.warn('error?.response?.data', error?.response?.data)
-      const errorText = Object.values(error?.response?.data)
-      Toast.show(`Error: ${errorText[0]}`)
-    }
+
+  if (loading) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator color={COLORS.primary} size={'large'} />
+      </View>
+    )
   }
 
-  console.warn('_getJourneys', journeys)
+  var text = orderData?.product_name
+  var count = 30
 
-  const getOrderType = status => {
-    if (status) {
-      const filtered = journeys?.filter(e => e.status === status)
-      return filtered || []
-    } else return []
-  }
+  var result = text?.slice(0, count) + (text?.length > count ? '...' : '')
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{ alignItems: 'center' }}
+    >
       <Header
-        title={'Journeys'}
-        rightItem={
-          <AppButton
-            width={hp(15)}
-            height={hp(5)}
-            marginTop={1}
-            title={'+ Add'}
-            onPress={() => navigation.navigate('CreateJourney')}
-          />
-        }
+        title={result}
+        rightEmpty
+        back
+        backgroundColor={COLORS.primary}
+        color={COLORS.white}
       />
-      <View style={styles.tabs}>
-        {tabs.map((tab, index) => (
-          <TouchableOpacity
-            onPress={() => {
-              handleChange('active', tab?.title)
-            }}
-            key={index}
-            style={active === tab.title ? styles.activeTab : styles.inavtive}
-          >
-            <Text
-              style={
-                active === tab.title ? styles.activeTabText : styles.tabText
-              }
-            >
-              {tab.title}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-      {loading && <ActivityIndicator color={COLORS.primary} size={'small'} />}
       <FlatList
-        data={journeys}
+        data={onRouteJourneys}
+        scrollEnabled={false}
         showsVerticalScrollIndicator={false}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: '100%', height: '100%', marginTop: 20 }}
         renderItem={({ item, index }) => (
           <View
             key={index}
@@ -172,63 +184,31 @@ function Journey ({ navigation }) {
           >
             <View style={styles.paper}>
               <View style={[styles.rowBetween, { width: '100%' }]}>
-                <View
-                  style={[
-                    styles.ongoingBox,
-                    {
-                      backgroundColor: moment(new Date()).isBefore(
-                        item?.date_of_journey
-                      )
-                        ? COLORS.upcoming
-                        : COLORS.ongoing
-                    }
-                  ]}
-                >
-                  <SvgXml
-                    xml={
-                      moment(new Date()).isBefore(item?.date_of_journey)
-                        ? UpcomingIcon
-                        : OngoingIcon
-                    }
-                    style={{ marginLeft: -10, marginTop: 8 }}
-                  />
-                  <Text
-                    style={[
-                      styles.nameText,
-                      { fontFamily: FONT1LIGHT, fontSize: hp(1.8) }
-                    ]}
-                  >
-                    {moment(new Date()).isBefore(item?.date_of_journey)
-                      ? 'Upcoming'
-                      : 'Ongoing'}
-                  </Text>
-                </View>
-                {moment(new Date()).isBefore(item?.date_of_journey) && (
-                  <Menu
-                    rendererProps={{
-                      placement: 'bottom'
+                <View style={styles.row}>
+                  <Image
+                    style={{
+                      width: 50,
+                      height: 50,
+                      borderRadius: 50,
+                      marginRight: 10
                     }}
-                  >
-                    <MenuTrigger>
-                      <SvgXml xml={menuJourney} />
-                    </MenuTrigger>
-                    <MenuOptions
-                      optionsContainerStyle={{
-                        width: '30%'
-                      }}
-                    >
-                      {['Delete'].map(el => (
-                        <MenuOption
-                          key={el}
-                          onSelect={() => handleDelete(item?.id)}
-                        >
-                          <Text style={{ fontFamily: FONT1LIGHT }}>{el}</Text>
-                        </MenuOption>
-                      ))}
-                    </MenuOptions>
-                  </Menu>
-                )}
+                    source={
+                      item?.user?.profile?.photo
+                        ? { uri: item?.user?.profile?.photo }
+                        : userProfile
+                    }
+                  />
+                  <View>
+                    <Text style={styles.nameText}>{item?.user?.name}</Text>
+                    <Text style={styles.postedText}>
+                      Delivery{' '}
+                      {convertLocalDateToUTCDate(item?.created_at, true)}
+                    </Text>
+                  </View>
+                </View>
               </View>
+              <View style={styles.hline} />
+
               <View style={[styles.row, { width: '90%' }]}>
                 <Text
                   style={[
@@ -248,8 +228,25 @@ function Journey ({ navigation }) {
                   {item?.arrival_country}
                 </Text>
               </View>
+              <View
+                style={[
+                  styles.rowBetween,
+                  { marginVertical: 10, width: '100%' }
+                ]}
+              >
+                <View style={styles.box}>
+                  <SvgXml xml={calendarIcon} style={{ opacity: 0.6 }} />
+                  <Text style={styles.boxText}>
+                    {' '}
+                    {moment(item?.date_of_journey).format('DD / MM / YYYY')}
+                  </Text>
+                </View>
+                <View style={styles.box}>
+                  <SvgXml xml={weightIcon} />
+                  <Text style={styles.boxText}>{item?.total_weight}Kg</Text>
+                </View>
+              </View>
               <FlatList
-                // style={{ width: '100%' }}
                 data={item?.willing_to_carry}
                 numColumns={2}
                 renderItem={({ item: res, index }) => (
@@ -278,51 +275,19 @@ function Journey ({ navigation }) {
                   </View>
                 )}
               />
-              <View style={styles.hline} />
-              <View style={styles.rowBetween}>
-                <Text style={[styles.postedText]}>Journey Date</Text>
-                <Text style={styles.nameText}>
-                  {moment(item?.date_of_journey).format('DD / MM / YYYY')}
-                </Text>
-              </View>
-              <View style={[styles.rowBetween, { marginTop: 10 }]}>
-                <Text style={[styles.postedText]}>Weight</Text>
-                <Text style={styles.nameText}>{item?.total_weight}</Text>
-              </View>
-              <View style={styles.hline} />
-              <View style={styles.rowBetween}>
-                <Text style={[styles.postedText]}>To Deliver</Text>
-                <Text style={styles.nameText}>
-                  {moment(item?.date_of_return).format('DD / MM / YYYY')}
-                </Text>
-              </View>
-              <View style={[styles.rowBetween, { marginTop: 10 }]}>
-                <Text style={[styles.postedText]}>Reward</Text>
-                <Text style={styles.nameText}>{item?.total_weight}</Text>
-              </View>
-              {moment(new Date()).isBefore(item?.date_of_journey) && (
-                <AppButton
-                  title={'View all 200 offers'}
-                  backgroundColor={COLORS.upcoming}
-                  color={COLORS.upcomingDark}
-                  onPress={() =>
-                    navigation.navigate('JourneyDetails', { item })
-                  }
-                  prefix={
-                    <SvgXml xml={usersIcon} style={{ marginRight: 10 }} />
-                  }
-                />
-              )}
+              <AppButton title={'Make Offer'} />
             </View>
           </View>
         )}
         ListEmptyComponent={() => (
           <View style={{ width: '100%', alignItems: 'center' }}>
             <SvgXml xml={NoOrder} />
-            <Text style={styles.timetext}>You don’t have new journey</Text>
+            <Text style={styles.timetext}>
+              You don’t have new order requests
+            </Text>
             <AppButton
-              title={'Create Journey'}
-              onPress={() => navigation.navigate('CreateJourney')}
+              title={'Create Order'}
+              onPress={() => navigation.navigate('CreateOrder')}
               width={150}
               color={COLORS.primary}
               backgroundColor={COLORS.lightblue}
@@ -330,7 +295,7 @@ function Journey ({ navigation }) {
           </View>
         )}
       />
-    </View>
+    </ScrollView>
   )
 }
 
@@ -338,8 +303,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.backgroud,
     width: '100%',
-    height: '100%',
-    alignItems: 'center'
+    height: '100%'
   },
   hline: {
     width: '100%',
@@ -362,6 +326,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  loading: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   paper: {
     backgroundColor: COLORS.white,
@@ -422,6 +392,21 @@ const styles = StyleSheet.create({
     color: COLORS.darkGrey,
     fontFamily: FONT1REGULAR
   },
+  coutryText: {
+    fontSize: hp(2.3),
+    color: COLORS.white,
+    fontFamily: FONT1MEDIUM
+  },
+  leftText: {
+    fontSize: hp(2),
+    color: COLORS.white,
+    fontFamily: FONT1REGULAR
+  },
+  rightText: {
+    fontSize: hp(2),
+    color: COLORS.white,
+    fontFamily: FONT1MEDIUM
+  },
   pricetext: {
     width: '80%',
     fontSize: hp(2.8),
@@ -440,22 +425,22 @@ const styles = StyleSheet.create({
     width: 50
   },
   tabs: {
-    width: '90%',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    alignItems: 'center',
+    width: '100%',
     marginTop: 20,
-    height: hp(7),
+    paddingLeft: 15,
+    paddingRight: 20,
+    height: hp(15),
     marginBottom: 20
   },
   tab: {
-    width: '50%',
+    marginRight: 20,
     alignItems: 'center'
   },
   activeTab: {
     backgroundColor: COLORS.lightblue,
-    borderRadius: 12,
-    paddingHorizontal: 8,
+    borderRadius: 20,
+    marginRight: 20,
+    paddingHorizontal: 15,
     justifyContent: 'center',
     height: hp(5),
     alignItems: 'center',
@@ -483,11 +468,21 @@ const styles = StyleSheet.create({
     fontSize: hp(1.8),
     fontFamily: FONT1REGULAR
   },
-  inavtive: {
-    paddingHorizontal: 8,
+  box: {
+    borderWidth: 1,
+    borderColor: COLORS.borderColor,
+    borderRadius: 10,
+    width: '48%',
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'center',
-    height: hp(5),
-    alignItems: 'center'
+    height: hp(6)
+  },
+  boxText: {
+    color: COLORS.darkBlack,
+    fontSize: hp(2),
+    marginLeft: 5,
+    fontFamily: FONT1MEDIUM
   },
   active: {
     borderWidth: 0,
@@ -507,4 +502,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Journey
+export default OrderDetails

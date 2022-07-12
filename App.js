@@ -8,7 +8,7 @@ import AppContext from './store/Context'
 import { NavigationContainer } from '@react-navigation/native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { getOrders } from './api/order'
-import { getJourneys } from './api/journey'
+import { getJourneys, getMyAddresses } from './api/journey'
 
 function App () {
   const [user, setUser] = useState(null)
@@ -17,6 +17,7 @@ function App () {
   const [mapLocationForArrival, setMapLocationForArrival] = useState(null)
   const [orders, setOrders] = useState([])
   const [journeys, setJourneys] = useState([])
+  const [myAddresses, setMyAddresses] = useState([])
 
   const _getProfile = async () => {
     try {
@@ -55,6 +56,17 @@ function App () {
     }
   }
 
+  const _getMyAddresses = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token')
+      const res = await getMyAddresses(token)
+      setMyAddresses(res?.data)
+    } catch (error) {
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
+
   return (
     <AppContext.Provider
       value={{
@@ -70,7 +82,9 @@ function App () {
         _getOrders,
         orders,
         journeys,
-        _getJourneys
+        _getJourneys,
+        myAddresses,
+        _getMyAddresses
       }}
     >
       <NavigationContainer>

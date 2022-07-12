@@ -17,7 +17,9 @@ export default function Header ({
   rightEmpty,
   profile,
   notification,
-  backPress
+  backPress,
+  backgroundColor,
+  color
 }) {
   const navigation = useNavigation()
 
@@ -26,9 +28,10 @@ export default function Header ({
       style={[
         styles.header,
         {
-          width: rightItem || profile ? '100%' : '90%',
+          width: rightItem || profile ? '100%' : '100%',
           paddingHorizontal: '5%',
-          alignItems: profile ? 'flex-end' : 'center'
+          alignItems: profile ? 'flex-end' : 'center',
+          backgroundColor: backgroundColor || COLORS.white
         }
       ]}
     >
@@ -48,14 +51,18 @@ export default function Header ({
             <Icon
               name='left'
               type='antdesign'
-              color={COLORS.darkGrey}
+              color={color || COLORS.darkGrey}
               size={18}
-              containerStyle={{ marginRight: 5 ,marginTop:2}}
+              containerStyle={{ marginRight: 5, marginTop: 2 }}
             />
           </TouchableOpacity>
         )}
         {logo && <SvgXml xml={Udderly} height={60} />}
-        {title && <Text style={styles.title}>{title}</Text>}
+        {title && (
+          <Text style={[styles.title, { color: color || COLORS.darkGrey }]}>
+            {title}
+          </Text>
+        )}
       </View>
       {rightEmpty && <View style={{ width: 50 }} />}
       {rightItem && rightItem}

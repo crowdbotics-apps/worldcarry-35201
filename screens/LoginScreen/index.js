@@ -99,7 +99,7 @@ function LoginScreen ({ navigation, route }) {
       await AsyncStorage.setItem('token', res?.data?.token)
       await AsyncStorage.setItem('user', JSON.stringify(res?.data?.user))
       navigation.navigate('AuthLoading')
-      Toast.show('Login Successfully!')
+      Toast.show('Logged in Successfully!')
     } catch (error) {
       handleChange('loading', false)
       console.warn('err', error)
@@ -146,7 +146,7 @@ function LoginScreen ({ navigation, route }) {
       await AsyncStorage.setItem('token', res?.data?.token)
       await AsyncStorage.setItem('user', JSON.stringify(res?.data?.user))
       navigation.navigate('AuthLoading')
-      Toast.show('Signup Successfully!')
+      Toast.show('Signed up Successfully!')
     } catch (error) {
       handleChange('loading', false)
       const errorText = Object.values(error?.response?.data)
@@ -209,7 +209,7 @@ function LoginScreen ({ navigation, route }) {
           await AsyncStorage.setItem('token', res?.token)
           await AsyncStorage.setItem('user', JSON.stringify(res?.user))
           navigation.navigate('AuthLoading')
-          Toast.show('Login Successfully!')
+          Toast.show('Logged in Successfully!')
         } else {
           console.warn('else res', res)
           handleChange('loading', false)
@@ -282,7 +282,7 @@ function LoginScreen ({ navigation, route }) {
             await AsyncStorage.setItem('token', res?.token)
             await AsyncStorage.setItem('user', JSON.stringify(res?.user))
             navigation.navigate('AuthLoading')
-            Toast.show('Login Successfully!')
+            Toast.show('Logged in Successfully!')
           } else {
             console.warn('else res', res)
             handleChange('loading', false)
@@ -339,7 +339,7 @@ function LoginScreen ({ navigation, route }) {
           await AsyncStorage.setItem('token', res?.token)
           await AsyncStorage.setItem('user', JSON.stringify(res?.user))
           navigation.navigate('AuthLoading')
-          Toast.show('Login Successfully!')
+          Toast.show('Logged in Successfully!')
         } else {
           console.warn('else res', res)
           handleChange('loading', false)

@@ -23,7 +23,7 @@ import {
 } from 'react-native-responsive-screen'
 import BG from '../../assets/images/BG.png'
 import handShake from '../../assets/images/handShake.png'
-import Plan from '../../assets/svg/plan.svg'
+import Plan from '../../assets/images/plan.png'
 import userBetween from '../../assets/images/userBetween.png'
 import oneWay from '../../assets/svg/oneTrip.svg'
 import roundTrip from '../../assets/svg/roundTrip.svg'
@@ -33,11 +33,11 @@ import Clothes from '../../assets/svg/Clothes.svg'
 import Fooditems from '../../assets/svg/Fooditems.svg'
 import DocumentsBooks from '../../assets/svg/DocumentsBooks.svg'
 import Medication from '../../assets/svg/Medication.svg'
-import Box from '../../assets/svg/Box.svg'
-import meetGet from '../../assets/svg/meetGet.svg'
+import Box from '../../assets/images/box.png'
+import meetGet from '../../assets/images/meetGet.png'
 import handfree from '../../assets/svg/handfree.svg'
-import security_5 from '../../assets/svg/security_5.svg'
-import Shopping_bag from '../../assets/svg/Shopping_bag.svg'
+import security_5 from '../../assets/images/security_5.png'
+import Shopping_bag from '../../assets/images/Shopping_bag.png'
 import userProfile from '../../assets/images/userProfile.png'
 import camera from '../../assets/images/camera.png'
 import {
@@ -122,7 +122,7 @@ function Home ({ navigation }) {
         step: 'STEP 3',
         description:
           'Meet in person, deliver the product, get paid with world carry',
-        image: Box
+        image: handShake
       }
     ],
     entries1: [
@@ -166,7 +166,6 @@ function Home ({ navigation }) {
   } = state
   const { user } = context
 
-
   useEffect(() => {}, [])
 
   const handleChange = (name, value) => {
@@ -199,23 +198,26 @@ function Home ({ navigation }) {
       <View key={index} style={[{ width: '100%', alignItems: 'center' }]}>
         <View style={[styles.slide, { backgroundColor: item.color }]}>
           <View style={{ width: '100%', alignItems: 'flex-end' }}>
-            {!active && activeSlide === 2 && (
-              <Image
-                source={handShake}
-                style={{
-                  width: '70%',
-                  height: 140,
-                  marginTop: 0,
-                  marginBottom: -30,
-                  marginRight: 1
-                }}
-              />
-            )}
-            {(active || activeSlide !== 2) && (
-              <SvgXml xml={item.image} width={'60%'} height={100} />
-            )}
+            <Image
+              source={item.image}
+              style={{
+                width:
+                  !active && activeSlide === 2
+                    ? '70%'
+                    : !active && activeSlide === 1
+                    ? '40%'
+                    : active === 1 && activeSlide === 2
+                    ? '50%'
+                    : '60%',
+                height: !active && activeSlide === 2 ? 140 : 120,
+                marginTop: active === 1 && activeSlide === 2 ? -10 : 0,
+                marginRight: active === 1 && activeSlide === 2 ? -10 : 0,
+                marginBottom: !active && activeSlide === 2 ? -30 : 0,
+                resizeMode: 'center'
+              }}
+            />
           </View>
-          <View style={{ marginTop: -50, width: '80%', marginLeft: '5%' }}>
+          <View style={{ marginTop: -50, width: '60%', marginLeft: '5%' }}>
             <Text style={styles.stepText}>{item.step}</Text>
             <Text style={styles.titleText}>{item.title}</Text>
             <Text style={styles.descText}>{item.description}</Text>
@@ -275,19 +277,38 @@ function Home ({ navigation }) {
       </View>
       <Carousel
         layout={'default'}
-        ref={e => {
-          carouselRef = e
-        }}
+        // ref={e => {
+        //   carouselRef = e
+        // }}
         onSnapToItem={index =>
           setState(pre => ({ ...pre, activeSlide: index }))
         }
+        initialNumToRender={1}
+        windowSize={3}
         data={active ? entries1 : entries}
+        // data={entries1}
         renderItem={_renderItem}
         sliderWidth={sliderWidth}
         itemWidth={sliderWidth}
       />
       {!active && (
         <>
+          {/* <Carousel
+            layout={'default'}
+            // ref={e => {
+            //   carouselRef = e
+            // }}
+            onSnapToItem={index =>
+              setState(pre => ({ ...pre, activeSlide: index }))
+            }
+            initialNumToRender={1}
+            windowSize={3}
+            // data={active ? entries1 : entries}
+            data={entries}
+            renderItem={_renderItem}
+            sliderWidth={sliderWidth}
+            itemWidth={sliderWidth}
+          /> */}
           <View style={[styles.rowBetween, { width: '90%' }]}>
             <TouchableOpacity style={styles.tripBox}>
               <SvgXml xml={oneWay} />
@@ -377,23 +398,12 @@ function Home ({ navigation }) {
       )}
       {active === 1 && (
         <>
-          {/* <View
-            style={[
-              styles.rowBetween,
-              { width: '90%', marginTop: 20, marginBottom: 20 }
-            ]}
-          >
-            <Text style={styles.recentText}>Chose Product Type</Text>
+          <View style={{ width: '90%', marginTop: 20 }}>
+            <AppButton
+              title={'Create Order'}
+              onPress={() => navigation.navigate('CreateOrder')}
+            />
           </View>
-          {products.map((product, index) => (
-            <TouchableOpacity key={index} style={styles.productBox}>
-              <SvgXml xml={product.image} />
-              <Text style={styles.productText}>{product.text}</Text>
-            </TouchableOpacity>
-          ))}
-          <View style={{ width: '90%', marginTop: -10 }}>
-            <AppButton title={'Create Order'} />
-          </View> */}
           <View
             style={[
               styles.rowBetween,

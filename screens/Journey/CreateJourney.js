@@ -13,8 +13,10 @@ import {
 } from 'react-native-responsive-screen'
 import { SvgXml } from 'react-native-svg'
 import InfoCircle from '../../assets/svg/InfoCircle.svg'
+import pinBlack from '../../assets/svg/pinBlack.svg'
 import {
   AppButton,
+  CustomModel,
   Header,
   JourneyStep1,
   JourneyStep2,
@@ -25,7 +27,7 @@ import AppContext from '../../store/Context'
 import ImagePicker from 'react-native-image-crop-picker'
 import Toast from 'react-native-simple-toast'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { createJourney } from '../../api/journey'
+import { createJourney, createMyAddresses } from '../../api/journey'
 import Geocoder from 'react-native-geocoding'
 Geocoder.init('AIzaSyA8qkmVxCJuE2_LSU14ogM1vjnoEsRi_Iw')
 
@@ -46,6 +48,10 @@ function CreateJourney ({ navigation }) {
     willing_to_carry: [],
     total_weight: '',
     activeRound: false,
+    isFocus: false,
+    isFocus1: false,
+    locationType: '',
+    locationOpen: false,
     createdJourney: null
   })
 
@@ -67,7 +73,13 @@ function CreateJourney ({ navigation }) {
     total_weight,
     loading,
     activeRound,
-    createdJourney
+    isFocus,
+    createdJourney,
+    arrival_coords,
+    departure_coords,
+    locationOpen,
+    isFocus1,
+    locationType
   } = state
   const {
     user,
@@ -75,7 +87,9 @@ function CreateJourney ({ navigation }) {
     mapLocationForArrival,
     setMapLocationForPickup,
     setMapLocationForArrival,
-    _getJourneys
+    _getJourneys,
+    myAddresses,
+    _getMyAddresses
   } = context
 
   useEffect(() => {
@@ -91,6 +105,33 @@ function CreateJourney ({ navigation }) {
 
   const handleChange = (name, value) => {
     setState(pre => ({ ...pre, [name]: value }))
+  }
+  const handleOpen = type => {
+    handleChange('locationType', type)
+    handleChange('locationOpen', true)
+  }
+
+  const selectLocation = location => {
+    if (locationType === 'departure') {
+      handleChange('departure_city', location?.city)
+      handleChange('departure_state', location?.state)
+      handleChange('departure_country', location?.country)
+      handleChange(
+        'departure_city_state',
+        location?.city + ', ' + location?.country
+      )
+      handleChange('locationType', '')
+    } else {
+      handleChange('arrival_city', location?.city)
+      handleChange('arrival_state', location?.state)
+      handleChange('arrival_country', location?.country)
+      handleChange(
+        'arrival_city_state',
+        location?.city + ', ' + location?.country
+      )
+      handleChange('locationType', '')
+    }
+    handleChange('locationOpen', false)
   }
 
   const handleNext = () => {
@@ -129,7 +170,22 @@ function CreateJourney ({ navigation }) {
       }
       date_of_return ? (payload['date_of_return'] = date_of_return) : ''
       const res = await createJourney(payload, token)
+      const payload1 = {
+        city: departure_city,
+        state: departure_state,
+        country: departure_country,
+        coordinates: departure_coords
+      }
+      const payload2 = {
+        city: arrival_city,
+        state: arrival_state,
+        country: arrival_country,
+        coordinates: arrival_coords
+      }
+      const res1 = await createMyAddresses(payload1, token)
+      const res2 = await createMyAddresses(payload2, token)
       _getJourneys('')
+      _getMyAddresses()
       handleChange('loading', false)
       handleChange('createdJourney', res?.data)
       handleChange('step', 2)
@@ -152,7 +208,6 @@ function CreateJourney ({ navigation }) {
       )
         .then(async json => {
           var address_components = json.results[0].address_components
-          console.warn('address_components', address_components)
           let dState = ''
           let country = ''
           let city = ''
@@ -169,6 +224,8 @@ function CreateJourney ({ navigation }) {
               } //store the country
             }
           }
+          const departure_coords = `Point(${details?.geometry?.location?.lat} ${details?.geometry?.location?.lng})`
+          handleChange('departure_coords', departure_coords)
           handleChange('departure_city_state', city + ', ' + dState)
           handleChange('departure_city', city)
           handleChange('departure_country', country)
@@ -201,6 +258,8 @@ function CreateJourney ({ navigation }) {
               } //store the country
             }
           }
+          const arrival_coords = `Point(${details?.geometry?.location?.lat} ${details?.geometry?.location?.lng})`
+          handleChange('arrival_coords', arrival_coords)
           handleChange('arrival_city_state', city + ', ' + dState)
           handleChange('arrival_city', city)
           handleChange('arrival_country', country)
@@ -220,6 +279,7 @@ function CreateJourney ({ navigation }) {
         !arrival_country ||
         !date_of_journey
       : willing_to_carry.length === 0 || !total_weight
+  console.warn('myAddresses', myAddresses)
 
   return (
     <View style={{ height: '100%', width: '100%' }}>
@@ -317,6 +377,9 @@ function CreateJourney ({ navigation }) {
                 date_of_journey={date_of_journey}
                 date_of_return={date_of_return}
                 activeRound={activeRound}
+                handleOpen={handleOpen}
+                isFocus={isFocus}
+                isFocus1={isFocus1}
                 handleChange={handleChange}
                 handleSearch={handleSearch}
                 handleSearch1={handleSearch1}
@@ -355,6 +418,84 @@ function CreateJourney ({ navigation }) {
           />
         </View>
       )}
+      <CustomModel
+        visible={locationOpen}
+        onClose={() => handleChange('locationOpen', false)}
+      >
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '100%',
+            paddingHorizontal: '5%',
+            marginTop: 10,
+            marginBottom: 10
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: FONT1MEDIUM,
+              color: COLORS.darkBlack,
+              fontSize: hp(2.2)
+            }}
+          >
+            Choose Location
+          </Text>
+          <TouchableOpacity onPress={() => handleChange('locationOpen', false)}>
+            <Text
+              style={{
+                fontFamily: FONT1REGULAR,
+                color: COLORS.primary,
+                fontSize: hp(2)
+              }}
+            >
+              Cancel
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ alignItems: 'center' }}
+          style={{ width: '100%', height: '100%', marginBottom: 20 }}
+        >
+          {myAddresses?.map((item, index) => (
+            <TouchableOpacity
+              onPress={() => selectLocation(item)}
+              key={index}
+              style={{
+                width: '90%',
+                borderWidth: 1,
+                borderColor: COLORS.borderColor,
+                borderRadius: 10,
+                marginTop: 10,
+                padding: 10,
+                flexDirection: 'row',
+                alignItems: 'center'
+              }}
+            >
+              <View
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: 30,
+                  backgroundColor: COLORS.white,
+                  borderWidth: 1,
+                  borderColor: COLORS.borderColor,
+                  marginRight: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <SvgXml xml={pinBlack} />
+              </View>
+              <Text style={{ color: COLORS.black, fontFamily: FONT1REGULAR }}>
+                {item?.city}, {item?.country}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </CustomModel>
     </View>
   )
 }

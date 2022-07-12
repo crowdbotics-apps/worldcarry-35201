@@ -17,6 +17,8 @@ import CreateOrder from '../screens/Order/CreateOrder'
 import PickupLocation from '../screens/Order/PickupLocation'
 import ArrivalLocation from '../screens/Order/ArrivalLocation'
 import CreateJourney from '../screens/Journey/CreateJourney'
+import JourneyDetails from '../screens/Journey/Details'
+import OrderDetails from '../screens/Order/Details'
 
 const Stack = createStackNavigator()
 function MainStackNav () {
@@ -44,6 +46,8 @@ function MainStackNav () {
       <Stack.Screen name='MainTabNav' component={MainTabNav} />
       <Stack.Screen name='CreateOrder' component={CreateOrder} />
       <Stack.Screen name='CreateJourney' component={CreateJourney} />
+      <Stack.Screen name='JourneyDetails' component={JourneyDetails} />
+      <Stack.Screen name='OrderDetails' component={OrderDetails} />
     </Stack.Navigator>
   )
 }
