@@ -7,7 +7,7 @@ from home.api.v1.viewsets import (
 )
 from journeys.views import JourneyViewSet
 from locations.views import LocationViewSet
-from orders.views import OrderViewSet
+from orders.views import OrderViewSet, GetProductDetailView
 from users.viewsets import UserViewSet
 
 router = DefaultRouter()
@@ -20,4 +20,5 @@ router.register("locations", LocationViewSet, basename="locations")
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("get_product_detail", GetProductDetailView.as_view(), name='product_scrape')
 ]
