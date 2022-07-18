@@ -117,3 +117,14 @@ class OrderSerializer(serializers.ModelSerializer):
         if instance.arrival_address_coordinates:
             rep['arrival_coords'] = instance.arrival_address_coordinates.coords
         return rep
+
+
+class ProductScraperSerializer(serializers.Serializer):
+    url = serializers.URLField(required=True, allow_null=False, allow_blank=False)
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        url = attrs['url']
+        if 'amazon' not in url and 'ebay' not in url:
+            raise serializers.ValidationError({"Only Amazon and Ebay Urls are accepted"})
+        return attrs

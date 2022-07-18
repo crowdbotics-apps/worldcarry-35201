@@ -3,15 +3,17 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 from django.db.models import Q
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
-from .serializers import OrderSerializer
+from .serializers import OrderSerializer, ProductScraperSerializer
 
 from journeys.models import Journey
 from .models import Order
 from users.authentication import ExpiringTokenAuthentication
+from modules.scaper import get_product_details
 
 
 class OrderViewSet(ModelViewSet):
@@ -95,4 +97,17 @@ class OrderViewSet(ModelViewSet):
         #     round_orders = Order.objects.none()
         # serializer = OrderSerializer(orders_list, many=True)
         # return Response(serializer.data)
-        
+
+
+class GetProductDetailView(APIView):
+    permission_classes = []
+    serializer_class = ProductScraperSerializer
+    # permission_classes = (IsAuthenticated,)
+    # authentication_classes = [ExpiringTokenAuthentication]
+
+    def get(self, request):
+        serializer = self.serializer_class(data=request.GET)
+        serializer.is_valid(raise_exception=True)
+        product_url = serializer.validated_data.get('url')
+        data = get_product_details(url=product_url).get('data')
+        return Response({"data": data})
