@@ -13,7 +13,7 @@ from .serializers import OrderSerializer, ProductScraperSerializer
 from journeys.models import Journey
 from .models import Order
 from users.authentication import ExpiringTokenAuthentication
-from modules.scaper import get_product_details
+from modules.scraper import get_product_details
 
 
 class OrderViewSet(ModelViewSet):

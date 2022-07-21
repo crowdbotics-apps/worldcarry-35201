@@ -66,32 +66,26 @@ class AMAZONScraper:
 
     def get_product_details(self) -> dict:
 
-        # options = webdriver.ChromeOptions()
-        # options.add_argument('--ignore-ssl-errors=yes')
-        # options.add_argument('--ignore-certificate-errors')
-        # options.add_argument("--no-sandbox")
-        # options.add_argument("--disable-dev-shm-usage")
-        # host_address = 'http://selenium:4444/wd/hub'
-        # driver = webdriver.Remote(
-        #     command_executor=host_address,
-        #     options=options
-        # )
-        options = Options()
-        options.add_argument('--headless')
-        # options.add_argument('--disable-gpu')
-        options.add_argument("start-maximized")
-        options.add_argument("disable-infobars")
-        options.add_argument("--disable-extensions")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--no-sandbox")
-        driver = webdriver.Chrome(chrome_options=options)
+        if 'amazon' in self.product_url:
+            options = Options()
+            options.add_argument('--headless')
+            options.add_argument("start-maximized")
+            options.add_argument("disable-infobars")
+            options.add_argument("--disable-extensions")
+            options.add_argument("--disable-gpu")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--no-sandbox")
+            driver = webdriver.Chrome(chrome_options=options)
+            driver.get(self.product_url)
+            time.sleep(3)
+            page = driver.page_source
+            driver.quit()
+            soup = BeautifulSoup(page, 'html.parser') # If this line causes an error, run 'pip install html5lib' or install html5lib
+        else:
+            r = requests.get(self.product_url)
+            soup = BeautifulSoup(r.content, 'html5lib') # If this line causes an error, run 'pip install html5lib' or install html5lib
 
-        driver.get(self.product_url)
-        time.sleep(3)
-        page = driver.page_source
-        driver.quit()
-        soup = BeautifulSoup(page, 'html.parser')
+        # soup = BeautifulSoup(page, 'html.parser')
         title = self.get_title(soup)
         image_url = self.get_image_url(soup)
         price = self.get_price(soup)
