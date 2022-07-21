@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3"
 
 services:
   web:
@@ -23,13 +23,13 @@ services:
     ports:
       - "6379:6379"
 
-  selenium:
-    image: selenium/standalone-chrome
-    container_name: selenium
-    volumes:
-      - selenium-data:/dev/shm
-    ports:
-      - "4444:4444"
+#  selenium:
+#    image: selenium/standalone-chrome
+#    container_name: selenium
+#    volumes:
+#      - selenium-data:/dev/shm
+#    ports:
+#      - "4444:4444"
 
 volumes:
   postgres-data:
