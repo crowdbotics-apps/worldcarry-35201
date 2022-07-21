@@ -65,10 +65,17 @@ class AMAZONScraper:
         return category
 
     def get_product_details(self) -> dict:
-        options = Options()
-        options.add_argument('--headless')
-        options.add_argument('--disable-gpu')
-        driver = webdriver.Chrome(chrome_options=options)
+
+        options = webdriver.ChromeOptions()
+        options.add_argument('--ignore-ssl-errors=yes')
+        options.add_argument('--ignore-certificate-errors')
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        host_address = 'http://selenium:4444/wd/hub'
+        driver = webdriver.Remote(
+            command_executor=host_address,
+            options=options
+        )
         driver.get(self.product_url)
         time.sleep(3)
         page = driver.page_source
@@ -176,4 +183,3 @@ def get_product_details(url: str) -> dict:
 
     data = scraper.get_product_details()
     return {'status': True, 'error': None, 'data': data}
-

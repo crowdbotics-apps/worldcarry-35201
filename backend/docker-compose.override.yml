@@ -23,5 +23,14 @@ services:
     ports:
       - "6379:6379"
 
-volumes: 
+  selenium:
+    image: selenium/standalone-chrome
+    container_name: selenium
+    volumes:
+      - selenium-data:/dev/shm
+    ports:
+      - "4444:4444"
+
+volumes:
   postgres-data:
+  selenium-data:
