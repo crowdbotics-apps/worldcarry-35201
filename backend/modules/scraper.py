@@ -9,8 +9,8 @@ class AMAZONScraper:
     MAX_RETRIES = 5
     WAIT_BETWEEN_RETRY = 1
 
-    def __init__(self, product_url: str) -> None:
-        self.product_url = product_url
+    def __init__(self, soup: BeautifulSoup) -> None:
+        self.soap = soup
 
     @staticmethod
     def get_title(soup: BeautifulSoup) -> str:
@@ -65,26 +65,11 @@ class AMAZONScraper:
         return category
 
     def get_details(self) -> dict:
-
-        options = Options()
-        options.add_argument('--headless')
-        options.add_argument("start-maximized")
-        options.add_argument("disable-infobars")
-        options.add_argument("--disable-extensions")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--no-sandbox")
-        driver = webdriver.Chrome(chrome_options=options)
-        driver.get(self.product_url)
-        time.sleep(3)
-        page = driver.page_source
-        driver.quit()
-        soup = BeautifulSoup(page, 'html.parser') # If this line causes an error, run 'pip install html5lib' or install html5lib
-
-        title = self.get_title(soup)
-        image_url = self.get_image_url(soup)
-        price = self.get_price(soup)
-        category = self.get_category(soup)
+        soap = self.soap
+        title = self.get_title(soap)
+        image_url = self.get_image_url(soap)
+        price = self.get_price(soap)
+        category = self.get_category(soap)
         return {'title': title, 'image_url': image_url, 'price': price, 'category': category}
 
 
@@ -92,8 +77,8 @@ class EBAYScraper:
     MAX_RETRIES = 5
     WAIT_BETWEEN_RETRY = 1
 
-    def __init__(self, product_url: str) -> None:
-        self.product_url = product_url
+    def __init__(self, soup: BeautifulSoup) -> None:
+        self.soap = soup
 
     @staticmethod
     def get_title(soup: BeautifulSoup) -> str:
@@ -156,48 +141,36 @@ class EBAYScraper:
         return image_url
 
     def get_details(self) -> dict:
-
-        options = Options()
-        options.add_argument('--headless')
-        options.add_argument("start-maximized")
-        options.add_argument("disable-infobars")
-        options.add_argument("--disable-extensions")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--no-sandbox")
-        driver = webdriver.Chrome(chrome_options=options)
-        driver.get(self.product_url)
-        time.sleep(3)
-        page = driver.page_source
-        driver.quit()
-        soup = BeautifulSoup(page, 'html.parser') # If this line causes an error, run 'pip install html5lib' or install html5lib
-        # print("print-2")
-        # headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36"}
-        # # for i in range(self.MAX_RETRIES):
-        # response = requests.get(self.product_url, headers=headers, verify=False)
-        # print("REQUSET RESTPONSE: ", response)
-            # print("Response: ", response)
-            # if response.status_code == 200:
-            #     break
-            # else:
-            #     time.sleep(self.WAIT_BETWEEN_RETRY)
-        # soup = BeautifulSoup(response.content, features="html.parser")
-        title = self.get_title(soup)
-        image_url = self.get_image_url(soup)
-        price = self.get_price(soup)
-        category = self.get_category(soup)
-
+        soap = self.soap
+        title = self.get_title(soap)
+        image_url = self.get_image_url(soap)
+        price = self.get_price(soap)
+        category = self.get_category(soap)
         return {'title': title, 'image_url': image_url, 'price': price, 'category': category}
 
 
 def get_product_details(url: str) -> dict:
+    options = Options()
+    options.add_argument('--headless')
+    options.add_argument("start-maximized")
+    options.add_argument("disable-infobars")
+    options.add_argument("--disable-extensions")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--no-sandbox")
+    driver = webdriver.Chrome(chrome_options=options)
+    driver.get(url)
+    time.sleep(3)
+    page = driver.page_source
+    driver.quit()
+    soup = BeautifulSoup(page, 'html.parser') #  If this line causes an error, run 'pip install html5lib' or install html5lib
     # provider can either be amazon or ebay for now.
     if 'amazon' in url:
-        scraper = AMAZONScraper(product_url=url)
+        scraper = AMAZONScraper(soup=soup)
         data = scraper.get_details()
 
     elif 'ebay' in url:
-        scraper = EBAYScraper(product_url=url)
+        scraper = EBAYScraper(soup=soup)
         data = scraper.get_details()
     else:
         return {'status': False, 'error': 'Invalid Url: {}'.format(url), 'data': None}
