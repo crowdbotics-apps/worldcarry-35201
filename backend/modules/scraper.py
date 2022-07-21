@@ -64,28 +64,23 @@ class AMAZONScraper:
             category = "Category not available"
         return category
 
-    def get_product_details(self) -> dict:
+    def get_details(self) -> dict:
 
-        if 'amazon' in self.product_url:
-            options = Options()
-            options.add_argument('--headless')
-            options.add_argument("start-maximized")
-            options.add_argument("disable-infobars")
-            options.add_argument("--disable-extensions")
-            options.add_argument("--disable-gpu")
-            options.add_argument("--disable-dev-shm-usage")
-            options.add_argument("--no-sandbox")
-            driver = webdriver.Chrome(chrome_options=options)
-            driver.get(self.product_url)
-            time.sleep(3)
-            page = driver.page_source
-            driver.quit()
-            soup = BeautifulSoup(page, 'html.parser') # If this line causes an error, run 'pip install html5lib' or install html5lib
-        else:
-            r = requests.get(self.product_url)
-            soup = BeautifulSoup(r.content, 'html5lib') # If this line causes an error, run 'pip install html5lib' or install html5lib
+        options = Options()
+        options.add_argument('--headless')
+        options.add_argument("start-maximized")
+        options.add_argument("disable-infobars")
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--no-sandbox")
+        driver = webdriver.Chrome(chrome_options=options)
+        driver.get(self.product_url)
+        time.sleep(3)
+        page = driver.page_source
+        driver.quit()
+        soup = BeautifulSoup(page, 'html.parser') # If this line causes an error, run 'pip install html5lib' or install html5lib
 
-        # soup = BeautifulSoup(page, 'html.parser')
         title = self.get_title(soup)
         image_url = self.get_image_url(soup)
         price = self.get_price(soup)
@@ -153,22 +148,25 @@ class EBAYScraper:
 
     @staticmethod
     def get_category(soup: BeautifulSoup) -> str:
+        print("print-1")
         try:
             image_url = soup.find_all("a", {"class": "seo-breadcrumb-text"})[0].get_text()
         except Exception as ex:
             image_url = "Category not available"
         return image_url
 
-    def get_product_details(self) -> dict:
+    def get_details(self) -> dict:
+        print("print-2")
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36"}
-        for i in range(self.MAX_RETRIES):
-            response = requests.get(self.product_url, headers=headers)
-            print("Response: ", response)
-            if response.status_code == 200:
-                break
-            else:
-                time.sleep(self.WAIT_BETWEEN_RETRY)
-        soup = BeautifulSoup(response.content, features="lxml")
+        # for i in range(self.MAX_RETRIES):
+        response = requests.get(self.product_url, headers=headers, verify=False)
+        print("REQUSET RESTPONSE: ", response)
+            # print("Response: ", response)
+            # if response.status_code == 200:
+            #     break
+            # else:
+            #     time.sleep(self.WAIT_BETWEEN_RETRY)
+        soup = BeautifulSoup(response.content, features="html.parser")
         title = self.get_title(soup)
         image_url = self.get_image_url(soup)
         price = self.get_price(soup)
@@ -181,10 +179,12 @@ def get_product_details(url: str) -> dict:
     # provider can either be amazon or ebay for now.
     if 'amazon' in url:
         scraper = AMAZONScraper(product_url=url)
+        data = scraper.get_details()
+
     elif 'ebay' in url:
         scraper = EBAYScraper(product_url=url)
+        data = scraper.get_details()
     else:
         return {'status': False, 'error': 'Invalid Url: {}'.format(url), 'data': None}
 
-    data = scraper.get_product_details()
     return {'status': True, 'error': None, 'data': data}
