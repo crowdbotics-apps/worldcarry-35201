@@ -156,17 +156,32 @@ class EBAYScraper:
         return image_url
 
     def get_details(self) -> dict:
-        print("print-2")
-        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36"}
-        # for i in range(self.MAX_RETRIES):
-        response = requests.get(self.product_url, headers=headers, verify=False)
-        print("REQUSET RESTPONSE: ", response)
+
+        options = Options()
+        options.add_argument('--headless')
+        options.add_argument("start-maximized")
+        options.add_argument("disable-infobars")
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--no-sandbox")
+        driver = webdriver.Chrome(chrome_options=options)
+        driver.get(self.product_url)
+        time.sleep(3)
+        page = driver.page_source
+        driver.quit()
+        soup = BeautifulSoup(page, 'html.parser') # If this line causes an error, run 'pip install html5lib' or install html5lib
+        # print("print-2")
+        # headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36"}
+        # # for i in range(self.MAX_RETRIES):
+        # response = requests.get(self.product_url, headers=headers, verify=False)
+        # print("REQUSET RESTPONSE: ", response)
             # print("Response: ", response)
             # if response.status_code == 200:
             #     break
             # else:
             #     time.sleep(self.WAIT_BETWEEN_RETRY)
-        soup = BeautifulSoup(response.content, features="html.parser")
+        # soup = BeautifulSoup(response.content, features="html.parser")
         title = self.get_title(soup)
         image_url = self.get_image_url(soup)
         price = self.get_price(soup)
