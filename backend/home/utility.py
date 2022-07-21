@@ -1,8 +1,9 @@
 from django.core.mail import EmailMessage
 from rest_framework.authtoken.models import Token
 import pyotp
+from django.contrib.auth import get_user_model
 
-
+User = get_user_model()
 def generateOTP(email=None, user=None):
     if email and user:
         secret = pyotp.random_base32()
@@ -55,3 +56,27 @@ def send_otp(user):
 def auth_token(user):
     token, created = Token.objects.get_or_create(user=user)
     return token
+
+
+def send_invitation_email(email):
+    user = User.objects.filter(email=email)
+    if not user.exists():
+        email_body = """\
+                <html>
+                <head></head>
+                <body>
+                <p>
+                Hi,<br>
+                Your friend have invited to you platform is %s<br>
+                Regards,<br>
+                Team World Carry
+                </p>
+                </body>
+                </html>
+                """
+        email_msg = EmailMessage("Invitation Email - World Carry", email_body, from_email='admin@worldcarry.com', to=[email])
+        email_msg.content_subtype = "html"
+        email_msg.send()
+        response = {"message":"Email successfully connected"},
+    response = {"message":"This user already invited in the system."},
+    return response
