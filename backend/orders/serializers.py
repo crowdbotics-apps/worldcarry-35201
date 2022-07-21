@@ -30,7 +30,6 @@ class OrderSerializer(serializers.ModelSerializer):
         required=False
     )
 
-
     class Meta:
         model = Order
         fields = '__all__'
