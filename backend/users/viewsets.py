@@ -9,6 +9,7 @@ from allauth.account.models import EmailAddress
 from django_filters.rest_framework import DjangoFilterBackend
 from worldcarry_35201.settings import SECRET_KEY
 
+from home.utility import send_invitation_email
 from users.models import User
 from users.authentication import ExpiringTokenAuthentication
 from home.permissions import IsPostOrIsAuthenticated
@@ -106,3 +107,83 @@ class UserViewSet(ModelViewSet):
         user = User.objects.create_superuser(email, email, password)
         email_address, created = EmailAddress.objects.get_or_create(user=user, email=user.email, verified=True, primary=True)
         return Response(status=status.HTTP_200_OK)
+
+
+    @action(detail=False, methods=['post'])
+    def invite_friends(self, request):
+        email = request.data.get('email')
+        if not email:
+            return Response(data={"message":"Email field is missing"},status=status.HTTP_400_BAD_REQUEST)
+        response = send_invitation_email(email=email)
+        return Response(
+            data={"message":"Email successfully connected"},
+            status=status.HTTP_200_OK
+        )
+    
+
+    @action(detail=False, methods=['post'])
+    def verify_email(self, request):
+        if request.method == "GET":
+            return Response(
+                data={"message":"Phone succesfully verified"},
+                status=status.HTTP_200_OK
+            )
+        if request.method == "POST":
+            return Response(
+                data={"message":"Phone succesfully verified"},
+                status=status.HTTP_200_OK
+            )
+
+        # email = request.data.get('email')
+        # if not email:
+        #     return Response(data={"message":"Email field is missing"},status=status.HTTP_400_BAD_REQUEST)
+        # response = send_invitation_email(email=email)
+        # return Response(
+        #     data={"message":"Email successfully connected"},
+        #     status=status.HTTP_200_OK
+        # )
+
+
+    @action(detail=False, methods=['post', 'get'])
+    def verify_phone_request(self, request):
+        if request.method == "GET":
+            return Response(
+                data={"message":"Phone succesfully verified"},
+                status=status.HTTP_200_OK
+            )
+        if request.method == "POST":
+            return Response(
+                data={"message":"Phone succesfully verified"},
+                status=status.HTTP_200_OK
+            )
+
+        email = request.data.get('email')
+        if not email:
+            return Response(data={"message":"Email field is missing"},status=status.HTTP_400_BAD_REQUEST)
+        response = send_invitation_email(email=email)
+        return Response(
+            data={"message":"Email successfully connected"},
+            status=status.HTTP_200_OK
+        )
+
+    @action(detail=False, methods=['get'])
+    def verify_passport(self, request):
+        if request.method == "GET":
+            return Response(
+                data={"message":"Phone succesfully verified"},
+                status=status.HTTP_200_OK
+            )
+        if request.method == "POST":
+            return Response(
+                data={"message":"Phone succesfully verified"},
+                status=status.HTTP_200_OK
+            )
+
+        email = request.data.get('email')
+        if not email:
+            return Response(data={"message":"Email field is missing"},status=status.HTTP_400_BAD_REQUEST)
+        response = send_invitation_email(email=email)
+        return Response(
+            data={"message":"Email successfully connected"},
+            status=status.HTTP_200_OK
+        )
