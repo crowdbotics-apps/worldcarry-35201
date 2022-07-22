@@ -29,7 +29,9 @@ class OrderSerializer(serializers.ModelSerializer):
     user = UserProfileSerializer(
         required=False
     )
-
+    carrier = UserProfileSerializer(
+        required=False
+    )
 
     class Meta:
         model = Order
@@ -128,3 +130,7 @@ class ProductScraperSerializer(serializers.Serializer):
         if 'amazon' not in url and 'ebay' not in url:
             raise serializers.ValidationError({"Only Amazon and Ebay Urls are accepted"})
         return attrs
+
+
+class OrderQrSerializer(serializers.Serializer):
+    qr_text = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all())
