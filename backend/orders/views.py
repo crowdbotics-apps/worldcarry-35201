@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from django.db.models import Q
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
-from .serializers import OrderSerializer, ProductScraperSerializer
+from .serializers import OrderSerializer, ProductScraperSerializer, OrderQrSerializer
 
 from journeys.models import Journey
 from .models import Order
@@ -100,10 +100,9 @@ class OrderViewSet(ModelViewSet):
 
 
 class GetProductDetailView(APIView):
-    permission_classes = []
     serializer_class = ProductScraperSerializer
-    # permission_classes = (IsAuthenticated,)
-    # authentication_classes = [ExpiringTokenAuthentication]
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = [ExpiringTokenAuthentication]
 
     def get(self, request):
         serializer = self.serializer_class(data=request.GET)
@@ -111,3 +110,20 @@ class GetProductDetailView(APIView):
         product_url = serializer.validated_data.get('url')
         data = get_product_details(url=product_url).get('data')
         return Response({"data": data})
+
+
+class QRScanOrder(APIView):
+    serializer_class = OrderQrSerializer
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = [ExpiringTokenAuthentication]
+
+    def post(self, request):
+        carrier = request.user
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        order = serializer.validated_data.get('qr_text')
+        if order.user == carrier:
+            return Response({"message": "Order owner can't be carrier"}, status=status.HTTP_400_BAD_REQUEST)
+        order.carrier = carrier
+        order.save(update_fields=['carrier'])
+        return Response({"message": "Order has been successfully assigned"}, status=status.HTTP_400_BAD_REQUEST)
