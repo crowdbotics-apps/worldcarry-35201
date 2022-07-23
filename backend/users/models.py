@@ -29,6 +29,7 @@ class User(AbstractUser):
     name = models.CharField(_("Name of User"), blank=True, null=True, max_length=255)
     activation_key = models.CharField(max_length=255, blank=True, null=True)
     otp = models.CharField(max_length=6, blank=True, null=True)
+    current_amount = models.FloatField(default=0)
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})

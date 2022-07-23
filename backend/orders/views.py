@@ -19,7 +19,7 @@ from modules.scraper import get_product_details
 class OrderViewSet(ModelViewSet):
     serializer_class = OrderSerializer
     permission_classes = (IsAuthenticated,)
-    authentication_classes  = [ExpiringTokenAuthentication]
+    authentication_classes = [ExpiringTokenAuthentication]
     queryset = Order.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['user', 'status', 'created_at', 'carrier',
@@ -65,7 +65,7 @@ class OrderViewSet(ModelViewSet):
         serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data)
 
-        # journeys = request.user.journeys.filter(
+        # journeys = request.user.journeys`.filter(
         #     date_of_journey__gt=today
         # ).values('departure_country', 'arrival_country', 'type')
         # orders_list = Order.objects.none()
