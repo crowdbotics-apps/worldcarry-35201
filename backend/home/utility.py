@@ -1,9 +1,12 @@
 from django.core.mail import EmailMessage
 from rest_framework.authtoken.models import Token
 import pyotp
+from users.utils import  get_otp
 from django.contrib.auth import get_user_model
+from users.utils import send_sms
 
 User = get_user_model()
+
 def generateOTP(email=None, user=None):
     if email and user:
         secret = pyotp.random_base32()
@@ -79,4 +82,27 @@ def send_invitation_email(email):
         email_msg.send()
         response = {"message":"Email successfully connected"},
     response = {"message":"This user already invited in the system."},
+    return response
+
+def send_verification_email(user:User, email:str):
+    # user = User.objects.filter(email=email)
+    otp = get_otp()
+    user.profile.email_verification_otp = otp
+    user.profile.verified_email = email
+    user.profile.save()
+    email_body = "<html><head></head><body><p>Dear Member <br>Your email verification otp : {}<br>Regards,<br>Team World Carry</p></body></html>".format(otp)
+    email_msg = EmailMessage("Verify Your Email Now - World Carry", email_body, from_email='admin@worldcarry.com', to=[email])
+    email_msg.content_subtype = "html"
+    email_msg.send()
+    response = {"message":"Email successfully added and verification email sent"}
+    return response
+
+def send_verification_phone(user:User, phone:str):
+    otp = get_otp()
+    user.profile.phone_verification_otp = otp
+    user.profile.verified_phone = phone
+    user.profile.save()
+    message= "World Carry! <br> Your otp verification code is {}".format(otp)
+    send_sms(num=phone, message=message)
+    response = {"message":"Email successfully connected"}
     return response

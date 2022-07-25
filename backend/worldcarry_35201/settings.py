@@ -92,6 +92,7 @@ THIRD_PARTY_APPS = [
     'django_cleanup.apps.CleanupConfig',
     'django_filters',
     'corsheaders',
+    'phonenumber_field',
 ]
 MODULES_APPS = get_modules()
 
@@ -272,6 +273,8 @@ if GS_BUCKET_NAME:
 REST_FRAMEWORK = {
    'DEFAULT_AUTHENTICATION_CLASSES': (
        'users.authentication.ExpiringTokenAuthentication',
+       'rest_framework.authentication.SessionAuthentication',
+
    ),
    'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAdminUser',
@@ -305,3 +308,7 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
     }
 }
+
+TWILIO_ACCOUNT_ID=env.str("TWILIO_ACCOUNT_ID", "")
+TWILIO_TOKEN = env.str("TWILIO_TOKEN", "")
+TWILIO_DEFAULT_NUMBER = env.str("TWILIO_DEFAULT_NUMBER", "")

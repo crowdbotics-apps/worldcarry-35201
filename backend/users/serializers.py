@@ -28,12 +28,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ('id', 'name', 'email', 'password', 'is_admin',
-                  'phone', 'email_verified', 'phone_verified', 'profile')
+                  'phone', 'profile')
         extra_kwargs = {'password': {'write_only': True, 'min_length': 5},
                         'email': {'required': True},
                         'name': {'required': True},
-                        'email_verified': {'read_only': True},
-                        'phone_verified': {'read_only': True}
+                        # 'email_verified': {'read_only': True},
+                        # 'phone_verified': {'read_only': True}
                         }
 
     def create(self, validated_data):
