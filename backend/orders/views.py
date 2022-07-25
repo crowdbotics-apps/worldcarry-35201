@@ -126,4 +126,4 @@ class QRScanOrder(APIView):
             return Response({"message": "Order owner can't be carrier"}, status=status.HTTP_400_BAD_REQUEST)
         order.carrier = carrier
         order.save(update_fields=['carrier'])
-        return Response({"message": "Order has been successfully assigned"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "Order has been successfully assigned"}, status=status.HTTP_200_OK)
