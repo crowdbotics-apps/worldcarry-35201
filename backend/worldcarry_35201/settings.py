@@ -273,7 +273,7 @@ if GS_BUCKET_NAME:
 REST_FRAMEWORK = {
    'DEFAULT_AUTHENTICATION_CLASSES': (
        'users.authentication.ExpiringTokenAuthentication',
-       'rest_framework.authentication.SessionAuthentication',
+       #'rest_framework.authentication.SessionAuthentication',
 
    ),
    'DEFAULT_PERMISSION_CLASSES': (
