@@ -24,7 +24,6 @@ import {
 } from '../../components'
 import { COLORS, FONT1MEDIUM, FONT1REGULAR } from '../../constants'
 import AppContext from '../../store/Context'
-import ImagePicker from 'react-native-image-crop-picker'
 import Toast from 'react-native-simple-toast'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createJourney, createMyAddresses } from '../../api/journey'

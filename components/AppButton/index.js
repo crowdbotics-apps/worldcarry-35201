@@ -24,7 +24,8 @@ export default function AppButton ({
   fontSize,
   paddingHorizontal,
   width,
-  marginTop
+  marginTop,
+  borderWidth
 }) {
   return (
     <TouchableOpacity
@@ -34,7 +35,7 @@ export default function AppButton ({
         {
           marginTop: marginTop || hp('2%'),
           paddingHorizontal: paddingHorizontal ? paddingHorizontal : 20,
-          borderWidth: outlined ? 1 : 0,
+          borderWidth: outlined || borderWidth ? 1 : 0,
           justifyContent: postfix ? 'space-between' : 'center',
           borderColor: borderColor || COLORS.primary,
           backgroundColor: backgroundColor ? backgroundColor : COLORS.primary,

@@ -12,18 +12,22 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen'
 import { AppButton, Header } from '../../components'
-import { COLORS, FONT1BOLD, FONT1REGULAR } from '../../constants'
+import { COLORS, FONT1BOLD, FONT1MEDIUM, FONT1REGULAR } from '../../constants'
 import { allNotificationRead, notificationRead } from '../../api/order'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Toast from 'react-native-simple-toast'
 import AppContext from '../../store/Context'
+import NoNotification from '../../assets/svg/noNotification.svg'
+import noti from '../../assets/images/noti.png'
+import { SvgXml } from 'react-native-svg'
 
 function Notifications ({ navigation }) {
   // Context
   const context = useContext(AppContext)
   const { _getNotification, notifications } = context
   const [state, setState] = useState({
-    loading: false
+    loading: false,
+    active: 0
   })
   const handleRead = async notification => {
     try {
@@ -68,7 +72,7 @@ function Notifications ({ navigation }) {
     }
   }
 
-  const { loading } = state
+  const { loading, active } = state
 
   const handleChange = (name, value) => {
     setState(pre => ({ ...pre, [name]: value }))
@@ -76,20 +80,40 @@ function Notifications ({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Header
-        back
-      />
+      <Header back title={'Notifications'} color={COLORS.darkBlack} />
       <View style={styles.mainBody}>
-        <Text style={styles.headingText}>Notifications</Text>
-        <TouchableOpacity
-          style={{ width: '100%', marginTop: 30 }}
-          onPress={handleAllRead}
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginVertical: 20,
+            width:'90%'
+          }}
         >
-          <Text style={styles.leftText}>Mark all notifications as read</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              handleChange('active', 0)
+            }}
+            style={active === 0 ? styles.activeTab : styles.inavtive}
+          >
+            <Text style={active === 0 ? styles.activeTabText : styles.tabText}>
+              All (6)
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              handleChange('active', 1)
+            }}
+            style={active === 1 ? styles.activeTab : styles.inavtive}
+          >
+            <Text style={active === 1 ? styles.activeTabText : styles.tabText}>
+              Unread (2)
+            </Text>
+          </TouchableOpacity>
+        </View>
         <FlatList
-          data={notifications}
-          style={{ width: '100%', marginTop: 20 }}
+          data={['notifications','notifications']}
+          style={{ width: '100%' }}
           renderItem={({ item, index }) => {
             return (
               <View
@@ -98,29 +122,28 @@ function Notifications ({ navigation }) {
                   styles.header,
                   {
                     backgroundColor:
-                      index % 2 == 0 ? COLORS.listBG : COLORS.backgroud
+                      index == 0 ? COLORS.primaryLight : COLORS.white
                   }
                 ]}
               >
                 <View style={styles.imageView}>
-                  <Text style={styles.name}>{'item?.mom?.name'}</Text>
+                  <Image source={noti} style={styles.image} />
                 </View>
                 <View style={styles.rightView}>
-                  <Text style={styles.description}>{'item?.title'}</Text>
-                  <View style={styles.row}>
-                    <View style={styles.buttonWidth}>
-                      <AppButton
-                        onPress={() => handleRead(item?.id)}
-                        title={'Mark as read'}
-                        height={hp(5)}
-                        fontSize={hp(1.8)}
-                      />
-                    </View>
-                  </View>
+                  <Text style={styles.name}>
+                    {'Reward successfully delivered to Cody Fisher.'}
+                  </Text>
+                  <Text style={styles.description}>{'2 min ago'}</Text>
                 </View>
               </View>
             )
           }}
+          ListEmptyComponent={() => (
+            <View style={{ width: '100%', alignItems: 'center' }}>
+              <SvgXml xml={NoNotification} />
+              <Text style={styles.timetext}>You covered all notifications</Text>
+            </View>
+          )}
         />
       </View>
     </View>
@@ -129,14 +152,21 @@ function Notifications ({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.backgroud,
+    backgroundColor: COLORS.white,
     width: '100%',
     height: '100%',
     alignItems: 'center'
   },
   mainBody: {
-    width: wp('90%'),
+    width: '100%',
     alignItems: 'center'
+  },
+  timetext: {
+    width: '40%',
+    textAlign: 'center',
+    fontSize: hp(2),
+    color: COLORS.darkGrey,
+    fontFamily: FONT1REGULAR
   },
   headingText: {
     color: COLORS.secondary,
@@ -150,15 +180,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    marginBottom: 20
+    paddingHorizontal: '5%',
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.borderColor1,
+    paddingVertical: 15
   },
   imageView: {
-    width: '20%',
-    alignItems: 'center'
+    width: '20%'
   },
   rightView: {
-    width: '80%',
-    alignItems: 'center'
+    width: '80%'
   },
   row: {
     width: '100%',
@@ -177,13 +208,12 @@ const styles = StyleSheet.create({
     fontFamily: FONT1BOLD
   },
   name: {
-    color: COLORS.navy,
+    color: COLORS.darkBlack,
     fontSize: hp(2),
-    textAlign: 'center',
-    fontFamily: FONT1BOLD
+    fontFamily: FONT1MEDIUM
   },
   description: {
-    color: COLORS.navy,
+    color: COLORS.grey,
     fontFamily: FONT1REGULAR,
     fontSize: hp(2),
     width: '80%'
@@ -200,6 +230,40 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderBottomRightRadius: 50
+  },
+  activeTab: {
+    backgroundColor: COLORS.lightblue,
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    justifyContent: 'center',
+    height: hp(5),
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.primary
+  },
+  tabText: {
+    color: COLORS.darkGrey,
+    fontSize: hp(2),
+    fontFamily: FONT1MEDIUM
+  },
+  activeTabText: {
+    color: COLORS.primary,
+    fontSize: hp(2),
+    fontFamily: FONT1MEDIUM
+  },
+  inavtive: {
+    paddingHorizontal: 8,
+    justifyContent: 'center',
+    height: hp(5),
+    alignItems: 'center'
+  },
+  active: {
+    borderWidth: 0,
+    marginRight: 5,
+    backgroundColor: COLORS.white,
+    width: 10,
+    height: 10,
+    borderRadius: 10
   }
 })
 

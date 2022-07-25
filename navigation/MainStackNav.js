@@ -19,6 +19,18 @@ import ArrivalLocation from '../screens/Order/ArrivalLocation'
 import CreateJourney from '../screens/Journey/CreateJourney'
 import JourneyDetails from '../screens/Journey/Details'
 import OrderDetails from '../screens/Order/Details'
+import Settings from '../screens/Profile/Settings'
+import PaymentMethod from '../screens/Profile/PaymentMethod'
+import AddPaymentMethod from '../screens/Profile/AddPaymentMethod'
+import MyPaymentMethod from '../screens/Profile/MyPaymentMethod'
+import EmailVerification from '../screens/Profile/EmailVerification'
+import EmailVerificationOTP from '../screens/Profile/EmailVerificationOTP'
+import PhoneVerification from '../screens/Profile/PhoneVerification'
+import PhoneVerificationOTP from '../screens/Profile/PhoneVerificationOTP'
+import PassportVerification from '../screens/Profile/PassportVerification'
+import FAQ from '../screens/Profile/FAQ'
+import Support from '../screens/Profile/Support'
+import FeedBack from '../screens/Profile/FeedBack'
 
 const Stack = createStackNavigator()
 function MainStackNav () {
@@ -48,6 +60,18 @@ function MainStackNav () {
       <Stack.Screen name='CreateJourney' component={CreateJourney} />
       <Stack.Screen name='JourneyDetails' component={JourneyDetails} />
       <Stack.Screen name='OrderDetails' component={OrderDetails} />
+      <Stack.Screen name='Settings' component={Settings} />
+      <Stack.Screen name='PaymentMethod' component={PaymentMethod} />
+      <Stack.Screen name='AddPaymentMethod' component={AddPaymentMethod} />
+      <Stack.Screen name='MyPaymentMethod' component={MyPaymentMethod} />
+      <Stack.Screen name='EmailVerification' component={EmailVerification} />
+      <Stack.Screen name='EmailVerificationOTP' component={EmailVerificationOTP} />
+      <Stack.Screen name='PhoneVerification' component={PhoneVerification} />
+      <Stack.Screen name='PhoneVerificationOTP' component={PhoneVerificationOTP} />
+      <Stack.Screen name='PassportVerification' component={PassportVerification} />
+      <Stack.Screen name='FAQ' component={FAQ} />
+      <Stack.Screen name='Support' component={Support} />
+      <Stack.Screen name='FeedBack' component={FeedBack} />
     </Stack.Navigator>
   )
 }

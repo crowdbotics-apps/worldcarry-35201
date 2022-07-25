@@ -151,7 +151,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   inputContainer: {
-    backgroundColor: COLORS.white,
     width: '100%',
     height: '100%',
     paddingHorizontal: 10,

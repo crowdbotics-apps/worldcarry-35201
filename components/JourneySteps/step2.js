@@ -5,23 +5,16 @@ import {
   Text,
   View,
   StyleSheet,
-  Image
 } from 'react-native'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { SvgXml } from 'react-native-svg'
 import {
   COLORS,
-  FONT1LIGHT,
-  FONT1MEDIUM,
   FONT1REGULAR,
   FONT1SEMIBOLD
 } from '../../constants'
 import weightIcon from '../../assets/svg/weight.svg'
-import globe from '../../assets/svg/globe.svg'
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
-import AppButton from '../AppButton'
 import { useNavigation } from '@react-navigation/native'
-import pinBlack from '../../assets/svg/pinBlack.svg'
 import Jewellery from '../../assets/svg/Jewellery.svg'
 import Electronics from '../../assets/svg/Electronics.svg'
 import Clothes from '../../assets/svg/Clothes.svg'
@@ -30,6 +23,7 @@ import DocumentsBooks from '../../assets/svg/DocumentsBooks.svg'
 import Medication from '../../assets/svg/Medication.svg'
 import AppInput from '../AppInput'
 import { Icon } from 'react-native-elements'
+
 export default function JourneyStep2 ({
   handleChange,
   total_weight,

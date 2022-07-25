@@ -11,22 +11,10 @@ import {
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { SvgXml } from 'react-native-svg'
 import { COLORS, FONT1LIGHT, FONT1MEDIUM, FONT1REGULAR } from '../../constants'
-import AppInput from '../AppInput'
-import productName from '../../assets/svg/productName.svg'
 import pinBlack from '../../assets/svg/pinBlack.svg'
-import productPrice from '../../assets/svg/productPrice.svg'
-import cardReward from '../../assets/svg/cardReward.svg'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import pickupPlan from '../../assets/svg/pickupPlan.svg'
 import arrivalPlan from '../../assets/svg/arrivalPlan.svg'
-import calendarLight from '../../assets/svg/calendarLight.svg'
-import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger
-} from 'react-native-popup-menu'
-import { Icon } from 'react-native-elements'
 import { Calendar } from 'react-native-calendars'
 import moment from 'moment'
 import AppButton from '../AppButton'

@@ -1,20 +1,10 @@
-import React, {
-  createRef,
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
   View,
   StyleSheet,
   ScrollView,
   Text,
-  TouchableOpacity,
-  Dimensions,
-  PermissionsAndroid,
   FlatList,
-  ImageBackground,
   Image,
   ActivityIndicator
 } from 'react-native'
@@ -29,30 +19,13 @@ import calendarIcon from '../../assets/svg/calendar.svg'
 import weightIcon from '../../assets/svg/weight.svg'
 import userProfile from '../../assets/images/userProfile.png'
 import { AppButton, Header } from '../../components'
-import {
-  COLORS,
-  FONT1BOLD,
-  FONT1LIGHT,
-  FONT1MEDIUM,
-  FONT1REGULAR,
-  FONT1SEMIBOLD
-} from '../../constants'
+import { COLORS, FONT1MEDIUM, FONT1REGULAR } from '../../constants'
 import AppContext from '../../store/Context'
 import moment from 'moment'
 import momenttimezone from 'moment-timezone'
-import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger
-} from 'react-native-popup-menu'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Toast from 'react-native-simple-toast'
-import {
-  deleteJourney,
-  getJourneyDetails,
-  getOnrouteJourneys
-} from '../../api/journey'
+import { getOnrouteJourneys } from '../../api/journey'
 import { getOrderDetails } from '../../api/order'
 
 function OrderDetails ({ navigation, route }) {
@@ -72,13 +45,6 @@ function OrderDetails ({ navigation, route }) {
   const handleChange = (name, value) => {
     setState(pre => ({ ...pre, [name]: value }))
   }
-
-  const tabs = [
-    { title: 'Offers' },
-    { title: 'Accepted' },
-    { title: 'In Transit' },
-    { title: 'Delivered' }
-  ]
 
   useEffect(() => {
     if (item) {

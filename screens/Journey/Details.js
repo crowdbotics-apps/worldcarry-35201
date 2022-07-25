@@ -1,54 +1,28 @@
-import React, {
-  createRef,
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
   View,
   StyleSheet,
   ScrollView,
   Text,
   TouchableOpacity,
-  Dimensions,
-  PermissionsAndroid,
   FlatList,
-  ImageBackground,
   Image,
   ActivityIndicator
 } from 'react-native'
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp
-} from 'react-native-responsive-screen'
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { SvgXml } from 'react-native-svg'
 import NoOrder from '../../assets/svg/NoOrder.svg'
 import planIcon from '../../assets/svg/plan.svg'
 import enRoute from '../../assets/svg/enRoute.svg'
-import menuJourney from '../../assets/svg/menuJourney.svg'
 import userProfile from '../../assets/images/userProfile.png'
 import { AppButton, Header } from '../../components'
-import {
-  COLORS,
-  FONT1BOLD,
-  FONT1LIGHT,
-  FONT1MEDIUM,
-  FONT1REGULAR,
-  FONT1SEMIBOLD
-} from '../../constants'
+import { COLORS, FONT1LIGHT, FONT1MEDIUM, FONT1REGULAR } from '../../constants'
 import AppContext from '../../store/Context'
 import moment from 'moment'
 import momenttimezone from 'moment-timezone'
-import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger
-} from 'react-native-popup-menu'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Toast from 'react-native-simple-toast'
-import { deleteJourney, getJourneyDetails } from '../../api/journey'
+import { getJourneyDetails } from '../../api/journey'
 import { getOnrouteOrders } from '../../api/order'
 
 function JourneyDetails ({ navigation, route }) {
@@ -63,7 +37,7 @@ function JourneyDetails ({ navigation, route }) {
   // Context
   const context = useContext(AppContext)
   const { onRouteOrders, loading, journeyData, active } = state
-  const { journeys, _getJourneys } = context
+  const { journeys } = context
 
   const handleChange = (name, value) => {
     setState(pre => ({ ...pre, [name]: value }))
@@ -105,15 +79,6 @@ function JourneyDetails ({ navigation, route }) {
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText}`)
     }
-  }
-
-  console.warn('_getJourneys', journeyData)
-
-  const getOrderType = status => {
-    if (status) {
-      const filtered = journeys?.filter(e => e.status === status)
-      return filtered || []
-    } else return []
   }
 
   function convertLocalDateToUTCDate (time, toLocal) {

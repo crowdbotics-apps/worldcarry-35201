@@ -34,8 +34,8 @@ import compass from '../../assets/svg/compass.svg'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { AppButton, Header } from '../../components'
-import Svg, { SvgXml } from 'react-native-svg'
+import { AppButton } from '../../components'
+import { SvgXml } from 'react-native-svg'
 import { Icon } from 'react-native-elements'
 import Geocoder from 'react-native-geocoding'
 Geocoder.init('AIzaSyAEmKGJ68eGUiasdk3A3Ws5PJ2VvB0wSPg')
