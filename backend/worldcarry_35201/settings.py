@@ -19,6 +19,8 @@ from google.cloud import secretmanager
 from google.auth.exceptions import DefaultCredentialsError
 from google.api_core.exceptions import PermissionDenied
 from modules.manifest import get_modules
+from firebase_admin import initialize_app
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -72,7 +74,8 @@ LOCAL_APPS = [
     'users.apps.UsersConfig',
     'orders',
     'journeys',
-    'locations'
+    'locations',
+    'notification'
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',
@@ -93,10 +96,28 @@ THIRD_PARTY_APPS = [
     'django_filters',
     'corsheaders',
     'phonenumber_field',
+    'fcm_django',
 ]
 MODULES_APPS = get_modules()
 
 INSTALLED_APPS += LOCAL_APPS + THIRD_PARTY_APPS + MODULES_APPS
+
+FIREBASE_APP = initialize_app()
+
+FCM_DJANGO_SETTINGS = {
+    # default: _('FCM Django')
+    # true if you want to have only one active device per registered user at a time
+    # default: False
+    "ONE_DEVICE_PER_USER": True,
+    # devices to which notifications cannot be sent,
+    # are deleted upon receiving error response from FCM
+    # default: False
+    # "DELETE_INACTIVE_DEVICES": True,
+    # Transform create of an existing Device (based on registration id) into
+    # an update. See the section
+    # "Update of device with duplicate registration ID" for more details.
+    "UPDATE_ON_DUPLICATE_REG_ID": True,
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
