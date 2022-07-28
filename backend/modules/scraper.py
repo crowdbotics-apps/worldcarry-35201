@@ -102,10 +102,10 @@ class EBAYScraper:
         # price range case
         try:
             price = soup.find("span", {"id": "prcIsum"}).get_text()
-            if ["GBP", "EUR"] not in price:
-                price = "${}".format(price.split()[1])
-            else:
+            if "GBP" in price or "EUR" in price:
                 price = soup.find("span", {"id": "convbidPrice"}).get_text().split("(")[0].split(" ")[1]
+            else:
+                price = "${}".format(price.split()[1])
             return price
         except Exception as ex:
             pass
