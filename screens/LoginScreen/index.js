@@ -474,12 +474,15 @@ function LoginScreen ({ navigation, route }) {
                 size={20}
                 fillColor={COLORS.primary}
                 unfillColor={COLORS.white}
+                disableBuiltInState
+                isChecked={isChecked}
                 text='Keep me logged in'
                 iconStyle={{ borderColor: COLORS.primary, borderRadius: 8 }}
                 textStyle={{
                   fontFamily: FONT1REGULAR,
                   fontSize: hp(2),
-                  color: COLORS.darkBlack
+                  color: COLORS.darkBlack,
+                  textDecorationLine: "none",
                 }}
                 onPress={() => handleChange('isChecked', !isChecked)}
               />

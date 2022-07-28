@@ -30,7 +30,8 @@ import { createJourney, createMyAddresses } from '../../api/journey'
 import Geocoder from 'react-native-geocoding'
 Geocoder.init('AIzaSyA8qkmVxCJuE2_LSU14ogM1vjnoEsRi_Iw')
 
-function CreateJourney ({ navigation }) {
+function CreateJourney ({ navigation, route }) {
+  const activeRoundParams = route?.params?.activeRoundParams
   const [state, setState] = useState({
     loading: false,
     step: 0,
@@ -46,7 +47,7 @@ function CreateJourney ({ navigation }) {
     date_of_return: '',
     willing_to_carry: [],
     total_weight: '',
-    activeRound: false,
+    activeRound: activeRoundParams || false,
     isFocus: false,
     isFocus1: false,
     locationType: '',

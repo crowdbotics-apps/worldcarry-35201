@@ -4,7 +4,6 @@ import { COLORS, FONT1BOLD, FONT1LIGHT, FONT1SEMIBOLD } from '../../constants'
 import { useNavigation } from '@react-navigation/native'
 import { Icon } from 'react-native-elements'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
-import Udderly from '../../assets/svg/udderly.svg'
 import profileIcon from '../../assets/svg/help.svg'
 import notificationIcon from '../../assets/svg/notification.svg'
 import menuIcon from '../../assets/svg/menuJourney.svg'
@@ -80,7 +79,6 @@ export default function Header ({
             />
           </TouchableOpacity>
         )}
-        {logo && <SvgXml xml={Udderly} height={60} />}
         {title && (
           <Text style={[styles.title, { color: color || COLORS.darkGrey }]}>
             {title}

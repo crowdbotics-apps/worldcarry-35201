@@ -8,13 +8,12 @@ import { CheckBox } from 'react-native-elements'
 import { validateEmail } from '../../utils/ValidateEmail'
 import { COLORS, FONT1BOLD, FONT1REGULAR } from '../../constants'
 import { SvgXml } from 'react-native-svg'
-import signupBG from '../../assets/svg/signupBG.svg'
+// import signupBG from '../../assets/svg/signupBG.svg'
 import { AppButton, AppInput } from '../../components'
 import Toast from 'react-native-simple-toast'
 import { Icon } from 'react-native-elements'
 import { signupUser } from '../../api/auth'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import Udderly from '../../assets/svg/udderly.svg'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 function Signup ({ navigation, route }) {
@@ -139,7 +138,6 @@ function Signup ({ navigation, route }) {
       <View style={styles.top}>
         <View style={styles.header}>
           <View style={{ width: 50 }} />
-          <SvgXml xml={Udderly} height={60} style={{ marginTop: 10 }} />
           <TouchableOpacity
             onPress={() => navigation.navigate('LoginScreen')}
             style={styles.login}
@@ -292,11 +290,11 @@ function Signup ({ navigation, route }) {
           />
         </View>
       </View>
-      <SvgXml
+      {/* <SvgXml
         xml={signupBG}
         width={'110%'}
         style={{ right: '2%', bottom: 0, position: 'absolute' }}
-      />
+      /> */}
     </KeyboardAwareScrollView>
   )
 }

@@ -28,7 +28,7 @@ import planIcon from '../../assets/svg/plan.svg'
 import OngoingIcon from '../../assets/svg/Ongoing.svg'
 import UpcomingIcon from '../../assets/svg/Upcoming.svg'
 import menuJourney from '../../assets/svg/menuJourney.svg'
-import usersIcon from '../../assets/svg/users.svg'
+import usersIcon from '../../assets/images/users.png'
 import userProfile from '../../assets/images/userProfile.png'
 import { AppButton, Header } from '../../components'
 import {
@@ -309,7 +309,7 @@ function Journey ({ navigation }) {
                     navigation.navigate('JourneyDetails', { item })
                   }
                   prefix={
-                    <SvgXml xml={usersIcon} style={{ marginRight: 10 }} />
+                    <Image source={usersIcon} style={{ marginRight: 10 }} />
                   }
                 />
               )}

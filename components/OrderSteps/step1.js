@@ -5,11 +5,12 @@ import {
   Text,
   View,
   StyleSheet,
-  Image
+  Image,
+  FlatList
 } from 'react-native'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { SvgXml } from 'react-native-svg'
-import { COLORS, FONT1LIGHT, FONT1MEDIUM } from '../../constants'
+import { COLORS, FONT1LIGHT, FONT1MEDIUM, times } from '../../constants'
 import AppInput from '../AppInput'
 import productName from '../../assets/svg/productName.svg'
 import productPrice from '../../assets/svg/productPrice.svg'
@@ -36,13 +37,6 @@ export default function Step1 ({
   carrier_reward,
   description
 }) {
-  const times = [
-    { title: '2 weeks', value: 'Up to 2 weeks' },
-    { title: '3 weeks', value: 'Up to 3 weeks' },
-    { title: '1 month', value: 'Up to 1 month' },
-    { title: '2 months', value: 'Up to 2 months' },
-    { title: '3 months', value: 'Up to 3 months' }
-  ]
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <AppInput
@@ -190,16 +184,33 @@ export default function Step1 ({
         }
         marginBottom={10}
       />
-      <TouchableOpacity onPress={_uploadImage}>
-        <SvgXml xml={photoIcon} width={'40%'} />
-      </TouchableOpacity>
-      {avatarSourceURL?.map((url, index) => (
-        <Image
-          key={index}
-          source={{ uri: url?.image || url }}
-          style={styles.profileIcon}
-        />
-      ))}
+      <FlatList
+        data={[...avatarSourceURL, 2]}
+        numColumns={2}
+        scrollEnabled={false}
+        style={{ width: '100%', marginTop: 20 }}
+        columnWrapperStyle={{ justifyContent: 'space-between' }}
+        renderItem={({ item, index }) => {
+          if (index === avatarSourceURL?.length) {
+            return (
+              <TouchableOpacity
+                style={{ width: '45%', marginBottom: 20, height: 150 }}
+                onPress={_uploadImage}
+              >
+                <SvgXml xml={photoIcon} width={'100%'} height={'100%'} />
+              </TouchableOpacity>
+            )
+          } else {
+            return (
+              <Image
+                key={index}
+                source={{ uri: item?.image || item }}
+                style={styles.profileIcon}
+              />
+            )
+          }
+        }}
+      />
     </ScrollView>
   )
 }

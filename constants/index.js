@@ -34,7 +34,13 @@ export const mapStyle = [
 
 export const OrderStatus = ['All', 'Pending', 'Accepted', 'Completed']
 export const OrderStatus1 = ['Pending', 'Accepted', 'Completed']
-
+export const times = [
+  { title: '2 weeks', value: 'Up to 2 weeks' },
+  { title: '3 weeks', value: 'Up to 3 weeks' },
+  { title: '1 month', value: 'Up to 1 month' },
+  { title: '2 months', value: 'Up to 2 months' },
+  { title: '3 months', value: 'Up to 3 months' }
+]
 // App Colors
 export const COLORS = {
   primary: 'rgba(70, 157, 221, 1)',
@@ -44,6 +50,7 @@ export const COLORS = {
   secondary: 'rgba(151, 130, 132, 1)',
   stepGreen: '#34C27E',
   white: 'white',
+  linkColor: '#34CD8333',
   successBG: '#D7FFEC',
   ratingColor: '#CECE00',
   blueBG: '#0C2232',
@@ -51,17 +58,17 @@ export const COLORS = {
   successBGBorder: '#34C27E',
   white08: 'rgba(255, 255, 255, 0.8)',
   white02: 'rgba(255, 255, 255, 0.2)',
-  tripBoxBorder: '#E0E0E0',  
-  ongoing: '#E3F0FA',  
-  upcomingDark: '#FF6B00',  
-  upcoming: '#FFE9D9',  
-  tabBG: '#FDFDFDF0', 
-  slide1: '#0A426C',  
-  slide2: '#E5A05D',  
-  slide3: '#9C9691',  
-  slideB1: '#ADA45B',  
-  slideB2: '#A175DD',  
-  slideB3: '#F97372',  
+  tripBoxBorder: '#E0E0E0',
+  ongoing: '#E3F0FA',
+  upcomingDark: '#FF6B00',
+  upcoming: '#FFE9D9',
+  tabBG: '#FDFDFDF0',
+  slide1: '#0A426C',
+  slide2: '#E5A05D',
+  slide3: '#9C9691',
+  slideB1: '#ADA45B',
+  slideB2: '#A175DD',
+  slideB3: '#F97372',
   lightergrey: '#FBFBFD',
   messageTextRight: 'rgba(205, 171, 174, 1)',
   modalBG: 'rgba(0,0,0,0.6)',

@@ -1,32 +1,14 @@
 import React, { useCallback, useState } from 'react'
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  ActivityIndicator,
-  TouchableOpacity
-} from 'react-native'
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
-import {
-  COLORS,
-  FONT1BOLD,
-  FONT1MEDIUM,
-  FONT1REGULAR,
-  FONT2REGULAR,
-  FONT2SEMIBOLD
-} from '../../constants'
+import { COLORS, FONT1BOLD, FONT1MEDIUM, FONT2REGULAR } from '../../constants'
 import { AppButton, AppInput, Header } from '../../components'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Icon } from 'react-native-elements'
 import { getPayMethod } from '../../api/business'
 import { useFocusEffect } from '@react-navigation/native'
 import Toast from 'react-native-simple-toast'
-import BackAccount from '../../assets/svg/BackAccount.svg'
 import addcard from '../../assets/svg/mainID.svg'
-import MasterIcon from '../../assets/svg/masterCard.svg'
 import { SvgXml } from 'react-native-svg'
-import BouncyCheckbox from 'react-native-bouncy-checkbox'
 
 function EmailVerification ({ navigation }) {
   // State

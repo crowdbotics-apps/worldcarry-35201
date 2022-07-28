@@ -3,22 +3,13 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   ActivityIndicator,
   TouchableOpacity
 } from 'react-native'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
-import {
-  COLORS,
-  FONT1BOLD,
-  FONT1MEDIUM,
-  FONT1REGULAR,
-  FONT2REGULAR,
-  FONT2SEMIBOLD
-} from '../../constants'
+import { COLORS, FONT1BOLD, FONT1MEDIUM, FONT2REGULAR } from '../../constants'
 import { AppButton, Header } from '../../components'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Icon } from 'react-native-elements'
 import { getPayMethod } from '../../api/business'
 import { useFocusEffect } from '@react-navigation/native'
 import Toast from 'react-native-simple-toast'

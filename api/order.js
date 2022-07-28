@@ -4,6 +4,10 @@ export const getOrders = (payload, token) => {
   return API.get(`api/v1/orders/${payload}`, token)
 }
 
+export const getProductDetails = (payload, token) => {
+  return API.get(`api/v1/get_product_detail${payload}`, token)
+}
+
 export const getOrderDetails = (id, token) => {
   return API.get(`api/v1/orders/${id}/`, token)
 }

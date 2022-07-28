@@ -3,12 +3,8 @@ import { View, Text, StyleSheet, Dimensions, Image } from 'react-native'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import Carousel from 'react-native-snap-carousel'
 import { SvgXml } from 'react-native-svg'
-// import onboarding1 from '../../assets/images/onboard1.png'
-// import onboarding2 from '../../assets/images/onboard2.png'
-// import onboarding3 from '../../assets/images/onboard3.png'
-// import onboarding4 from '../../assets/images/onboard4.png'
 import LogoSplash from '../../assets/svg/onboardLogo.svg'
-import Udderly from '../../assets/svg/udderly.svg'
+// import Udderly from '../../assets/svg/udderly.svg'
 import { AppButton } from '../../components'
 import { COLORS, FONT1BOLD, FONT1REGULAR } from '../../constants'
 
@@ -61,7 +57,7 @@ function Onboarding ({ navigation }) {
           xml={LogoSplash}
           style={{ transform: [{ rotate: '180deg' }], marginLeft: -20 }}
         />
-        <SvgXml xml={Udderly} />
+        {/* <SvgXml xml={Udderly} /> */}
       </View>
       <View style={styles.carousel}>
         <Text style={styles.howtouse}>How to use this app</Text>

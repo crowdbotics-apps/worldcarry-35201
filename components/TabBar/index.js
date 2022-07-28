@@ -7,7 +7,7 @@ import Tab4Icon from '../../assets/svg/tabs/Chat.svg'
 import Tab5Icon from '../../assets/svg/tabs/profile.svg'
 import Tab3Icon from '../../assets/svg/tabs/Work.svg'
 import Tab2Icon from '../../assets/svg/tabs/Send.svg'
-import { COLORS, FONT1REGULAR } from '../../constants'
+import { COLORS, FONT1REGULAR, FONT1SEMIBOLD } from '../../constants'
 
 function TabBar ({ state, descriptors, navigation }) {
   const focusedOptions = descriptors[state.routes[state.index]?.key].options
@@ -102,6 +102,12 @@ function TabBar ({ state, descriptors, navigation }) {
                   onLongPress={onLongPress}
                   style={{
                     flex: 1,
+                    borderTopWidth: isFocused ? 3 : 0,
+                    borderTopColor: COLORS.primary,
+                    paddingBottom: hp('2%'),
+                    backgroundColor: isFocused
+                      ? COLORS.lightblue
+                      : 'transparent',
                     justifyContent: 'center',
                     alignItems: 'center'
                   }}
@@ -109,8 +115,8 @@ function TabBar ({ state, descriptors, navigation }) {
                   {_getIcon()}
                   <Text
                     style={{
-                      fontFamily: FONT1REGULAR,
-                      fontSize: hp('1.8%'),
+                      fontFamily: isFocused ? FONT1SEMIBOLD : FONT1REGULAR,
+                      fontSize: hp(1.6),
                       color: COLORS.navy
                     }}
                   >
@@ -128,8 +134,7 @@ function TabBar ({ state, descriptors, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: hp(10),
-    paddingBottom: hp('2%'),
+    height: hp(10)
   },
   inActiveTab: {
     alignItems: 'center',
@@ -137,7 +142,7 @@ const styles = StyleSheet.create({
     width: hp(7),
     height: hp('7%'),
     borderRadius: 20,
-    borderTopWidth: 0,
+    borderTopWidth: 0
   }
 })
 

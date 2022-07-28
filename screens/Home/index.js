@@ -240,6 +240,8 @@ function Home ({ navigation }) {
     )
   }
 
+  console.warn('user', user?.profile?.photo)
+
   return (
     <ScrollView
       style={styles.container}
@@ -254,7 +256,12 @@ function Home ({ navigation }) {
           <Text style={styles.welcomeText}>
             Welcome <Text style={{ fontFamily: FONT1BOLD }}>{user?.name}!</Text>
           </Text>
-          <Image source={userProfile} style={styles.userProfile} />
+          <Image
+            source={
+              user?.profile?.photo ? { uri: user?.profile?.photo } : userProfile
+            }
+            style={styles.userProfile}
+          />
         </View>
       </ImageBackground>
       <View style={[styles.tabs, { justifyContent: 'center' }]}>
@@ -310,18 +317,32 @@ function Home ({ navigation }) {
             itemWidth={sliderWidth}
           /> */}
           <View style={[styles.rowBetween, { width: '90%' }]}>
-            <TouchableOpacity style={styles.tripBox}>
+            <TouchableOpacity
+              style={styles.tripBox}
+              onPress={() => navigation.navigate('CreateJourney')}
+            >
               <SvgXml xml={oneWay} />
               <Text style={[styles.nameText, { marginTop: 5 }]}>One way</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.tripBox}>
+            <TouchableOpacity
+              style={styles.tripBox}
+              onPress={() =>
+                navigation.navigate('CreateJourney', {
+                  activeRoundParams: true
+                })
+              }
+            >
               <SvgXml xml={roundTrip} />
               <Text style={[styles.nameText, { marginTop: 5 }]}>
                 Round Trip
               </Text>
             </TouchableOpacity>
           </View>
-          <AppButton width={'90%'} title={'Add Journey'} />
+          <AppButton
+            width={'90%'}
+            onPress={() => navigation.navigate('CreateJourney')}
+            title={'Add Journey'}
+          />
           <View
             style={[
               styles.rowBetween,
@@ -329,7 +350,7 @@ function Home ({ navigation }) {
             ]}
           >
             <Text style={styles.recentText}>Recently Completed</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Journey')}>
               <Text style={styles.viewAll}>View All</Text>
             </TouchableOpacity>
           </View>
@@ -411,7 +432,7 @@ function Home ({ navigation }) {
             ]}
           >
             <Text style={styles.recentText}>FAQ’s</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('FAQ')}>
               <Text style={styles.viewAll}>View All</Text>
             </TouchableOpacity>
           </View>
@@ -425,6 +446,7 @@ function Home ({ navigation }) {
             onChange={_updateSections}
           />
           <TouchableOpacity
+          onPress={() => navigation.navigate('Support')}
             style={{
               flexDirection: 'row',
               alignItems: 'center',

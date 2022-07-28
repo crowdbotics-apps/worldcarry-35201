@@ -8,7 +8,9 @@ import {
 } from 'react-native'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { SvgXml } from 'react-native-svg'
-import BG from '../../assets/images/WelcomeBG.png'
+import BG from '../../assets/images/onboard1.png'
+import BG1 from '../../assets/images/onboard2.png'
+import BG2 from '../../assets/images/onboard3.png'
 import Logo from '../../assets/svg/logoWhite.svg'
 import { AppButton } from '../../components'
 import { COLORS, FONT1REGULAR, FONT1SEMIBOLD } from '../../constants'
@@ -21,13 +23,17 @@ function Welcome ({ navigation }) {
   const [state, setState] = useState({
     entries: [
       {
-        text: 'Start earning money from simply traveling! '
+        text: 'Start earning money from simply traveling! ',
+        image: BG
       },
       {
-        text: 'Start earning money from simply traveling! '
+        text: 'A secure platform where everyone can send and carry orders ',
+        image: BG1
       },
       {
-        text: 'Start earning money from simply traveling! '
+        text:
+          'Order anything from anywhere in the world and have it on the next flight to you.',
+        image: BG2
       }
     ],
     activeSlide: 0
@@ -39,9 +45,35 @@ function Welcome ({ navigation }) {
 
   const _renderItem = ({ item, index }) => {
     return (
-      <View key={index} style={styles.slide}>
-        <Text style={styles.text}>{item.text}</Text>
-      </View>
+      <ImageBackground source={item.image} style={styles.View_617_1877}>
+        <View style={styles.top}>
+          <View style={styles.skipView}>
+            <AppButton
+              width={80}
+              backgroundColor={COLORS.white02}
+              title={'Skip'}
+              onPress={() => handleNavigate('LoginScreen')}
+            />
+          </View>
+          <SvgXml xml={Logo} style={{ marginBottom: 30 }} />
+          <Text style={styles.text}>{item.text}</Text>
+          {pagination()}
+        </View>
+        <View style={styles.bottom}>
+          <AppButton
+            title={'Login'}
+            width={'48%'}
+            backgroundColor={'transparent'}
+            color={COLORS.primary}
+            onPress={() => handleNavigate('LoginScreen', 0)}
+          />
+          <AppButton
+            width={'48%'}
+            title={'Sign up'}
+            onPress={() => handleNavigate('LoginScreen', 1)}
+          />
+        </View>
+      </ImageBackground>
     )
   }
 
@@ -69,48 +101,22 @@ function Welcome ({ navigation }) {
   }
 
   return (
-    <ImageBackground source={BG} style={styles.View_617_1877}>
-      <View style={styles.top}>
-        <View style={styles.skipView}>
-          <AppButton
-            width={80}
-            backgroundColor={COLORS.white02}
-            title={'Skip'}
-            onPress={() => handleNavigate('LoginScreen')}
-          />
-        </View>
-        <SvgXml xml={Logo} style={{ marginBottom: 30 }} />
-        <Carousel
-          layout={'default'}
-          ref={e => {
-            carouselRef = e
-          }}
-          onSnapToItem={index =>
-            setState(pre => ({ ...pre, activeSlide: index }))
-          }
-          style={{ marginTop: 30 }}
-          data={entries}
-          renderItem={_renderItem}
-          sliderWidth={sliderWidth}
-          itemWidth={sliderWidth}
-        />
-        {pagination()}
-      </View>
-      <View style={styles.bottom}>
-        <AppButton
-          title={'Login'}
-          width={'48%'}
-          backgroundColor={'transparent'}
-          color={COLORS.primary}
-          onPress={() => handleNavigate('LoginScreen', 0)}
-        />
-        <AppButton
-          width={'48%'}
-          title={'Sign up'}
-          onPress={() => handleNavigate('LoginScreen', 1)}
-        />
-      </View>
-    </ImageBackground>
+    <>
+      <Carousel
+        layout={'default'}
+        ref={e => {
+          carouselRef = e
+        }}
+        onSnapToItem={index =>
+          setState(pre => ({ ...pre, activeSlide: index }))
+        }
+        style={{ marginTop: 30 }}
+        data={entries}
+        renderItem={_renderItem}
+        sliderWidth={sliderWidth}
+        itemWidth={sliderWidth}
+      />
+    </>
   )
 }
 
@@ -121,6 +127,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between'
   },
+  slide: {
+    width: '100%',
+    alignItems: 'center'
+  },
   top: {
     width: '90%',
     alignItems: 'center'
@@ -128,6 +138,7 @@ const styles = StyleSheet.create({
   text: {
     color: COLORS.white,
     textAlign: 'center',
+    width: '80%',
     fontFamily: FONT1SEMIBOLD
   },
   bottom: {
