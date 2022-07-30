@@ -276,7 +276,7 @@ if GS_BUCKET_NAME:
 REST_FRAMEWORK = {
    'DEFAULT_AUTHENTICATION_CLASSES': (
        'users.authentication.ExpiringTokenAuthentication',
-       # 'rest_framework.authentication.SessionAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
 
    ),
    'DEFAULT_PERMISSION_CLASSES': (
@@ -287,6 +287,7 @@ REST_FRAMEWORK = {
    'DEFAULT_PAGINATION_CLASS': 'home.api.v1.paginations.CustomLimitOffsetPagination',
    'PAGE_SIZE': 50,
 }
+SWAGGER_SETTINGS = {"USE_SESSION_AUTH": False}
 
 CORS_ALLOW_ALL_ORIGINS = True 
 CORS_ORIGIN_ALLOW_ALL = True
