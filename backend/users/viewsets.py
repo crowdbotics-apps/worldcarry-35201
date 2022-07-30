@@ -212,3 +212,12 @@ class UserViewSet(ModelViewSet):
             data={"message":"Email successfully connected"},
             status=status.HTTP_200_OK
         )
+
+        # Verify OTP
+    @action(detail=False, methods=['post'])
+    def delete(self, request):
+        try:
+            User.objects.filter(id=request.user.id).delete()
+            return Response({'message':"User succesfully deleted now"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'message':"Error while deleting user"}, status=status.HTTP_400_BAD_REQUEST)
