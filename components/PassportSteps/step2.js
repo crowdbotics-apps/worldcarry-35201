@@ -18,7 +18,13 @@ import coverpass from '../../assets/images/coverpass.png'
 import datapage from '../../assets/images/datapage.png'
 import AppButton from '../AppButton'
 
-export default function PassportStep2 ({ handleChange, _uploadImage }) {
+export default function PassportStep2 ({
+  avatarSourceURL,
+  avatarSourceURL1,
+  _uploadImage,
+  _uploadImage1,
+  handleChange
+}) {
   return (
     <ScrollView
       keyboardShouldPersistTaps={'handled'}
@@ -27,7 +33,7 @@ export default function PassportStep2 ({ handleChange, _uploadImage }) {
     >
       <Text style={styles.head}>UPLOAD PASSPORT COVER</Text>
       <View style={styles.box}>
-        <Image source={coverpass} style={styles.image} />
+        <Image source={avatarSourceURL ? { uri: avatarSourceURL } : coverpass} style={styles.image} />
         <AppButton
           width={'48%'}
           title={'Upload'}
@@ -38,13 +44,16 @@ export default function PassportStep2 ({ handleChange, _uploadImage }) {
       </View>
       <Text style={styles.head}>UPLOAD PASSPORT DATA PAGE</Text>
       <View style={styles.box}>
-        <Image source={datapage} style={styles.image} />
+        <Image
+          source={avatarSourceURL1 ? { uri: avatarSourceURL1 } : datapage}
+          style={styles.image}
+        />
         <AppButton
           width={'48%'}
           title={'Upload'}
           backgroundColor={COLORS.stepGreen}
           postfix={<SvgXml xml={upload} />}
-          onPress={_uploadImage}
+          onPress={_uploadImage1}
         />
       </View>
     </ScrollView>
@@ -70,7 +79,7 @@ const styles = StyleSheet.create({
   box: {
     width: '100%',
     marginTop: 20,
-    marginBottom:20,
+    marginBottom: 20,
     padding: 15,
     flexDirection: 'row',
     alignItems: 'flex-end',

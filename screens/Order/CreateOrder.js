@@ -20,6 +20,7 @@ import {
   Step2,
   Step3,
   Step4,
+  Step5,
   StepLink1,
   StepLink2
 } from '../../components'
@@ -52,7 +53,8 @@ function CreateOrder ({ navigation }) {
     falseLink: false,
     linkVerified: false,
     active: 0,
-    stepLink: 0
+    stepLink: 0,
+    createdOrder: null
   })
 
   // Context
@@ -79,7 +81,8 @@ function CreateOrder ({ navigation }) {
     stepLink,
     loadingLink,
     falseLink,
-    linkVerified
+    linkVerified,
+    createdOrder
   } = state
   const {
     user,
@@ -200,15 +203,18 @@ function CreateOrder ({ navigation }) {
           formData.append(`images[${index}]image`, photo)
         )
       const res = await createOrder(formData, token)
+      handleChange('createdOrder', res?.data)
       _getOrders('')
       handleChange('loading', false)
       Toast.show('Order Created Successfully!')
-      navigation.navigate('Orders')
+      handleChange('step', 4)
+      // navigation.navigate('Orders')
     } catch (error) {
       console.warn('error', error)
       handleChange('loading', false)
       const errorText = Object.values(error?.response?.data)
-      Toast.show(`Error: ${errorText[0]}`)
+      console.warn('errorText[0]', errorText[0])
+      Toast.show(`Error: ${JSON.stringify(errorText[0])}`)
     }
   }
 
@@ -285,6 +291,47 @@ function CreateOrder ({ navigation }) {
     }
   }
 
+  const clearForm = () => {
+    if (step === 0) {
+      handleChange('product_name', '')
+      handleChange('product_price', '')
+      handleChange('product_type', '')
+      handleChange('carrier_reward', '')
+      handleChange('expected_wait_time', '')
+      handleChange('description', '')
+      handleChange('avatarSourceURL', [])
+    } else if (step === 1) {
+      handleChange('pickup_address_country', '')
+      handleChange('pickup_address', '')
+    } else if (step === 2) {
+      handleChange('arrival_address_country', '')
+      handleChange('arrival_address', '')
+    } else if (step === 3) {
+      handleChange('isChecked', false)
+    }
+  }
+  const clearForm1 = () => {
+    if (stepLink === 0) {
+      handleChange('product_name', '')
+      handleChange('website_name', '')
+      handleChange('product_price', '')
+      handleChange('product_type', '')
+      handleChange('linkVerified', false)
+      handleChange('product_link', '')
+      handleChange('description', '')
+      handleChange('avatarSourceURL', [])
+    } else if (stepLink === 1) {
+      handleChange('pickup_address_country', '')
+      handleChange('pickup_address', '')
+      handleChange('arrival_address_country', '')
+      handleChange('arrival_address', '')
+      handleChange('carrier_reward', '')
+      handleChange('expected_wait_time', '')
+    } else if (stepLink === 2) {
+      handleChange('isChecked', false)
+    }
+  }
+
   const disabled =
     step === 0
       ? !product_name ||
@@ -320,11 +367,22 @@ function CreateOrder ({ navigation }) {
   return (
     <View style={{ height: '100%', width: '100%' }}>
       <Header
-        title={'Create Order'}
+        title={step === 4 ? 'Order Created' : 'Create Order'}
+        color={COLORS.darkBlack}
         back
         rightItem={
-          <TouchableOpacity>
-            <Text style={styles.activeTabText}>Clear Form</Text>
+          <TouchableOpacity
+            onPress={() =>
+              step === 4
+                ? navigation.navigate('Orders')
+                : active === 0
+                ? clearForm()
+                : clearForm1()
+            }
+          >
+            <Text style={styles.activeTabText}>
+              {step === 4 ? 'Done' : 'Clear Form'}
+            </Text>
           </TouchableOpacity>
         }
       />
@@ -332,272 +390,299 @@ function CreateOrder ({ navigation }) {
         style={styles.container}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps={'handled'}
-        contentContainerStyle={{ alignItems: 'center', height: '85%' }}
+        contentContainerStyle={{
+          alignItems: 'center',
+          height: step < 4 ? '85%' : '100%'
+        }}
       >
-        <View style={styles.tabs}>
-          <TouchableOpacity
-            onPress={() => handleChange('active', 0)}
-            style={active ? styles.inavtive : styles.activeTab}
-          >
-            <Text style={active ? styles.tabText : styles.activeTabText}>
-              Pickup Product
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => handleChange('active', 1)}
-            style={!active ? styles.inavtive : styles.activeTab}
-          >
-            <Text style={active ? styles.activeTabText : styles.tabText}>
-              Add Product Link
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.infoDiv}>
-            <SvgXml xml={InfoCircle} />
-          </TouchableOpacity>
-        </View>
-        {active === 0 ? (
-          <>
-            <Text style={styles.timetext}>
-              {step === 0 && 'Step 1. Add Product Details'}
-              {step === 1 && 'Step 2. Add Pickup Address'}
-              {step === 2 && 'Step 3. Add Delivery Address'}
-              {step === 3 && 'Step 4. Payment Summary'}
-            </Text>
-            <View style={styles.stepView}>
-              <View
-                style={step === 0 ? styles.activestep : styles.inActivestep}
-              >
-                <Text
-                  style={step === 0 ? styles.activeStepText : styles.stepText}
-                >
-                  1
-                </Text>
-              </View>
-              <View style={styles.line} />
-              <View
-                style={step === 1 ? styles.activestep : styles.inActivestep}
-              >
-                <Text
-                  style={step === 1 ? styles.activeStepText : styles.stepText}
-                >
-                  2
-                </Text>
-              </View>
-              <View style={styles.line} />
-              <View
-                style={step === 2 ? styles.activestep : styles.inActivestep}
-              >
-                <Text
-                  style={step === 2 ? styles.activeStepText : styles.stepText}
-                >
-                  3
-                </Text>
-              </View>
-              <View style={styles.line} />
-              <View
-                style={step === 3 ? styles.activestep : styles.inActivestep}
-              >
-                <Text
-                  style={step === 3 ? styles.activeStepText : styles.stepText}
-                >
-                  4
-                </Text>
-              </View>
-            </View>
-            {step === 0 && (
-              <Step1
-                expected_wait_time={expected_wait_time}
-                product_type={product_type}
-                avatarSourceURL={avatarSourceURL}
-                product_name={product_name}
-                product_price={product_price}
-                carrier_reward={carrier_reward}
-                description={description}
-                handleChange={handleChange}
-                _uploadImage={_uploadImage}
-              />
-            )}
-            {step === 1 && (
-              <Step2
-                handleSearch={handleSearch}
-                pickup_address_country={pickup_address_country}
-                pickup_address={pickup_address}
-                handleChange={handleChange}
-              />
-            )}
-            {step === 2 && (
-              <Step3
-                handleSearch={handleSearch1}
-                arrival_address_country={arrival_address_country}
-                arrival_address={arrival_address}
-                handleChange={handleChange}
-              />
-            )}
-            {step === 3 && (
-              <Step4
-                pickup_address_country={pickup_address_country}
-                pickup_address={pickup_address}
-                arrival_address_country={arrival_address_country}
-                arrival_address={arrival_address}
-                expected_wait_time={expected_wait_time}
-                product_type={product_type}
-                avatarSourceURL={avatarSourceURL}
-                product_name={product_name}
-                product_price={product_price}
-                carrier_reward={carrier_reward}
-                isChecked={isChecked}
-                handleChange={handleChange}
-              />
-            )}
-          </>
+        {step === 4 ? (
+          <Step5 navigation={navigation} createdOrder={createdOrder} />
         ) : (
           <>
-            <Text style={styles.timetext}>
-              {stepLink === 0 && 'Step 1. Add Product via link'}
-              {stepLink === 1 && 'Step 2. Add Pickup Address'}
-              {stepLink === 2 && 'Step 3. Add Delivery Address'}
-            </Text>
-            <View style={styles.stepView}>
-              <View
-                style={stepLink === 0 ? styles.activestep : styles.inActivestep}
+            <View style={styles.tabs}>
+              <TouchableOpacity
+                onPress={() => handleChange('active', 0)}
+                style={active ? styles.inavtive : styles.activeTab}
               >
-                <Text
-                  style={
-                    stepLink === 0 ? styles.activeStepText : styles.stepText
-                  }
-                >
-                  1
+                <Text style={active ? styles.tabText : styles.activeTabText}>
+                  Pickup Product
                 </Text>
-              </View>
-              <View style={styles.line} />
-              <View
-                style={stepLink === 1 ? styles.activestep : styles.inActivestep}
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleChange('active', 1)}
+                style={!active ? styles.inavtive : styles.activeTab}
               >
-                <Text
-                  style={
-                    stepLink === 1 ? styles.activeStepText : styles.stepText
-                  }
-                >
-                  2
+                <Text style={active ? styles.activeTabText : styles.tabText}>
+                  Add Product Link
                 </Text>
-              </View>
-              <View style={styles.line} />
-              <View
-                style={stepLink === 2 ? styles.activestep : styles.inActivestep}
-              >
-                <Text
-                  style={
-                    stepLink === 2 ? styles.activeStepText : styles.stepText
-                  }
-                >
-                  3
-                </Text>
-              </View>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.infoDiv}>
+                <SvgXml xml={InfoCircle} />
+              </TouchableOpacity>
             </View>
-            {stepLink === 0 && (
-              <StepLink1
-                website_name={website_name}
-                product_link={product_link}
-                product_type={product_type}
-                avatarSourceURL={avatarSourceURL}
-                product_name={product_name}
-                product_price={product_price}
-                description={description}
-                falseLink={falseLink}
-                linkVerified={linkVerified}
-                _uploadImage={_uploadImage}
-                handleChange={handleChange}
-              />
-            )}
-            {stepLink === 1 && (
-              <StepLink2
-                handleSearch={handleSearch}
-                handleSearch1={handleSearch1}
-                expected_wait_time={expected_wait_time}
-                arrival_address_country={arrival_address_country}
-                arrival_address={arrival_address}
-                pickup_address_country={pickup_address_country}
-                pickup_address={pickup_address}
-                carrier_reward={carrier_reward}
-                handleChange={handleChange}
-              />
-            )}
-            {stepLink === 2 && (
-              <Step4
-                pickup_address_country={pickup_address_country}
-                pickup_address={pickup_address}
-                arrival_address_country={arrival_address_country}
-                arrival_address={arrival_address}
-                expected_wait_time={expected_wait_time}
-                product_type={product_type}
-                avatarSourceURL={avatarSourceURL}
-                product_name={product_name}
-                product_price={product_price}
-                carrier_reward={carrier_reward}
-                isChecked={isChecked}
-                handleChange={handleChange}
-              />
+            {active === 0 ? (
+              <>
+                <Text style={styles.timetext}>
+                  {step === 0 && 'Step 1. Add Product Details'}
+                  {step === 1 && 'Step 2. Add Pickup Address'}
+                  {step === 2 && 'Step 3. Add Delivery Address'}
+                  {step === 3 && 'Step 4. Payment Summary'}
+                </Text>
+                <View style={styles.stepView}>
+                  <View
+                    style={step === 0 ? styles.activestep : styles.inActivestep}
+                  >
+                    <Text
+                      style={
+                        step === 0 ? styles.activeStepText : styles.stepText
+                      }
+                    >
+                      1
+                    </Text>
+                  </View>
+                  <View style={styles.line} />
+                  <View
+                    style={step === 1 ? styles.activestep : styles.inActivestep}
+                  >
+                    <Text
+                      style={
+                        step === 1 ? styles.activeStepText : styles.stepText
+                      }
+                    >
+                      2
+                    </Text>
+                  </View>
+                  <View style={styles.line} />
+                  <View
+                    style={step === 2 ? styles.activestep : styles.inActivestep}
+                  >
+                    <Text
+                      style={
+                        step === 2 ? styles.activeStepText : styles.stepText
+                      }
+                    >
+                      3
+                    </Text>
+                  </View>
+                  <View style={styles.line} />
+                  <View
+                    style={step === 3 ? styles.activestep : styles.inActivestep}
+                  >
+                    <Text
+                      style={
+                        step === 3 ? styles.activeStepText : styles.stepText
+                      }
+                    >
+                      4
+                    </Text>
+                  </View>
+                </View>
+                {step === 0 && (
+                  <Step1
+                    expected_wait_time={expected_wait_time}
+                    product_type={product_type}
+                    avatarSourceURL={avatarSourceURL}
+                    product_name={product_name}
+                    product_price={product_price}
+                    carrier_reward={carrier_reward}
+                    description={description}
+                    handleChange={handleChange}
+                    _uploadImage={_uploadImage}
+                  />
+                )}
+                {step === 1 && (
+                  <Step2
+                    handleSearch={handleSearch}
+                    pickup_address_country={pickup_address_country}
+                    pickup_address={pickup_address}
+                    handleChange={handleChange}
+                  />
+                )}
+                {step === 2 && (
+                  <Step3
+                    handleSearch={handleSearch1}
+                    arrival_address_country={arrival_address_country}
+                    arrival_address={arrival_address}
+                    handleChange={handleChange}
+                  />
+                )}
+                {step === 3 && (
+                  <Step4
+                    pickup_address_country={pickup_address_country}
+                    pickup_address={pickup_address}
+                    arrival_address_country={arrival_address_country}
+                    arrival_address={arrival_address}
+                    expected_wait_time={expected_wait_time}
+                    product_type={product_type}
+                    avatarSourceURL={avatarSourceURL}
+                    product_name={product_name}
+                    product_price={product_price}
+                    carrier_reward={carrier_reward}
+                    isChecked={isChecked}
+                    handleChange={handleChange}
+                  />
+                )}
+              </>
+            ) : (
+              <>
+                <Text style={styles.timetext}>
+                  {stepLink === 0 && 'Step 1. Add Product via link'}
+                  {stepLink === 1 && 'Step 2. Add Pickup Address'}
+                  {stepLink === 2 && 'Step 3. Add Delivery Address'}
+                </Text>
+                <View style={styles.stepView}>
+                  <View
+                    style={
+                      stepLink === 0 ? styles.activestep : styles.inActivestep
+                    }
+                  >
+                    <Text
+                      style={
+                        stepLink === 0 ? styles.activeStepText : styles.stepText
+                      }
+                    >
+                      1
+                    </Text>
+                  </View>
+                  <View style={styles.line} />
+                  <View
+                    style={
+                      stepLink === 1 ? styles.activestep : styles.inActivestep
+                    }
+                  >
+                    <Text
+                      style={
+                        stepLink === 1 ? styles.activeStepText : styles.stepText
+                      }
+                    >
+                      2
+                    </Text>
+                  </View>
+                  <View style={styles.line} />
+                  <View
+                    style={
+                      stepLink === 2 ? styles.activestep : styles.inActivestep
+                    }
+                  >
+                    <Text
+                      style={
+                        stepLink === 2 ? styles.activeStepText : styles.stepText
+                      }
+                    >
+                      3
+                    </Text>
+                  </View>
+                </View>
+                {stepLink === 0 && (
+                  <StepLink1
+                    website_name={website_name}
+                    product_link={product_link}
+                    product_type={product_type}
+                    avatarSourceURL={avatarSourceURL}
+                    product_name={product_name}
+                    product_price={product_price}
+                    description={description}
+                    falseLink={falseLink}
+                    linkVerified={linkVerified}
+                    _uploadImage={_uploadImage}
+                    handleChange={handleChange}
+                  />
+                )}
+                {stepLink === 1 && (
+                  <StepLink2
+                    handleSearch={handleSearch}
+                    handleSearch1={handleSearch1}
+                    expected_wait_time={expected_wait_time}
+                    arrival_address_country={arrival_address_country}
+                    arrival_address={arrival_address}
+                    pickup_address_country={pickup_address_country}
+                    pickup_address={pickup_address}
+                    carrier_reward={carrier_reward}
+                    handleChange={handleChange}
+                  />
+                )}
+                {stepLink === 2 && (
+                  <Step4
+                    pickup_address_country={pickup_address_country}
+                    pickup_address={pickup_address}
+                    arrival_address_country={arrival_address_country}
+                    arrival_address={arrival_address}
+                    expected_wait_time={expected_wait_time}
+                    product_type={product_type}
+                    avatarSourceURL={avatarSourceURL}
+                    product_name={product_name}
+                    product_price={product_price}
+                    carrier_reward={carrier_reward}
+                    isChecked={isChecked}
+                    handleChange={handleChange}
+                  />
+                )}
+              </>
             )}
           </>
         )}
       </ScrollView>
-      {active ? (
-        <View style={styles.bottom}>
-          {stepLink === 0 ? (
-            <View style={{ width: '48%' }} />
+      {step < 4 && (
+        <>
+          {active ? (
+            <View style={styles.bottom}>
+              {stepLink === 0 ? (
+                <View style={{ width: '48%' }} />
+              ) : (
+                <AppButton
+                  title={'Previous'}
+                  onPress={handlePrevious1}
+                  backgroundColor={COLORS.backgroud}
+                  outlined
+                  color={COLORS.primary}
+                  width={'48%'}
+                />
+              )}
+              {stepLink === 0 && !linkVerified ? (
+                <AppButton
+                  title={'Detect Product'}
+                  disabled={!website_name || !product_link}
+                  onPress={handleGetProductFromLink}
+                  backgroundColor={COLORS.backgroud}
+                  outlined
+                  loading={loadingLink}
+                  color={COLORS.primary}
+                  width={'48%'}
+                />
+              ) : (
+                <AppButton
+                  title={stepLink === 2 ? 'Create Order' : 'Next'}
+                  disabled={disabled1}
+                  loading={loading}
+                  width={'48%'}
+                  onPress={handleNext1}
+                />
+              )}
+            </View>
           ) : (
-            <AppButton
-              title={'Previous'}
-              onPress={handlePrevious1}
-              backgroundColor={COLORS.backgroud}
-              outlined
-              color={COLORS.primary}
-              width={'48%'}
-            />
+            <View style={styles.bottom}>
+              {step === 0 ? (
+                <View style={{ width: '48%' }} />
+              ) : (
+                <AppButton
+                  title={'Previous'}
+                  onPress={handlePrevious}
+                  backgroundColor={COLORS.backgroud}
+                  outlined
+                  color={COLORS.primary}
+                  width={'48%'}
+                />
+              )}
+              <AppButton
+                title={step === 3 ? 'Create Order' : 'Next'}
+                disabled={disabled}
+                loading={loading}
+                width={'48%'}
+                onPress={handleNext}
+              />
+            </View>
           )}
-          {stepLink === 0 && !linkVerified ? (
-            <AppButton
-              title={'Detect Product'}
-              disabled={!website_name || !product_link}
-              onPress={handleGetProductFromLink}
-              backgroundColor={COLORS.backgroud}
-              outlined
-              loading={loadingLink}
-              color={COLORS.primary}
-              width={'48%'}
-            />
-          ) : (
-            <AppButton
-              title={stepLink === 2 ? 'Create Order' : 'Next'}
-              disabled={disabled1}
-              loading={loading}
-              width={'48%'}
-              onPress={handleNext1}
-            />
-          )}
-        </View>
-      ) : (
-        <View style={styles.bottom}>
-          {step === 0 ? (
-            <View style={{ width: '48%' }} />
-          ) : (
-            <AppButton
-              title={'Previous'}
-              onPress={handlePrevious}
-              backgroundColor={COLORS.backgroud}
-              outlined
-              color={COLORS.primary}
-              width={'48%'}
-            />
-          )}
-          <AppButton
-            title={step === 3 ? 'Create Order' : 'Next'}
-            disabled={disabled}
-            loading={loading}
-            width={'48%'}
-            onPress={handleNext}
-          />
-        </View>
+        </>
       )}
     </View>
   )

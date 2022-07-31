@@ -30,6 +30,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import calendarIcon from '../../assets/svg/calendarIcon.svg'
 import timeIcon from '../../assets/svg/time.svg'
 import moment from 'moment'
+import ImagePicker from 'react-native-image-crop-picker'
 
 function PassportVerification ({ navigation }) {
   const [state, setState] = useState({
@@ -38,12 +39,23 @@ function PassportVerification ({ navigation }) {
     step: 0,
     date: new Date(),
     Videodate: new Date(),
-    gender: ''
+    gender: '',
+    avatarSourceURL: '',
+    avatarSourceURL1: ''
   })
 
   // Context
   const context = useContext(AppContext)
-  const { step, loading, modalVisible, date, Videodate, gender } = state
+  const {
+    step,
+    loading,
+    modalVisible,
+    avatarSourceURL,
+    avatarSourceURL1,
+    date,
+    Videodate,
+    gender
+  } = state
   const {} = context
 
   const handleChange = (name, value) => {
@@ -68,6 +80,82 @@ function PassportVerification ({ navigation }) {
     } else if (step === 3) {
       handleChange('step', 2)
     }
+  }
+
+  const _uploadImage = async type => {
+    handleChange('uploading', true)
+    let OpenImagePicker =
+      type == 'camera'
+        ? ImagePicker.openCamera
+        : type == ''
+        ? ImagePicker.openPicker
+        : ImagePicker.openPicker
+
+    OpenImagePicker({
+      cropping: true
+    })
+      .then(async response => {
+        if (!response.path) {
+          handleChange('uploading', false)
+          Toast.show('Something went wrong!')
+        } else {
+          const element = response
+          const uri = element.path
+          const uploadUri =
+            Platform.OS === 'ios' ? uri.replace('file://', '') : uri
+          const photo = {
+            uri: uploadUri,
+            name: `userimage.png`,
+            type: element.mime
+          }
+          handleChange('avatarSourceURL', uploadUri)
+          handleChange('photos', photo)
+          handleChange('uploading', false)
+          Toast.show('Passport Cover Add Successfully')
+        }
+      })
+      .catch(err => {
+        handleChange('showAlert', false)
+        handleChange('uploading', false)
+      })
+  }
+
+  const _uploadImage1 = async type => {
+    handleChange('uploading', true)
+    let OpenImagePicker =
+      type == 'camera'
+        ? ImagePicker.openCamera
+        : type == ''
+        ? ImagePicker.openPicker
+        : ImagePicker.openPicker
+
+    OpenImagePicker({
+      cropping: true
+    })
+      .then(async response => {
+        if (!response.path) {
+          handleChange('uploading', false)
+          Toast.show('Something went wrong!')
+        } else {
+          const element = response
+          const uri = element.path
+          const uploadUri =
+            Platform.OS === 'ios' ? uri.replace('file://', '') : uri
+          const photo = {
+            uri: uploadUri,
+            name: `userimage.png`,
+            type: element.mime
+          }
+          handleChange('avatarSourceURL1', uploadUri)
+          handleChange('photos1', photo)
+          handleChange('uploading', false)
+          Toast.show('Passport Data Page Add Successfully')
+        }
+      })
+      .catch(err => {
+        handleChange('showAlert', false)
+        handleChange('uploading', false)
+      })
   }
 
   const disabled = false
@@ -119,7 +207,15 @@ function PassportVerification ({ navigation }) {
             handleChange={handleChange}
           />
         )}
-        {step === 1 && <PassportStep2 handleChange={handleChange} />}
+        {step === 1 && (
+          <PassportStep2
+            avatarSourceURL={avatarSourceURL}
+            avatarSourceURL1={avatarSourceURL1}
+            _uploadImage={_uploadImage}
+            _uploadImage1={_uploadImage1}
+            handleChange={handleChange}
+          />
+        )}
         {step === 2 && (
           <PassportStep3 Videodate={Videodate} handleChange={handleChange} />
         )}
@@ -174,9 +270,7 @@ function PassportVerification ({ navigation }) {
                 </View>
                 <View style={styles.greyBox}>
                   <SvgXml xml={timeIcon} />
-                  <Text style={styles.dateText}>
-                    {'9:AM'}
-                  </Text>
+                  <Text style={styles.dateText}>{'9:AM'}</Text>
                 </View>
               </View>
               <AppButton

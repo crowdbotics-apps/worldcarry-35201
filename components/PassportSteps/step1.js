@@ -19,11 +19,19 @@ import AppInput from '../AppInput'
 import DatePicker from 'react-native-date-picker'
 import moment from 'moment'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-export default function PassportStep1 ({ date, gender, handleChange }) {
+export default function PassportStep1 ({
+  date,
+  gender,
+  handleChange,
+  name,
+  lastname,
+  passport_number
+}) {
   const [open, setOpen] = useState(false)
   return (
-    <ScrollView
+    <KeyboardAwareScrollView
       keyboardShouldPersistTaps={'handled'}
       style={styles.container}
       showsVerticalScrollIndicator={false}
@@ -32,16 +40,25 @@ export default function PassportStep1 ({ date, gender, handleChange }) {
       <AppInput
         borderColor={COLORS.borderColor1}
         marginBottom={5}
+        value={name}
+        name={'name'}
+        onChange={handleChange}
         placeholder={'First name*'}
       />
       <AppInput
         borderColor={COLORS.borderColor1}
         marginBottom={5}
+        value={lastname}
+        name={'lastname'}
+        onChange={handleChange}
         placeholder={'Last name'}
       />
       <AppInput
         borderColor={COLORS.borderColor1}
         marginBottom={5}
+        value={passport_number}
+        name={'passport_number'}
+        onChange={handleChange}
         placeholder={'Passport No*'}
       />
       <TouchableOpacity onPress={() => setOpen(true)} style={styles.buttonView}>
@@ -108,7 +125,7 @@ export default function PassportStep1 ({ date, gender, handleChange }) {
           <Text style={[styles.text2]}>Other</Text>
         </View>
       </View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   )
 }
 

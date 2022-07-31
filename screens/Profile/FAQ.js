@@ -17,172 +17,174 @@ import { SvgXml } from 'react-native-svg'
 import Accordion from 'react-native-collapsible/Accordion'
 import searchIcon from '../../assets/svg/searchIcon.svg'
 
+const list2 = [
+  {
+    title: 'Get started to WorldCarry',
+    image: faq1,
+    questions: [
+      {
+        title: 'How to shop on WorldCarry?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'I am a sender, can I cancel my order?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'What can I order on WorldCarry?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'Why do I need to pay in advance?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'What happens after I create an order?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'Where do I pick up my order?',
+        content: 'Lorem ipsum...'
+      }
+    ]
+  },
+  {
+    title: 'Orders Related',
+    image: faq2,
+    questions: [
+      {
+        title: 'How to shop on WorldCarry?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'I am a sender, can I cancel my order?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'What can I order on WorldCarry?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'Why do I need to pay in advance?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'What happens after I create an order?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'Where do I pick up my order?',
+        content: 'Lorem ipsum...'
+      }
+    ]
+  },
+  {
+    title: 'Journey Related',
+    image: faq3,
+    questions: [
+      {
+        title: 'How to shop on WorldCarry?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'I am a sender, can I cancel my order?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'What can I order on WorldCarry?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'Why do I need to pay in advance?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'What happens after I create an order?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'Where do I pick up my order?',
+        content: 'Lorem ipsum...'
+      }
+    ]
+  },
+  {
+    title: 'Payment Related',
+    image: faq4,
+    questions: [
+      {
+        title: 'How to shop on WorldCarry?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'I am a sender, can I cancel my order?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'What can I order on WorldCarry?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'Why do I need to pay in advance?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'What happens after I create an order?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'Where do I pick up my order?',
+        content: 'Lorem ipsum...'
+      }
+    ]
+  },
+  {
+    title: 'Verification Related',
+    image: faq5,
+    questions: [
+      {
+        title: 'How to shop on WorldCarry?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'I am a sender, can I cancel my order?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'What can I order on WorldCarry?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'Why do I need to pay in advance?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'What happens after I create an order?',
+        content: 'Lorem ipsum...'
+      },
+      {
+        title: 'Where do I pick up my order?',
+        content: 'Lorem ipsum...'
+      }
+    ]
+  }
+]
+
 function FAQ ({ navigation, route }) {
   // Context
   const [state, setState] = useState({
     questions: [],
-    activeSections: []
+    activeSections: [],
+    filteredList: list2 || [],
+    searchText: ''
   })
-  const { questions, activeSections } = state
+  const { questions, activeSections, searchText, filteredList } = state
   const handleChange = (key, value) => {
     setState(pre => ({ ...pre, [key]: value }))
   }
   const goBack = () => {
     navigation.goBack()
   }
-
-  const list2 = [
-    {
-      title: 'Get started to WorldCarry',
-      image: faq1,
-      questions: [
-        {
-          title: 'How to shop on WorldCarry?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'I am a sender, can I cancel my order?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'What can I order on WorldCarry?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'Why do I need to pay in advance?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'What happens after I create an order?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'Where do I pick up my order?',
-          content: 'Lorem ipsum...'
-        }
-      ]
-    },
-    {
-      title: 'Orders Related',
-      image: faq2,
-      questions: [
-        {
-          title: 'How to shop on WorldCarry?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'I am a sender, can I cancel my order?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'What can I order on WorldCarry?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'Why do I need to pay in advance?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'What happens after I create an order?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'Where do I pick up my order?',
-          content: 'Lorem ipsum...'
-        }
-      ]
-    },
-    {
-      title: 'Journey Related',
-      image: faq3,
-      questions: [
-        {
-          title: 'How to shop on WorldCarry?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'I am a sender, can I cancel my order?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'What can I order on WorldCarry?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'Why do I need to pay in advance?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'What happens after I create an order?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'Where do I pick up my order?',
-          content: 'Lorem ipsum...'
-        }
-      ]
-    },
-    {
-      title: 'Payment Related',
-      image: faq4,
-      questions: [
-        {
-          title: 'How to shop on WorldCarry?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'I am a sender, can I cancel my order?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'What can I order on WorldCarry?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'Why do I need to pay in advance?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'What happens after I create an order?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'Where do I pick up my order?',
-          content: 'Lorem ipsum...'
-        }
-      ]
-    },
-    {
-      title: 'Verification Related',
-      image: faq5,
-      questions: [
-        {
-          title: 'How to shop on WorldCarry?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'I am a sender, can I cancel my order?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'What can I order on WorldCarry?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'Why do I need to pay in advance?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'What happens after I create an order?',
-          content: 'Lorem ipsum...'
-        },
-        {
-          title: 'Where do I pick up my order?',
-          content: 'Lorem ipsum...'
-        }
-      ]
-    }
-  ]
 
   const _renderHeader = section => {
     return (
@@ -203,6 +205,22 @@ function FAQ ({ navigation, route }) {
 
   const _updateSections = activeSections => {
     handleChange('activeSections', activeSections)
+  }
+
+  const filtered = (key, value) => {
+    handleChange(key, value)
+    if (value) {
+      const newData = list2.filter(function (item) {
+        const itemData = item.title
+          ? item?.title?.toUpperCase()
+          : ''.toUpperCase()
+        const textData = value.toUpperCase()
+        return itemData.indexOf(textData) > -1
+      })
+      handleChange('filteredList', newData)
+    } else {
+      handleChange('filteredList', list2)
+    }
   }
 
   return (
@@ -232,9 +250,9 @@ function FAQ ({ navigation, route }) {
         <AppInput
           placeholder={'Search'}
           backgroundColor={COLORS.searchgrey}
-          // value={searchText}
-          // name={'searchText'}
-          // onChange={filtered}
+          value={searchText}
+          name={'searchText'}
+          onChange={filtered}
           borderColor={'transparent'}
           prefix={<SvgXml xml={searchIcon} style={{ opacity: 0.6 }} />}
         />
@@ -251,7 +269,7 @@ function FAQ ({ navigation, route }) {
         />
       ) : (
         <>
-          {list2.map((item, index) => (
+          {filteredList.map((item, index) => (
             <TouchableOpacity
               onPress={() => handleChange('questions', item.questions)}
               key={index}

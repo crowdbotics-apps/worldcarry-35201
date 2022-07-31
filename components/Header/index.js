@@ -123,7 +123,7 @@ export default function Header ({
                 <MenuOption
                   key={el}
                   style={{ flexDirection: 'row', alignItems: 'center' }}
-                  onSelect={() => navigation.navigate(el.route)}
+                  onSelect={() =>el.route? navigation.navigate(el.route):alert('Coming Soon')}
                 >
                   <SvgXml xml={el.image} />
                   <Text

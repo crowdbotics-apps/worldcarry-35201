@@ -4,18 +4,10 @@ import {
   TouchableOpacity,
   Text,
   View,
-  StyleSheet,
-  Image
+  StyleSheet
 } from 'react-native'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
-import { SvgXml } from 'react-native-svg'
 import { COLORS, FONT1LIGHT, FONT1MEDIUM, FONT1REGULAR } from '../../constants'
-import location from '../../assets/svg/location.svg'
-import globe from '../../assets/svg/globe.svg'
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
-import AppButton from '../AppButton'
-import { useNavigation } from '@react-navigation/native'
-import pinBlack from '../../assets/svg/pinBlack.svg'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 
 export default function Step4 ({
@@ -74,6 +66,7 @@ export default function Step4 ({
             fontSize: hp(2),
             color: COLORS.darkBlack
           }}
+          disableBuiltInState={true}
           isChecked={isChecked}
           onPress={() => handleChange('isChecked', !isChecked)}
         />

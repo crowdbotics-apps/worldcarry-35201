@@ -139,7 +139,8 @@ function Settings ({ navigation }) {
     {
       title: 'Change Password',
       icon: passwordSetting,
-      right: ''
+      right: '',
+      route: 'ChangePassword'
     },
     {
       title: 'Edit Payment Method',
@@ -247,7 +248,11 @@ function Settings ({ navigation }) {
           {list2.map((item, index) => (
             <TouchableOpacity
               onPress={() =>
-                item.logout ? logout() : navigation.navigate(item?.route)
+                item.logout
+                  ? logout()
+                  : item?.route
+                  ? navigation.navigate(item?.route)
+                  : alert('Coming Soon')
               }
               key={index}
               style={styles.listView}

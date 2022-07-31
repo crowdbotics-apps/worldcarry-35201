@@ -15,7 +15,7 @@ import Logo from '../../assets/svg/logoWhite.svg'
 import { AppButton } from '../../components'
 import { COLORS, FONT1REGULAR, FONT1SEMIBOLD } from '../../constants'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
-
+import LottieView from 'lottie-react-native'
 function Welcome ({ navigation }) {
   const sliderWidth = Dimensions.get('window').width
   let carouselRef = createRef()
@@ -45,35 +45,9 @@ function Welcome ({ navigation }) {
 
   const _renderItem = ({ item, index }) => {
     return (
-      <ImageBackground source={item.image} style={styles.View_617_1877}>
-        <View style={styles.top}>
-          <View style={styles.skipView}>
-            <AppButton
-              width={80}
-              backgroundColor={COLORS.white02}
-              title={'Skip'}
-              onPress={() => handleNavigate('LoginScreen')}
-            />
-          </View>
-          <SvgXml xml={Logo} style={{ marginBottom: 30 }} />
-          <Text style={styles.text}>{item.text}</Text>
-          {pagination()}
-        </View>
-        <View style={styles.bottom}>
-          <AppButton
-            title={'Login'}
-            width={'48%'}
-            backgroundColor={'transparent'}
-            color={COLORS.primary}
-            onPress={() => handleNavigate('LoginScreen', 0)}
-          />
-          <AppButton
-            width={'48%'}
-            title={'Sign up'}
-            onPress={() => handleNavigate('LoginScreen', 1)}
-          />
-        </View>
-      </ImageBackground>
+      <View style={styles.slide}>
+        <Text style={styles.text}>{item.text}</Text>
+      </View>
     )
   }
 
@@ -102,20 +76,59 @@ function Welcome ({ navigation }) {
 
   return (
     <>
-      <Carousel
-        layout={'default'}
-        ref={e => {
-          carouselRef = e
-        }}
-        onSnapToItem={index =>
-          setState(pre => ({ ...pre, activeSlide: index }))
-        }
-        style={{ marginTop: 30 }}
-        data={entries}
-        renderItem={_renderItem}
-        sliderWidth={sliderWidth}
-        itemWidth={sliderWidth}
-      />
+      <View style={styles.View_617_1877}>
+        <LottieView
+          source={require('../../assets/animation/animation.json')}
+          autoPlay
+          // resizeMode='contain'
+          style={{ aspectRatio: 1, position: 'absolute' }}
+          loop
+        />
+        <View style={styles.top}>
+          <View style={styles.skipView}>
+            <AppButton
+              width={80}
+              backgroundColor={COLORS.white02}
+              title={'Skip'}
+              onPress={() => handleNavigate('LoginScreen')}
+            />
+          </View>
+          <SvgXml xml={Logo} style={{ marginBottom: 30 }} />
+
+          <Carousel
+            layout={'default'}
+            ref={e => {
+              carouselRef = e
+            }}
+            onSnapToItem={index =>
+              setState(pre => ({ ...pre, activeSlide: index }))
+            }
+            autoplay
+            autoplayDelay={1000}
+            loop
+            style={{ marginTop: 30 }}
+            data={entries}
+            renderItem={_renderItem}
+            sliderWidth={sliderWidth}
+            itemWidth={sliderWidth}
+          />
+          {pagination()}
+        </View>
+        <View style={styles.bottom}>
+          <AppButton
+            title={'Login'}
+            width={'48%'}
+            backgroundColor={'transparent'}
+            color={COLORS.primary}
+            onPress={() => handleNavigate('LoginScreen', 0)}
+          />
+          <AppButton
+            width={'48%'}
+            title={'Sign up'}
+            onPress={() => handleNavigate('LoginScreen', 1)}
+          />
+        </View>
+      </View>
     </>
   )
 }

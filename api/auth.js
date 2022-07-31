@@ -22,6 +22,10 @@ export const setPassword = (payload, token) => {
   return API.post('api/v1/users/password/', payload, token)
 }
 
+export const changePassword = (payload, token) => {
+  return API.post('rest-auth/password/change/', payload, token)
+}
+
 export const updateProfile = async (payload, user_id, token) => {
   return API.patch(`api/v1/users/${user_id}/`, payload, token)
 }
@@ -62,6 +66,18 @@ export const addFavoriteFoodtruck = (body, token) => {
   return API.post('api/v1/customers/favorite/', body, token)
 }
 
-export const removeFavoriteFoodtruck = (body, token) => {
-  return API.delete('api/v1/customers/favorite/', body, token)
+export const sendEmailForVerification = (body, token) => {
+  return API.post('api/v1/users/verify_email/', body, token)
+}
+
+export const veriOTP = (body, token) => {
+  return API.get(`api/v1/users/verify_email/${body}`, token)
+}
+
+export const sendOTPForVerification = (body, token) => {
+  return API.post('api/v1/users/verify_phone/', body, token)
+}
+
+export const veriPhoneOTP = (body, token) => {
+  return API.get(`api/v1/users/verify_phone/${body}`, token)
 }

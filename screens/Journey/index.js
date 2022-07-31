@@ -131,6 +131,7 @@ function Journey ({ navigation }) {
     <View style={styles.container}>
       <Header
         title={'Journeys'}
+        color={COLORS.darkBlack}
         rightItem={
           <AppButton
             width={hp(15)}

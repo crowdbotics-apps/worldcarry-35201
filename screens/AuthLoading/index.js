@@ -7,7 +7,13 @@ import AppContext from '../../store/Context'
 function AuthLoading ({ navigation }) {
   // Context
   const context = useContext(AppContext)
-  const { setUser, _getOrders, _getJourneys, _getMyAddresses } = context
+  const {
+    setUser,
+    _getProfile,
+    _getOrders,
+    _getJourneys,
+    _getMyAddresses
+  } = context
 
   useEffect(() => {
     _bootstrapAsync()
@@ -21,6 +27,7 @@ function AuthLoading ({ navigation }) {
     if (userUID && user) {
       const userData = JSON.parse(user)
       setUser(userData)
+      _getProfile()
       _getOrders('')
       _getJourneys('')
       _getMyAddresses()

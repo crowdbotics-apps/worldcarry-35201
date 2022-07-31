@@ -31,6 +31,8 @@ import PassportVerification from '../screens/Profile/PassportVerification'
 import FAQ from '../screens/Profile/FAQ'
 import Support from '../screens/Profile/Support'
 import FeedBack from '../screens/Profile/FeedBack'
+import ChangePassword from '../screens/ForgotPassword/ChangePassword'
+import AddAddress from '../screens/Profile/AddAddress'
 
 const Stack = createStackNavigator()
 function MainStackNav () {
@@ -72,6 +74,8 @@ function MainStackNav () {
       <Stack.Screen name='FAQ' component={FAQ} />
       <Stack.Screen name='Support' component={Support} />
       <Stack.Screen name='FeedBack' component={FeedBack} />
+      <Stack.Screen name='ChangePassword' component={ChangePassword} />
+      <Stack.Screen name='AddAddress' component={AddAddress} />
     </Stack.Navigator>
   )
 }

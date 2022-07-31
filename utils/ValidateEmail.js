@@ -9,3 +9,9 @@ export const validateName = value => {
     const isValid = pattern.test(String(value).toLowerCase());
     return isValid;
 };
+
+export const validateWeight = value => {
+    const pattern = /^-?((0(\.[0-9]+)?)|([1-9]+[0-9]*(\.[0-9]+)?))$/;
+    const isValid = pattern.test(String(value).toLowerCase());
+    return isValid;
+};

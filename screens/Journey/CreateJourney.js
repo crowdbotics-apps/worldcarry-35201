@@ -50,6 +50,7 @@ function CreateJourney ({ navigation, route }) {
     activeRound: activeRoundParams || false,
     isFocus: false,
     isFocus1: false,
+    isNotValidWeight: false,
     locationType: '',
     locationOpen: false,
     createdJourney: null
@@ -70,6 +71,7 @@ function CreateJourney ({ navigation, route }) {
     date_of_journey,
     date_of_return,
     willing_to_carry,
+    isNotValidWeight,
     total_weight,
     loading,
     activeRound,
@@ -278,7 +280,7 @@ function CreateJourney ({ navigation, route }) {
         !arrival_state ||
         !arrival_country ||
         !date_of_journey
-      : willing_to_carry.length === 0 || !total_weight
+      : willing_to_carry.length === 0 || !total_weight || isNotValidWeight
   console.warn('myAddresses', myAddresses)
 
   return (
@@ -388,6 +390,7 @@ function CreateJourney ({ navigation, route }) {
             {step === 1 && (
               <JourneyStep2
                 willing_to_carry={willing_to_carry}
+                isNotValidWeight={isNotValidWeight}
                 total_weight={total_weight}
                 handleChange={handleChange}
               />

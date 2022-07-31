@@ -43,10 +43,26 @@ function AddPaymentMethod ({ navigation }) {
     loading: false,
     modalVisible: false,
     country: '',
-    paymethods: []
+    paymethods: [],
+    email: '',
+    name: '',
+    cvc: '',
+    zip: '',
+    date: '',
+    cardNumber: ''
   })
 
-  const { modalVisible, country, loading } = state
+  const {
+    modalVisible,
+    country,
+    loading,
+    email,
+    name,
+    cvc,
+    zip,
+    date,
+    cardNumber
+  } = state
 
   useFocusEffect(
     useCallback(() => {
@@ -95,20 +111,38 @@ function AddPaymentMethod ({ navigation }) {
           placeholder={'Mail ID'}
           borderColor={COLORS.borderColor1}
           inputLabel={'Email'}
+          value={email}
+          name={'email'}
+          onChange={handleChange}
           marginBottom={20}
         />
         <AppInput
           marginBottom={10}
           placeholder={'Card Number'}
+          value={cardNumber}
+          name={'cardNumber'}
+          onChange={handleChange}
           borderColor={COLORS.borderColor1}
           inputLabel={'Debit/Credit Card information'}
         />
         <View style={[styles.rowBetween, { marginBottom: 20 }]}>
           <View style={{ width: '48%' }}>
-            <AppInput placeholder={'MM/YY'} borderColor={COLORS.borderColor1} />
+            <AppInput
+              placeholder={'MM/YY'}
+              value={date}
+              name={'date'}
+              onChange={handleChange}
+              borderColor={COLORS.borderColor1}
+            />
           </View>
           <View style={{ width: '48%' }}>
-            <AppInput placeholder={'CVC'} borderColor={COLORS.borderColor1} />
+            <AppInput
+              placeholder={'CVC'}
+              value={cvc}
+              name={'cvc'}
+              onChange={handleChange}
+              borderColor={COLORS.borderColor1}
+            />
           </View>
         </View>
         <View style={styles.billingType}>
@@ -154,12 +188,18 @@ function AddPaymentMethod ({ navigation }) {
         <AppInput
           marginBottom={20}
           placeholder={'Enter ZIP'}
+          value={zip}
+          name={'zip'}
+          onChange={handleChange}
           borderColor={COLORS.borderColor1}
         />
         <AppInput
           marginBottom={20}
           placeholder={'Enter name'}
           inputLabel={'Name on Card'}
+          value={name}
+          name={'name'}
+          onChange={handleChange}
           borderColor={COLORS.borderColor1}
         />
         <AppButton
@@ -195,7 +235,7 @@ function AddPaymentMethod ({ navigation }) {
               <SvgXml xml={cardOrange} width={50} height={50} />
             </View>
             <View style={styles.textView}>
-              <Text style={styles.textBold}>Credet card</Text>
+              <Text style={styles.textBold}>Credit card</Text>
               <Text style={styles.textBold}>added Successfully</Text>
               <AppButton
                 title={'Done'}

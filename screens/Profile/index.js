@@ -36,6 +36,7 @@ import dollar from '../../assets/svg/dollar.svg'
 import Linkedin from '../../assets/svg/linkedin.svg'
 import facebookIcon from '../../assets/svg/facebookIcon.svg'
 import facebookGrey from '../../assets/svg/facebookGrey.svg'
+import verified from '../../assets/svg/verified.svg'
 import pinBlack from '../../assets/svg/pinBlack.svg'
 import insta from '../../assets/svg/insta.svg'
 import orderIcon from '../../assets/svg/tabs/Work.svg'
@@ -124,6 +125,10 @@ function Profile ({ navigation }) {
       title: 'Phone Number',
       icon: phoneNumber,
       right: 'Verify',
+      isVerified: user?.profile?.is_phone_verified ? 'verified' : '',
+      verified: user?.profile?.is_phone_verified
+        ? user?.profile?.verified_phone
+        : '',
       route: 'PhoneVerification'
     },
     {
@@ -144,6 +149,10 @@ function Profile ({ navigation }) {
       right: 'Verify',
       title: 'Email ID',
       icon: mail,
+      isVerified: user?.profile?.is_email_verified ? 'verified' : '',
+      verified: user?.profile?.is_email_verified
+        ? user?.profile?.verified_email
+        : '',
       right: 'Verify',
       route: 'EmailVerification'
     },
@@ -418,43 +427,70 @@ function Profile ({ navigation }) {
                       marginLeft: 10,
                       alignItems: 'center',
                       justifyContent: 'center',
-                      backgroundColor: COLORS.tripBoxBorder
+                      backgroundColor:
+                        item?.isVerified === 'verified'
+                          ? COLORS.primary
+                          : COLORS.tripBoxBorder
                     }}
                   >
                     <SvgXml xml={item.icon} />
                   </View>
-                  <Text
-                    style={[
-                      styles.name,
-                      {
-                        marginLeft: 10,
-                        fontFamily: FONT1REGULAR,
-                        fontSize: hp(2),
-                        color: COLORS.darkBlack
-                      }
-                    ]}
-                  >
-                    {item.title}
-                  </Text>
+                  <View>
+                    <Text
+                      style={[
+                        styles.name,
+                        {
+                          marginLeft: 10,
+                          fontFamily: FONT1REGULAR,
+                          fontSize:
+                            item?.isVerified === 'verified' ? hp(1.6) : hp(2),
+                          color: COLORS.darkBlack
+                        }
+                      ]}
+                    >
+                      {item.title}
+                    </Text>
+                    {item?.isVerified === 'verified' && (
+                      <Text
+                        style={[
+                          styles.name,
+                          {
+                            marginLeft: 10,
+                            fontFamily: FONT1REGULAR,
+                            fontSize: hp(1.8),
+                            color: COLORS.darkBlack
+                          }
+                        ]}
+                      >
+                        {item.verified}
+                      </Text>
+                    )}
+                  </View>
                 </View>
-                <TouchableOpacity
-                  onPress={() => item.route && navigation.navigate(item.route)}
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center'
-                  }}
-                >
-                  <Text
+                {item?.isVerified === 'verified' ? (
+                  <SvgXml xml={verified} style={{ marginRight: 10 }} />
+                ) : (
+                  <TouchableOpacity
+                    onPress={() =>
+                      item.route && navigation.navigate(item.route)
+                    }
                     style={{
-                      marginRight: 5,
-                      fontFamily: FONT1MEDIUM,
-                      fontSize: hp(1.8),
-                      color: COLORS.primary
+                      flexDirection: 'row',
+                      alignItems: 'center'
                     }}
                   >
-                    {item.right}
-                  </Text>
-                </TouchableOpacity>
+                    <Text
+                      style={{
+                        marginRight: 5,
+                        fontFamily: FONT1MEDIUM,
+                        fontSize: hp(1.8),
+                        color: COLORS.primary
+                      }}
+                    >
+                      {item.right}
+                    </Text>
+                  </TouchableOpacity>
+                )}
               </View>
             ))}
             <Text style={styles.head}>Social verification</Text>
@@ -489,45 +525,72 @@ function Profile ({ navigation }) {
                       alignItems: 'center',
                       justifyContent: 'center',
                       backgroundColor:
-                        item.title === 'Facebook' || item.title === 'Linkedin'
+                        item?.isVerified === 'verified'
+                          ? COLORS.primary
+                          : item.title === 'Facebook' ||
+                            item.title === 'Linkedin'
                           ? COLORS.white
                           : COLORS.tripBoxBorder
                     }}
                   >
                     <SvgXml xml={item.icon} />
                   </View>
-                  <Text
-                    style={[
-                      styles.name,
-                      {
-                        marginLeft: 10,
-                        fontFamily: FONT1REGULAR,
-                        fontSize: hp(2),
-                        color: COLORS.darkBlack
-                      }
-                    ]}
-                  >
-                    {item.title}
-                  </Text>
+                  <View>
+                    <Text
+                      style={[
+                        styles.name,
+                        {
+                          marginLeft: 10,
+                          fontFamily: FONT1REGULAR,
+                          fontSize:
+                            item?.isVerified === 'verified' ? hp(1.6) : hp(2),
+                          color: COLORS.darkBlack
+                        }
+                      ]}
+                    >
+                      {item.title}
+                    </Text>
+                    {item?.isVerified === 'verified' && (
+                      <Text
+                        style={[
+                          styles.name,
+                          {
+                            marginLeft: 10,
+                            fontFamily: FONT1REGULAR,
+                            fontSize: hp(1.8),
+                            color: COLORS.darkBlack
+                          }
+                        ]}
+                      >
+                        {item.verified}
+                      </Text>
+                    )}
+                  </View>
                 </View>
-                <TouchableOpacity
-                  onPress={() => item.route && navigation.navigate(item.route)}
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center'
-                  }}
-                >
-                  <Text
+                {item?.isVerified === 'verified' ? (
+                  <SvgXml xml={verified} style={{ marginRight: 10 }} />
+                ) : (
+                  <TouchableOpacity
+                    onPress={() =>
+                      item.route && navigation.navigate(item.route)
+                    }
                     style={{
-                      marginRight: 5,
-                      fontFamily: FONT1MEDIUM,
-                      fontSize: hp(1.8),
-                      color: COLORS.primary
+                      flexDirection: 'row',
+                      alignItems: 'center'
                     }}
                   >
-                    {item.right}
-                  </Text>
-                </TouchableOpacity>
+                    <Text
+                      style={{
+                        marginRight: 5,
+                        fontFamily: FONT1MEDIUM,
+                        fontSize: hp(1.8),
+                        color: COLORS.primary
+                      }}
+                    >
+                      {item.right}
+                    </Text>
+                  </TouchableOpacity>
+                )}
               </View>
             ))}
           </View>
@@ -537,8 +600,8 @@ function Profile ({ navigation }) {
             style={{ width: '100%', alignItems: 'center', marginBottom: 20 }}
           >
             {myAddresses?.map((item, index) => (
-              <TouchableOpacity
-                onPress={() => selectLocation(item)}
+              <View
+                // onPress={() => selectLocation(item)}
                 key={index}
                 style={{
                   width: '90%',
@@ -581,16 +644,20 @@ function Profile ({ navigation }) {
                     {item?.city}, {item?.country}
                   </Text>
                 </View>
-                <Icon
-                  name='dots-three-vertical'
-                  type='entypo'
-                  color={COLORS.darkBlack}
-                  size={14}
-                />
-              </TouchableOpacity>
+                <TouchableOpacity>
+                  <Icon
+                    name='dots-three-vertical'
+                    type='entypo'
+                    color={COLORS.darkBlack}
+                    size={14}
+                  />
+                </TouchableOpacity>
+              </View>
             ))}
             <View>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('AddAddress')}
+              >
                 <Text
                   style={[
                     styles.name,

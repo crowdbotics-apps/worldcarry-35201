@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { COLORS, FONT1BOLD, FONT1MEDIUM, FONT2REGULAR } from '../../constants'
@@ -9,16 +9,21 @@ import { useFocusEffect } from '@react-navigation/native'
 import Toast from 'react-native-simple-toast'
 import addcard from '../../assets/svg/mainID.svg'
 import { SvgXml } from 'react-native-svg'
+import { sendEmailForVerification } from '../../api/auth'
+import { validateEmail } from '../../utils/ValidateEmail'
+import AppContext from '../../store/Context'
 
 function EmailVerification ({ navigation }) {
+  // Context
+  const context = useContext(AppContext)
+  const { user } = context
   // State
   const [state, setState] = useState({
     loading: false,
-    isChecked: '',
-    paymethods: []
+    email: user?.email || ''
   })
 
-  const { paymethods, isChecked, loading } = state
+  const { email, loading } = state
 
   useFocusEffect(
     useCallback(() => {
@@ -30,13 +35,29 @@ function EmailVerification ({ navigation }) {
     setState(pre => ({ ...pre, [name]: value }))
   }
 
-  const _getPayMethod = async () => {
+  const _isEmailValid = () => {
+    if (email) {
+      const isValid = validateEmail(email)
+      if (!isValid) {
+        handleChange('email', '')
+        Toast.show('Email is not valid!')
+      } else {
+        handleChange('isEmailValid', true)
+      }
+    }
+  }
+
+  const _sendEmailForVerification = async () => {
     try {
       handleChange('loading', true)
       const token = await AsyncStorage.getItem('token')
-      const res = await getPayMethod(token)
+      const body = {
+        email
+      }
+      await sendEmailForVerification(body, token)
       handleChange('loading', false)
-      handleChange('paymethods', res?.data?.data)
+      Toast.show(`Email has been sent.`)
+      navigation.navigate('EmailVerificationOTP', { email })
     } catch (error) {
       handleChange('loading', false)
       const errorText = Object.values(error?.response?.data)
@@ -44,13 +65,6 @@ function EmailVerification ({ navigation }) {
     }
   }
 
-  if (loading) {
-    return (
-      <View style={styles.loading}>
-        <ActivityIndicator size={'large'} color={COLORS.primary} />
-      </View>
-    )
-  }
   return (
     <View style={styles.container}>
       <View style={{ width: '100%', alignItems: 'center' }}>
@@ -67,14 +81,22 @@ function EmailVerification ({ navigation }) {
             verification code
           </Text>
           <View style={{ width: '90%', marginTop: 20 }}>
-            <AppInput placeholder={'Main ID'} />
+            <AppInput
+              placeholder={'Main ID'}
+              value={email}
+              name={'email'}
+              onBlur={_isEmailValid}
+              onChange={handleChange}
+            />
           </View>
         </View>
       </View>
       <View style={{ width: '90%', marginBottom: 20 }}>
         <AppButton
           title={'Send'}
-          onPress={() => navigation.navigate('EmailVerificationOTP')}
+          loading={loading}
+          disabled={!email}
+          onPress={_sendEmailForVerification}
         />
       </View>
     </View>

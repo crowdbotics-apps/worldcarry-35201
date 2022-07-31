@@ -32,12 +32,13 @@ import pinBlack from '../../assets/svg/pinBlack.svg'
 import currentLcoation from '../../assets/svg/currentLcoation.svg'
 import compass from '../../assets/svg/compass.svg'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
-
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { AppButton } from '../../components'
 import { SvgXml } from 'react-native-svg'
 import { Icon } from 'react-native-elements'
 import Geocoder from 'react-native-geocoding'
+import { createMyAddresses } from '../../api/journey'
+
 Geocoder.init('AIzaSyAEmKGJ68eGUiasdk3A3Ws5PJ2VvB0wSPg')
 
 const { width, height } = Dimensions.get('window')
@@ -45,7 +46,7 @@ const ASPECT_RATIO = width / height
 let LATITUDE_DELTA = 0.0922
 let LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
-function PickupLocation ({ navigation }) {
+function AddAddress ({ navigation }) {
   var mapRef = useRef(null)
   const [state, setState] = useState({
     loading: false,
@@ -58,7 +59,7 @@ function PickupLocation ({ navigation }) {
   // Context
   const context = useContext(AppContext)
   const { loading, truckLocation, street, isFocus, isSearch } = state
-  const { setMapLocationForPickup } = context
+  const { _getMyAddresses } = context
 
   useFocusEffect(
     useCallback(() => {
@@ -75,26 +76,37 @@ function PickupLocation ({ navigation }) {
   }
 
   const handleNext = () => {
-    if (!street) {
-      Geocoder.from(truckLocation?.latitude, truckLocation?.longitude)
-        .then(async json => {
-          var addressComponent = json.results[0].address_components[0]
-          const payload = {
-            pickup_address_street_one: addressComponent.short_name,
-            pickup_address_coordinates: truckLocation
+    Geocoder.from(truckLocation?.latitude, truckLocation?.longitude)
+      .then(async json => {
+        var address_components = json.results[0].address_components
+        let dState = ''
+        let country = ''
+        let city = ''
+        if (address_components !== undefined) {
+          const addrComp = address_components
+          for (let i = 0; i < addrComp.length; ++i) {
+            var typ = addrComp[i].types[0]
+            if (typ === 'administrative_area_level_1') {
+              dState = addrComp[i].long_name
+            } else if (typ === 'locality') {
+              city = addrComp[i].long_name
+            } else if (typ === 'country') {
+              country = addrComp[i].long_name
+            } //store the country
           }
-          setMapLocationForPickup(payload)
-          navigation.goBack()
-        })
-        .catch(error => console.warn('Geocodererror', error))
-    } else {
-      const payload = {
-        pickup_address_street_one: street,
-        pickup_address_coordinates: truckLocation
-      }
-      setMapLocationForPickup(payload)
-      navigation.goBack()
-    }
+        }
+        const coords = `Point(${truckLocation?.latitude} ${truckLocation?.longitude})`
+        const payload = {
+          city: city,
+          state: dState,
+          country: country,
+          coordinates: coords
+        }
+        await createMyAddresses(payload, token)
+        _getMyAddresses()
+        navigation.goBack()
+      })
+      .catch(error => console.warn('Geocodererror', error))
   }
 
   const handleSearch = (data, details) => {
@@ -106,8 +118,8 @@ function PickupLocation ({ navigation }) {
         longitudeDelta: LONGITUDE_DELTA
       }
       handleChange('street', data.description)
-      mapRef && mapRef?.current?.animateToRegion(region)
       handleChange('truckLocation', region)
+      mapRef && mapRef?.current?.animateToRegion(region)
     }
   }
 
@@ -324,7 +336,7 @@ function PickupLocation ({ navigation }) {
                   containerStyle={{ marginRight: 5, marginTop: 2 }}
                 />
               </TouchableOpacity>
-              <Text style={styles.title}>{'Choose Pickup Address'}</Text>
+              <Text style={styles.title}>{'Add Address'}</Text>
             </View>
             <TouchableOpacity
               onPress={() => handleChange('isSearch', true)}
@@ -457,4 +469,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default PickupLocation
+export default AddAddress

@@ -18,17 +18,19 @@ import addcard from '../../assets/svg/OTPlock.svg'
 import verified from '../../assets/svg/verified.svg'
 import { SvgXml } from 'react-native-svg'
 import OTPInputView from '@twotalltotems/react-native-otp-input'
+import { sendEmailForVerification, veriOTP } from '../../api/auth'
 
-function EmailVerificationOTP ({ navigation }) {
+function EmailVerificationOTP ({ navigation, route }) {
+  const email = route?.params?.email
   // State
   const [state, setState] = useState({
     loading: false,
+    loadingAgain: false,
     modalVisible: false,
-    isChecked: '',
-    paymethods: []
+    otp: ''
   })
 
-  const { loading, modalVisible } = state
+  const { loading, loadingAgain, modalVisible, otp } = state
 
   useFocusEffect(
     useCallback(() => {
@@ -40,13 +42,15 @@ function EmailVerificationOTP ({ navigation }) {
     setState(pre => ({ ...pre, [name]: value }))
   }
 
-  const _getPayMethod = async () => {
+  const _veriOTP = async () => {
     try {
       handleChange('loading', true)
       const token = await AsyncStorage.getItem('token')
-      const res = await getPayMethod(token)
+      const body = `?otp=${otp}`
+      await veriOTP(body, token)
       handleChange('loading', false)
-      handleChange('paymethods', res?.data?.data)
+      handleChange('modalVisible', true)
+      // Toast.show(`Email has been verified`)
     } catch (error) {
       handleChange('loading', false)
       const errorText = Object.values(error?.response?.data)
@@ -54,13 +58,23 @@ function EmailVerificationOTP ({ navigation }) {
     }
   }
 
-  if (loading) {
-    return (
-      <View style={styles.loading}>
-        <ActivityIndicator size={'large'} color={COLORS.primary} />
-      </View>
-    )
+  const _sendEmailForVerification = async () => {
+    try {
+      handleChange('loadingAgain', true)
+      const token = await AsyncStorage.getItem('token')
+      const body = {
+        email
+      }
+      await sendEmailForVerification(body, token)
+      handleChange('loadingAgain', false)
+      Toast.show(`Email has been sent.`)
+    } catch (error) {
+      handleChange('loadingAgain', false)
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
   }
+
   return (
     <View style={styles.container}>
       <View style={{ width: '100%', alignItems: 'center' }}>
@@ -95,18 +109,17 @@ function EmailVerificationOTP ({ navigation }) {
           title={'Resend Code'}
           backgroundColor={'transparent'}
           color={COLORS.primary}
-          // onPress={() => navigation.navigate('AddEmailVerificationOTP')}
+          loading={loadingAgain}
+          onPress={_sendEmailForVerification}
         />
         <AppButton
           title={'Verify'}
-          onPress={() => handleChange('modalVisible', true)}
+          disabled={!otp}
+          loading={loading}
+          onPress={_veriOTP}
         />
       </View>
-      <Modal
-        animationType='slide'
-        transparent={true}
-        visible={modalVisible}
-      >
+      <Modal animationType='slide' transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.imageView}>

@@ -49,7 +49,6 @@ function LoginScreen ({ navigation, route }) {
   const context = useContext(AppContext)
   const { setUser } = context
 
-
   const [state, setState] = useState({
     email: '',
     name: '',
@@ -375,8 +374,9 @@ function LoginScreen ({ navigation, route }) {
     // <View style={styles.container}>
     <KeyboardAwareScrollView
       style={styles.container}
-      // enableAutomaticScroll={true}
-      // keyboardShouldPersistTaps={'handled'}
+      enableAutomaticScroll={true}
+      onScrollAnimationEnd
+      keyboardShouldPersistTaps={'handled'}
       contentContainerStyle={{
         justifyContent: 'space-between',
         alignItems: 'center'
@@ -420,6 +420,7 @@ function LoginScreen ({ navigation, route }) {
                 }
                 placeholder={'Email'}
                 returnKeyType='go'
+                caretHidden={false}
                 keyboardType={'email-address'}
                 autoFocus={true}
                 value={email}
@@ -482,7 +483,7 @@ function LoginScreen ({ navigation, route }) {
                   fontFamily: FONT1REGULAR,
                   fontSize: hp(2),
                   color: COLORS.darkBlack,
-                  textDecorationLine: "none",
+                  textDecorationLine: 'none'
                 }}
                 onPress={() => handleChange('isChecked', !isChecked)}
               />
@@ -512,6 +513,7 @@ function LoginScreen ({ navigation, route }) {
                 }
                 placeholder={'Name'}
                 returnKeyType='go'
+                caretHidden={false}
                 keyboardType={'email-address'}
                 autoFocus={true}
                 value={name}
@@ -528,6 +530,7 @@ function LoginScreen ({ navigation, route }) {
                   password1Ref.current && password1Ref.current?.focus()
                 }
                 ref={emailRef}
+                caretHidden={false}
                 placeholder={'Email'}
                 returnKeyType='go'
                 keyboardType={'email-address'}
@@ -622,7 +625,8 @@ function LoginScreen ({ navigation, route }) {
                 textStyle={{
                   fontFamily: FONT1REGULAR,
                   fontSize: hp(2),
-                  color: COLORS.darkBlack
+                  color: COLORS.darkBlack,
+                  textDecorationLine: 'none'
                 }}
                 onPress={() => handleChange('isChecked', !isChecked)}
               />

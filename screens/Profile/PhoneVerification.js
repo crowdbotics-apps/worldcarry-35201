@@ -31,6 +31,7 @@ import searchIcon from '../../assets/svg/searchIcon.svg'
 import { SvgXml } from 'react-native-svg'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import { COUNTRY } from '../../constants/countrylist'
+import { sendOTPForVerification } from '../../api/auth'
 
 function PhoneVerification ({ navigation }) {
   // State
@@ -62,16 +63,21 @@ function PhoneVerification ({ navigation }) {
     setState(pre => ({ ...pre, [name]: value }))
   }
 
-  const _getPayMethod = async () => {
+  const _sendOTPForVerification = async () => {
     try {
       handleChange('loading', true)
       const token = await AsyncStorage.getItem('token')
-      const res = await getPayMethod(token)
+      const body = {
+        phone: phone_number
+      }
+      await sendOTPForVerification(body, token)
       handleChange('loading', false)
-      handleChange('paymethods', res?.data?.data)
+      Toast.show(`OTP has been sent.`)
+      navigation.navigate('PhoneVerificationOTP', { phone: phone_number })
     } catch (error) {
       handleChange('loading', false)
       const errorText = Object.values(error?.response?.data)
+      console.warn('errorText', errorText)
       Toast.show(`Error: ${errorText}`)
     }
   }
@@ -87,13 +93,6 @@ function PhoneVerification ({ navigation }) {
     }
   }
 
-  if (loading) {
-    return (
-      <View style={styles.loading}>
-        <ActivityIndicator size={'large'} color={COLORS.primary} />
-      </View>
-    )
-  }
   return (
     <View style={styles.container}>
       <View style={{ width: '100%', alignItems: 'center' }}>
@@ -149,8 +148,9 @@ function PhoneVerification ({ navigation }) {
       <View style={{ width: '90%', marginBottom: 20 }}>
         <AppButton
           title={'Send'}
+          loading={loading}
           disabled={!phone_number}
-          onPress={() => navigation.navigate('PhoneVerificationOTP')}
+          onPress={_sendOTPForVerification}
         />
       </View>
       <Modal animationType='slide' transparent={true} visible={modalVisible}>

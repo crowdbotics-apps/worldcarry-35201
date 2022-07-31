@@ -124,7 +124,8 @@ function OrderDetails ({ navigation, route }) {
   var text = orderData?.product_name
   var count = 30
 
-  var result = text?.slice(0, count) + (text?.length > count ? '...' : '')
+  var result =
+    text && text?.slice(0, count) + (text?.length > count ? '...' : '')
 
   return (
     <ScrollView
@@ -132,7 +133,7 @@ function OrderDetails ({ navigation, route }) {
       contentContainerStyle={{ alignItems: 'center' }}
     >
       <Header
-        title={result}
+        title={result || 'Journey'}
         rightEmpty
         back
         backgroundColor={COLORS.primary}
@@ -223,6 +224,7 @@ function OrderDetails ({ navigation, route }) {
                       paddingHorizontal: 8,
                       height: 30,
                       borderRadius: 50,
+                      marginTop: 10,
                       borderWidth: 1,
                       alignItems: 'center',
                       justifyContent: 'center',

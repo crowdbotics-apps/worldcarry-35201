@@ -18,17 +18,19 @@ import addcard from '../../assets/svg/OTPlock.svg'
 import verified from '../../assets/svg/verified.svg'
 import { SvgXml } from 'react-native-svg'
 import OTPInputView from '@twotalltotems/react-native-otp-input'
+import { sendOTPForVerification, veriPhoneOTP } from '../../api/auth'
 
-function PhoneVerificationOTP ({ navigation }) {
+function PhoneVerificationOTP ({ navigation, route }) {
+  const phone = route?.params?.phone
   // State
   const [state, setState] = useState({
     loading: false,
     modalVisible: false,
-    isChecked: '',
-    paymethods: []
+    otp: '',
+    loadingAgain: false
   })
 
-  const { loading, modalVisible } = state
+  const { loading, modalVisible, otp, loadingAgain } = state
 
   useFocusEffect(
     useCallback(() => {
@@ -40,13 +42,15 @@ function PhoneVerificationOTP ({ navigation }) {
     setState(pre => ({ ...pre, [name]: value }))
   }
 
-  const _getPayMethod = async () => {
+  const _veriPhoneOTP = async () => {
     try {
       handleChange('loading', true)
       const token = await AsyncStorage.getItem('token')
-      const res = await getPayMethod(token)
+      const body = `?otp=${otp}`
+      await veriPhoneOTP(body, token)
       handleChange('loading', false)
-      handleChange('paymethods', res?.data?.data)
+      handleChange('modalVisible', true)
+      // Toast.show(`Email has been verified`)
     } catch (error) {
       handleChange('loading', false)
       const errorText = Object.values(error?.response?.data)
@@ -54,13 +58,23 @@ function PhoneVerificationOTP ({ navigation }) {
     }
   }
 
-  if (loading) {
-    return (
-      <View style={styles.loading}>
-        <ActivityIndicator size={'large'} color={COLORS.primary} />
-      </View>
-    )
+  const _sendOTPForVerification = async () => {
+    try {
+      handleChange('loadingAgain', true)
+      const token = await AsyncStorage.getItem('token')
+      const body = {
+        phone: phone
+      }
+      await sendOTPForVerification(body, token)
+      handleChange('loadingAgain', false)
+      Toast.show(`OTP has been sent.`)
+    } catch (error) {
+      handleChange('loadingAgain', false)
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
   }
+
   return (
     <View style={styles.container}>
       <View style={{ width: '100%', alignItems: 'center' }}>
@@ -96,11 +110,14 @@ function PhoneVerificationOTP ({ navigation }) {
           title={'Resend Code'}
           backgroundColor={'transparent'}
           color={COLORS.primary}
-          // onPress={() => navigation.navigate('AddPhoneVerificationOTP')}
+          loading={loadingAgain}
+          onPress={_sendOTPForVerification}
         />
         <AppButton
           title={'Verify'}
-          onPress={() => handleChange('modalVisible', true)}
+          disabled={!otp}
+          loading={loading}
+          onPress={_veriPhoneOTP}
         />
       </View>
       <Modal animationType='slide' transparent={true} visible={modalVisible}>

@@ -4,15 +4,11 @@ import {
   TouchableOpacity,
   Text,
   View,
-  StyleSheet,
+  StyleSheet
 } from 'react-native'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { SvgXml } from 'react-native-svg'
-import {
-  COLORS,
-  FONT1REGULAR,
-  FONT1SEMIBOLD
-} from '../../constants'
+import { COLORS, FONT1REGULAR, FONT1SEMIBOLD } from '../../constants'
 import weightIcon from '../../assets/svg/weight.svg'
 import { useNavigation } from '@react-navigation/native'
 import Jewellery from '../../assets/svg/Jewellery.svg'
@@ -23,13 +19,22 @@ import DocumentsBooks from '../../assets/svg/DocumentsBooks.svg'
 import Medication from '../../assets/svg/Medication.svg'
 import AppInput from '../AppInput'
 import { Icon } from 'react-native-elements'
+import { validateWeight } from '../../utils/ValidateEmail'
 
 export default function JourneyStep2 ({
   handleChange,
   total_weight,
-  willing_to_carry
+  willing_to_carry,
+  isNotValidWeight
 }) {
   const navigation = useNavigation()
+  const checkWeight = () => {
+    if (!validateWeight(total_weight)) {
+      handleChange('isNotValidWeight', true)
+    }else{
+      handleChange('isNotValidWeight', false)
+    }
+  }
   const products = [
     { image: Electronics, text: 'Electronics' },
     { image: Jewellery, text: 'Jewelry' },
@@ -94,8 +99,12 @@ export default function JourneyStep2 ({
         <AppInput
           placeholder={'Weight'}
           value={total_weight}
+          onBlur={checkWeight}
           name={'total_weight'}
+          keyboardType={'number-pad'}
+          maxLength={3}
           onChange={handleChange}
+          returnKeyType={'done'}
           borderColor={COLORS.borderColor}
           postfix={
             <TouchableOpacity
@@ -122,6 +131,18 @@ export default function JourneyStep2 ({
           prefix={<SvgXml xml={weightIcon} />}
           inputLabel={'of a total weight,'}
         />
+        {isNotValidWeight && (
+          <Text
+            style={{
+              fontFamily: FONT1REGULAR,
+              color: COLORS.darkRed,
+              marginTop: 10,
+              fontSize: hp(1.8)
+            }}
+          >
+            Weight is invalid
+          </Text>
+        )}
       </View>
     </ScrollView>
   )

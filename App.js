@@ -25,7 +25,7 @@ function App () {
       const user = await AsyncStorage.getItem('user')
       const userData = JSON.parse(user)
       const res = await getProfile(userData?.id, token)
-      console.warn('res?.data', res?.data)
+      console.warn('getProfile', res?.data)
       setUser(res?.data)
     } catch (error) {
       const errorText = Object.values(error?.response?.data)
