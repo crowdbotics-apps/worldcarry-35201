@@ -75,7 +75,8 @@ LOCAL_APPS = [
     'journeys',
     'locations',
     'admin_panel.apps.user',
-    'admin_panel.apps.feedback'
+    'admin_panel.apps.feedback',
+    'admin_panel.apps.orders',
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',
@@ -131,10 +132,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'worldcarry_35201.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
