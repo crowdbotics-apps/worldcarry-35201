@@ -76,7 +76,7 @@ LOCAL_APPS = [
     'locations',
     'admin_panel.apps.user',
     'admin_panel.apps.feedback',
-    'admin_panel.apps.orders',
+    'admin_panel.apps.orders_admin',
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',

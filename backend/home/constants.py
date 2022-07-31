@@ -19,7 +19,8 @@ ORDER_STATUS = (
     ('Unpaid', 'Unpaid'),
     ('Requested', 'Requested'),
     ('In transit', 'In transit'),
-    ('Recieved', 'Received')
+    ('Recieved', 'Received'),
+    ('Cancelled', 'Cancelled')
 )
 
 JOURNEY_TYPE = (

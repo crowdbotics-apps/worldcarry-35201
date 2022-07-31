@@ -9,11 +9,11 @@ from home.permissions import IsAdmin
 from rest_framework.generics import CreateAPIView
 
 
-
 class FeedbackViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = FeedbackSerializer
     queryset = Feedback.objects.filter()
+
 
 class FeedbackAPIView(CreateAPIView):
     permission_classes = ""
