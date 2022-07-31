@@ -1,7 +1,7 @@
 from django.contrib.gis.db import models
 from django.contrib.auth import get_user_model
 from home.constants import ORDER_STATUS, PRODUCT_TYPES, WAIT_TIMES
-
+from orders.status_enums import ORDER_ACTIVITY_LOG_TYPES
 from home.models import UUIDModel
 
 
@@ -154,4 +154,23 @@ class OrderImages(UUIDModel):
     image = models.ImageField(
         upload_to='orders/images'
     )
- 
+
+
+class OrderActivityLog(UUIDModel):
+    """
+    A data representation of the Order Activity Logs attached
+    to an Order
+    """
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='activity_log')
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    message = models.CharField(max_length=255)
+    action_type = models.IntegerField(choices=ORDER_ACTIVITY_LOG_TYPES)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        self.order.product_name
+
+    class Meta:
+        db_table = 'orders_order_activity_log'

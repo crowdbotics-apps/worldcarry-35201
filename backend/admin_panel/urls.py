@@ -5,6 +5,6 @@ urlpatterns = [
 
     path("", include("admin_panel.apps.feedback.urls")),
     path("", include("admin_panel.apps.user.urls")),
-    path("", include("admin_panel.apps.orders.urls")),
+    path("", include("admin_panel.apps.orders_admin.urls")),
 
 ]
