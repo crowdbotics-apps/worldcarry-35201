@@ -17,7 +17,7 @@ from users.authentication import ExpiringTokenAuthentication
 class JourneyViewSet(ModelViewSet):
     serializer_class = JourneySerializer
     permission_classes = (IsAuthenticated,)
-    authentication_classes  = [ExpiringTokenAuthentication]
+    authentication_classes = [ExpiringTokenAuthentication]
     queryset = Journey.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_class = JourneyFilter
