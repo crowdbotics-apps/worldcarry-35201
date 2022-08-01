@@ -1,3 +1,6 @@
+from enum import Enum
+
+
 PRODUCT_TYPES = (
     ("Electronics", "Electronics"),
     ("Jewelry", "Jewelry"),
@@ -27,3 +30,29 @@ JOURNEY_TYPE = (
     ('One Way', 'One Way'),
     ('Round Trip', 'Round Trip')
 )
+
+JOURNEY_STATUS = (
+    ('Upcoming', 'Upcoming'),
+    ('Ongoing', 'Ongoing'),
+    ('Completed', 'Completed'),
+)
+
+
+class JourneyStatus(Enum):
+    ongoing = 'ongoing'
+    upcoming = 'upcoming'
+    completed = 'completed'
+
+    def __str__(self):
+        return self.type.value
+
+
+JourneyStatus.ongoing.label = 'Ongoing'
+JourneyStatus.upcoming.label = 'Upcoming'
+JourneyStatus.completed.label = 'Completed'
+
+
+JOURNEY_STATUS = ((JourneyStatus.ongoing.value, "Ongoing"),
+                  (JourneyStatus.upcoming.value, "Upcoming"),
+                  (JourneyStatus.completed.value, "Completed")
+                  )

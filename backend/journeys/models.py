@@ -2,14 +2,14 @@ from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import ArrayField
 
-from home.constants import JOURNEY_TYPE, PRODUCT_TYPES
+from home.constants import JOURNEY_TYPE, PRODUCT_TYPES, JOURNEY_STATUS, JourneyStatus
 from home.models import UUIDModel
 
 
 User = get_user_model()
 
 
-class  Journey(UUIDModel):
+class Journey(UUIDModel):
     """
     A data representation for the Travel plans of a Carrier
     """
@@ -57,3 +57,9 @@ class  Journey(UUIDModel):
     total_weight = models.IntegerField(
         default=0 
     )
+
+    status = models.CharField(
+        choices=JOURNEY_STATUS,
+        default=JourneyStatus.upcoming.value,
+        max_length=65,
+        null=True)
