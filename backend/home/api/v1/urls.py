@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from admin_panel.apps.feedback.views import FeedbackAPIView
+from admin_panel.apps.feedback.views import FeedbackAPIView, FAQListAPIView
 from home.api.v1.viewsets import (
     SignupViewSet,
     LoginViewSet,
@@ -23,6 +23,7 @@ urlpatterns = [
     path("", include(router.urls)),
     path("orders/qr_scan",  QRScanOrder.as_view(), name='qr_scan_order'),
     path("get_product_detail", GetProductDetailView.as_view(), name='product_scrape'),
-    path("feedback", FeedbackAPIView.as_view(), name='feedback-create')
+    path("feedback", FeedbackAPIView.as_view(), name='feedback-create'),
+    path("faq", FAQListAPIView.as_view(), name='faq-list')
 
 ]
