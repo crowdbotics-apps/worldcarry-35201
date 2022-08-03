@@ -75,7 +75,7 @@ LOCAL_APPS = [
     'journeys',
     'locations',
     'admin_panel.apps.user',
-    'admin_panel.apps.feedback',
+    'admin_panel.apps.support',
     'admin_panel.apps.orders_admin',
 ]
 THIRD_PARTY_APPS = [
@@ -273,7 +273,7 @@ if GS_BUCKET_NAME:
 REST_FRAMEWORK = {
    'DEFAULT_AUTHENTICATION_CLASSES': (
        'users.authentication.ExpiringTokenAuthentication',
-        #'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
 
    ),
    'DEFAULT_PERMISSION_CLASSES': (
@@ -313,5 +313,3 @@ SOCIALACCOUNT_PROVIDERS = {
 TWILIO_ACCOUNT_ID=env.str("TWILIO_ACCOUNT_ID", "")
 TWILIO_TOKEN = env.str("TWILIO_TOKEN", "")
 TWILIO_DEFAULT_NUMBER = env.str("TWILIO_DEFAULT_NUMBER", "")
-
-
