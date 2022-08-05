@@ -56,3 +56,26 @@ JOURNEY_STATUS = ((JourneyStatus.ongoing.value, "Ongoing"),
                   (JourneyStatus.upcoming.value, "Upcoming"),
                   (JourneyStatus.completed.value, "Completed")
                   )
+
+
+class JourneyRequestStatus(Enum):
+    pending = 'pending'
+    approved = 'approved'
+    rejected = 'rejected'
+    delivered = 'delivered'
+
+    def __str__(self):
+        return self.type.value
+
+
+JourneyRequestStatus.pending.label = 'Pending'
+JourneyRequestStatus.approved.label = 'Approved'
+JourneyRequestStatus.rejected.label = 'Rejected'
+JourneyRequestStatus.delivered.label = 'Delivered'
+
+
+JOURNEY_REQUEST_STATUS = ((JourneyRequestStatus.pending.value, "Pending"),
+                          (JourneyRequestStatus.approved.value, "Approved"),
+                          (JourneyRequestStatus.rejected.value, "Rejected"),
+                          (JourneyRequestStatus.delivered.value, "Delivered")
+                          )

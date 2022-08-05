@@ -8,9 +8,9 @@ from django.db.models import Q
 from django.utils import timezone
 from home.filters import JourneyFilter
 from orders.models import Order
-from .serializers import JourneySerializer
+from .serializers import JourneySerializer, JourneyOrderSerializer
 
-from .models import Journey
+from .models import Journey, JourneyOrder
 from users.authentication import ExpiringTokenAuthentication
 
 
@@ -60,35 +60,10 @@ class JourneyViewSet(ModelViewSet):
         serializer = JourneySerializer(journeys, many=True)
         return Response(serializer.data)
 
-        # today = timezone.now()
-        # orders = request.user.orders.filter(
-        #     Q(status='Unpaid') | Q(status='Requested')
-        # ).values('pickup_address_country', 'arrival_address_country', 'deliver_before_date')
 
-        # journeys_list = Journey.objects.none()
-        # for order in orders:
-        #     journeys = Journey.objects.filter(
-        #         Q(
-        #             Q(date_of_journey__lt=order['deliver_before_date']) &
-        #             Q(date_of_journey__gt=today)
-        #         ) &
-        #         (
-        #             Q(type="Round Trip") &
-        #             (
-        #                 Q(departure_country=order['pickup_address_country']) &
-        #                 Q(arrival_country=order['arrival_address_country'])
-        #             ) |
-        #             (
-        #                 Q(departure_country=order['arrival_address_country']) &
-        #                 Q(arrival_country=order['pickup_address_country'])
-        #             )
-        #         ) |
-        #         (
-        #             Q(type="One Way") &
-        #             Q(departure_country=order['pickup_address_country']) &
-        #             Q(arrival_country=order['arrival_address_country'])
-        #         )
-        #     )
-        #     journeys_list = journeys_list | journeys
-        # serializer = JourneySerializer(journeys_list, many=True)
-        # return Response(serializer.data)
+class JourneyOrderViewSet(ModelViewSet):
+    serializer_class = JourneyOrderSerializer
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = [ExpiringTokenAuthentication]
+    queryset = JourneyOrder.objects.all()
+    filterset_fields = ['journey', 'status', 'order']

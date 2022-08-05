@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from users.serializers import UserProfileSerializer
 
-from .models import Journey
+from .models import Journey, JourneyOrder
 from orders.models import Order
 
 
@@ -14,7 +14,7 @@ class JourneySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Journey
-        fields = ('user', 'type', 'departure_city', 'departure_state', 'departure_country', 'arrival_city',
+        fields = ('id', 'user', 'type', 'departure_city', 'departure_state', 'departure_country', 'arrival_city',
                   'arrival_state', 'arrival_country', 'date_of_journey', 'date_of_return', 'willing_to_carry',
                   'total_weight', 'status', 'total_orders')
 
@@ -36,3 +36,10 @@ class JourneySerializer(serializers.ModelSerializer):
             instance.user
         ).data
         return rep
+
+
+class JourneyOrderSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = JourneyOrder
+        fields = '__all__'
