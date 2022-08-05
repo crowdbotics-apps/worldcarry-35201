@@ -74,8 +74,6 @@ LOCAL_APPS = [
     'orders',
     'journeys',
     'locations',
-    'admin_panel.apps.faq',
-    'admin_panel.apps.feedback',
     'admin_panel.apps.orders_admin',
     'admin_panel.apps.support',
     'admin_panel.apps.user'
