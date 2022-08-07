@@ -9,6 +9,7 @@ from home.api.v1.viewsets import (
 from journeys.views import JourneyViewSet, JourneyOrderRequest
 from locations.views import LocationViewSet
 from orders.views import OrderViewSet, GetProductDetailView, QRScanOrder, UpdateOrderStatus
+from reviews.views import ReviewViewSet
 from users.viewsets import UserViewSet
 
 router = DefaultRouter()
@@ -18,6 +19,8 @@ router.register("users", UserViewSet, basename="users")
 router.register("orders", OrderViewSet, basename="orders")
 router.register("journeys", JourneyViewSet, basename="journeys")
 router.register("locations", LocationViewSet, basename="locations")
+router.register("reviews", ReviewViewSet, basename="reviews")
+
 
 urlpatterns = [
     path("", include(router.urls)),
