@@ -70,8 +70,11 @@ class Journey(UUIDModel):
 class JourneyOrder(UUIDModel):
     journey = models.ForeignKey(Journey, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    status = models.CharField(choices=JOURNEY_REQUEST_STATUS, default=JourneyRequestStatus.pending.value, max_length=65)
+    allowed_by_carrier = models.BooleanField(default=False)
+    allowed_by_sender = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    updated_at = models.DateTimeField(auto_now=True, editable=False)
 
     class Meta:
         unique_together = (('journey', 'order'), )
-        db_table = 'journey_order_request'
+        db_table = 'journey_order'

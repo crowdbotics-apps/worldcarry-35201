@@ -22,7 +22,7 @@ ORDER_STATUS = (
     ('Unpaid', 'Unpaid'),
     ('Requested', 'Requested'),
     ('In transit', 'In transit'),
-    ('Recieved', 'Received'),
+    ('Received', 'Received'),
     ('Cancelled', 'Cancelled')
 )
 

@@ -38,8 +38,7 @@ class JourneySerializer(serializers.ModelSerializer):
         return rep
 
 
-class JourneyOrderSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = JourneyOrder
-        fields = '__all__'
+class JourneyOrderSerializer(serializers.Serializer):
+    order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=True)
+    journey = serializers.PrimaryKeyRelatedField(queryset=Journey.objects.all(), required=True)
+    user = serializers.ChoiceField(choices=("sender", "carrier"), required=True)   # sender/carrier

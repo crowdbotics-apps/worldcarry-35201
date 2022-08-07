@@ -74,10 +74,9 @@ LOCAL_APPS = [
     'orders',
     'journeys',
     'locations',
-    'admin_panel.apps.user',
-    'admin_panel.apps.feedback',
     'admin_panel.apps.orders_admin',
-    'admin_panel.apps.faq',
+    'admin_panel.apps.support',
+    'admin_panel.apps.user'
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',
@@ -133,29 +132,18 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'worldcarry_35201.wsgi.application'
-#
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-#
-# if env.str("DATABASE_URL", default=None):
-#     DATABASES = {
-#         'default': env.db_url(engine='django.contrib.gis.db.backends.postgis')
-#     }
 
 DATABASES = {
     'default': {
-        "ENGINE": "django.contrib.gis.db.backends.postgis",
-        "NAME": "worldcarry",
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 }
+
+if env.str("DATABASE_URL", default=None):
+    DATABASES = {
+        'default': env.db_url(engine='django.contrib.gis.db.backends.postgis')
+    }
 
 
 # Password validation
