@@ -140,6 +140,12 @@ class Order(UUIDModel):
         null=True
     )
 
+    @property
+    def can_transit(self):
+        if self.journeyorder_set.filter(allowed_by_carrier=True, allowed_by_sender=True).exists():
+            return True
+        return False
+
  
 class OrderImages(UUIDModel):
     """

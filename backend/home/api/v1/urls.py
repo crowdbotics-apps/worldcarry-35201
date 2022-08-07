@@ -6,9 +6,9 @@ from home.api.v1.viewsets import (
     SignupViewSet,
     LoginViewSet,
 )
-from journeys.views import JourneyViewSet
+from journeys.views import JourneyViewSet, JourneyOrderRequest
 from locations.views import LocationViewSet
-from orders.views import OrderViewSet, GetProductDetailView, QRScanOrder
+from orders.views import OrderViewSet, GetProductDetailView, QRScanOrder, UpdateOrderStatus
 from users.viewsets import UserViewSet
 
 router = DefaultRouter()
@@ -21,7 +21,9 @@ router.register("locations", LocationViewSet, basename="locations")
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("orders/status/update",  UpdateOrderStatus.as_view(), name='order_status_update'),
     path("orders/qr_scan",  QRScanOrder.as_view(), name='qr_scan_order'),
+    path("journey/order/request",  JourneyOrderRequest.as_view(), name='journey_order_view'),
     path("get_product_detail", GetProductDetailView.as_view(), name='product_scrape'),
     path("feedback", FeedbackAPIView.as_view(), name='feedback_create'),
     path("faq", FAQListAPIView.as_view(), name='faq_list'),

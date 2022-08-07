@@ -3,6 +3,7 @@ from rest_framework import serializers
 from django.core.files import File
 from .models import Order, OrderImages
 from users.serializers import UserProfileSerializer
+from home.constants import ORDER_STATUS
 
 from datetime import timedelta
 
@@ -32,6 +33,7 @@ class OrderSerializer(serializers.ModelSerializer):
     carrier = UserProfileSerializer(
         required=False
     )
+    can_transit = serializers.ReadOnlyField()
 
     class Meta:
         model = Order
@@ -121,6 +123,19 @@ class OrderSerializer(serializers.ModelSerializer):
         return rep
 
 
+class OrderRouteSerialzier(serializers.Serializer):
+    offers = OrderSerializer(many=True)
+    accepted = OrderSerializer(many=True)
+    requested_by_sender = OrderSerializer(many=True)
+    in_transit = OrderSerializer(many=True)
+    delivered = OrderSerializer(many=True)
+    offers_count = serializers.IntegerField()
+    accepted_count = serializers.IntegerField()
+    requested_by_sender_count = serializers.IntegerField()
+    in_transit_count = serializers.IntegerField()
+    delivered_count = serializers.IntegerField()
+
+
 class ProductScraperSerializer(serializers.Serializer):
     url = serializers.URLField(required=True, allow_null=False, allow_blank=False)
 
@@ -133,4 +148,22 @@ class ProductScraperSerializer(serializers.Serializer):
 
 
 class OrderQrSerializer(serializers.Serializer):
-    qr_text = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all())
+    qr_text = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=True)
+
+
+class UpdateOrderStatusSerializer(serializers.Serializer):
+    order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=True)
+    status = serializers.ChoiceField(choices=ORDER_STATUS, required=True)
+
+    def validate(self, attrs: dict) -> None:
+        data = super().validate(attrs)
+        order = data['order']
+        status = data['status']
+
+        if status == order.status:
+            raise serializers.ValidationError("Order is already marked {}".format(status).format(status))
+
+        elif status == "Received":
+            if order.status != "In transit":
+                raise serializers.ValidationError("To mark order received order should be in transit".format(status))
+        return attrs

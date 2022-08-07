@@ -2,8 +2,10 @@ from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import ArrayField
 
-from home.constants import JOURNEY_TYPE, PRODUCT_TYPES, JOURNEY_STATUS, JourneyStatus
+from home.constants import (JOURNEY_TYPE, PRODUCT_TYPES, JOURNEY_STATUS, JOURNEY_REQUEST_STATUS, JourneyStatus,
+                            JourneyRequestStatus)
 from home.models import UUIDModel
+from orders.models import Order
 
 
 User = get_user_model()
@@ -63,3 +65,16 @@ class Journey(UUIDModel):
         default=JourneyStatus.upcoming.value,
         max_length=65,
         null=True)
+
+
+class JourneyOrder(UUIDModel):
+    journey = models.ForeignKey(Journey, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    allowed_by_carrier = models.BooleanField(default=False)
+    allowed_by_sender = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    updated_at = models.DateTimeField(auto_now=True, editable=False)
+
+    class Meta:
+        unique_together = (('journey', 'order'), )
+        db_table = 'journey_order'
