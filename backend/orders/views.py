@@ -131,7 +131,6 @@ class UpdateOrderStatus(APIView):
 
         if new_status == "In transit":
             if JourneyOrder.objects.filter(order=order, allowed_by_carrier=True, allowed_by_sender=True).exists():
-                order.carrier = request.user
                 order.status = new_status
                 order.save()
                 #  TODO notification send to the order owner
