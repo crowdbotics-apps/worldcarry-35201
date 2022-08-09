@@ -61,6 +61,8 @@ class JourneyViewSet(ModelViewSet):
             )
         )
         journeys = self.filter_queryset(journeys)
+        journeys = journeys.exclude(id__in=list(JourneyOrder.objects.filter(
+            order=order, allowed_by_sender=True).values_list('journey_id', flat=True)))
         serializer = JourneySerializer(journeys, many=True)
         return Response(serializer.data)
 
@@ -85,10 +87,21 @@ class JourneyOrderRequest(APIView):
         order = data['order']
         journey = data['journey']
         user = data['user']
+
+        jo_instance, _ = JourneyOrder.objects.update_or_create(order=order, journey=journey)
         if user == 'sender':
-            JourneyOrder.objects.update_or_create(order=order, journey=journey, defaults={'allowed_by_sender': True})
+            jo_instance.allowed_by_sender = True
+            jo_instance.save(update_fields=['allowed_by_sender'])
             order.status = "Requested"
-            order.save()
+            order.save(update_fields=['status'])
         elif user == 'carrier':
-            JourneyOrder.objects.update_or_create(order=order, journey=journey, defaults={'allowed_by_carrier': True})
+            jo_instance.allowed_by_carrier = True
+            jo_instance.save(update_fields=['allowed_by_carrier'])
+
+        # in case sender and carrier
+        if jo_instance.allowed_by_sender and jo_instance.allowed_by_carrier:
+            order.status = "Accepted"
+            order.carrier = jo_instance.journey.user
+            order.save(update_fields=['status', 'carrier'])
+
         return Response({"message": "Request Added for order: {}".format(order.id)}, status=status.HTTP_200_OK)

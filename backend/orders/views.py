@@ -42,16 +42,19 @@ class OrderViewSet(ModelViewSet):
         if journey.date_of_journey < today.date():
             return Response({"detail": "This Journey has already passed its departure date"},
                             status=status.HTTP_400_BAD_REQUEST)
+
+        order_statuses = ['Unpaid', 'Requested', "Accepted"]
         
         if journey.type == 'Round Trip':
-            orders = Order.objects.filter((Q(status__in=['Unpaid', 'Requested']) &
+            orders = Order.objects.filter((Q(status__in=order_statuses) &
                                            (Q(pickup_address_country=journey.departure_country) &
                                             Q(arrival_address_country=journey.arrival_country))
                                            |
                                            Q(Q(pickup_address_country=journey.arrival_country) &
                                              Q(arrival_address_country=journey.departure_country))))
         else:
-            orders = Order.objects.filter(status='Unpaid', pickup_address_country=journey.departure_country,
+            orders = Order.objects.filter(status__in=order_statuses,
+                                          pickup_address_country=journey.departure_country,
                                           arrival_address_country=journey.arrival_country)
 
         orders = orders.order_by(ordering)
@@ -61,7 +64,7 @@ class OrderViewSet(ModelViewSet):
         orders = orders.exclude(id__in=accepted_orders.values_list('id'))
 
         # request by sender
-        request_by_sender = orders.filter(journeyorder__allowed_by_carrier=False, journeyorder__allowed_by_sender=True,
+        request_by_sender = orders.filter(journeyorder__allowed_by_sender=True,
                                           journeyorder__journey=journey)
         orders = orders.exclude(id__in=request_by_sender.values_list('id'))
 

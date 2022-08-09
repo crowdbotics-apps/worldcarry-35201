@@ -21,6 +21,7 @@ WAIT_TIMES = (
 ORDER_STATUS = (
     ('Unpaid', 'Unpaid'),
     ('Requested', 'Requested'),
+    ('Accepted', 'Accepted'),
     ('In transit', 'In transit'),
     ('Received', 'Received'),
     ('Cancelled', 'Cancelled')
