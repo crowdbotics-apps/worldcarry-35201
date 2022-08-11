@@ -25,11 +25,12 @@ export const API = {
       token
     }),
 
-  put: (url, body) =>
+  put: (url, body,token) =>
     makeRequest({
       method: 'put',
       body,
-      url
+      url,
+      token
     }),
 
   delete: (url, body, token) =>

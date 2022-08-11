@@ -33,6 +33,8 @@ import Support from '../screens/Profile/Support'
 import FeedBack from '../screens/Profile/FeedBack'
 import ChangePassword from '../screens/ForgotPassword/ChangePassword'
 import AddAddress from '../screens/Profile/AddAddress'
+import ScanQR from '../screens/Journey/ScanQR'
+import JourneyOrderDetails from '../screens/Journey/JourneyOrderDetails'
 
 const Stack = createStackNavigator()
 function MainStackNav () {
@@ -76,6 +78,8 @@ function MainStackNav () {
       <Stack.Screen name='FeedBack' component={FeedBack} />
       <Stack.Screen name='ChangePassword' component={ChangePassword} />
       <Stack.Screen name='AddAddress' component={AddAddress} />
+      <Stack.Screen name='ScanQR' component={ScanQR} />
+      <Stack.Screen name='JourneyOrderDetails' component={JourneyOrderDetails} />
     </Stack.Navigator>
   )
 }

@@ -93,6 +93,7 @@ export default function JourneyStep3 ({ createdJourney }) {
                   height: 30,
                   borderRadius: 50,
                   borderWidth: 1,
+                  marginBottom:5,
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderColor: COLORS.grey

@@ -16,6 +16,14 @@ export const createMyAddresses = (body, token) => {
   return API.post(`api/v1/locations/`, body, token)
 }
 
+export const makeOffer = (body, token) => {
+  return API.post(`api/v1/journey/order/request`, body, token)
+}
+
+export const addReview = (body, token) => {
+  return API.post(`api/v1/reviews/`, body, token)
+}
+
 export const createJourney = (body, token) => {
   return API.post(`api/v1/journeys/`, body, token)
 }

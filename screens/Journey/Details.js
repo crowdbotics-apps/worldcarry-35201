@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import {
   View,
   StyleSheet,
@@ -7,56 +7,114 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
-  ActivityIndicator
+  ActivityIndicator,
+  Modal
 } from 'react-native'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { SvgXml } from 'react-native-svg'
 import NoOrder from '../../assets/svg/NoOrder.svg'
 import planIcon from '../../assets/svg/plan.svg'
 import enRoute from '../../assets/svg/enRoute.svg'
+import chatIcon from '../../assets/svg/chatIcon.svg'
+import locateIcon from '../../assets/svg/locate.svg'
+import successImage from '../../assets/images/successImage.png'
+import cehcked from '../../assets/svg/cehcked.svg'
+import starBlack from '../../assets/svg/starBlack.svg'
 import userProfile from '../../assets/images/userProfile.png'
-import { AppButton, Header } from '../../components'
-import { COLORS, FONT1LIGHT, FONT1MEDIUM, FONT1REGULAR } from '../../constants'
+import { AppButton, AppInput, CustomModel, Header } from '../../components'
+import {
+  COLORS,
+  FONT1BOLD,
+  FONT1LIGHT,
+  FONT1MEDIUM,
+  FONT1REGULAR,
+  FONT1SEMIBOLD
+} from '../../constants'
 import AppContext from '../../store/Context'
 import moment from 'moment'
 import momenttimezone from 'moment-timezone'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Toast from 'react-native-simple-toast'
-import { getJourneyDetails } from '../../api/journey'
-import { getOnrouteOrders } from '../../api/order'
+import { addReview, getJourneyDetails, makeOffer } from '../../api/journey'
+import { getOnrouteOrders, updateOrderStatus } from '../../api/order'
+import { useFocusEffect } from '@react-navigation/native'
+import { Rating } from 'react-native-ratings'
+import BouncyCheckbox from 'react-native-bouncy-checkbox'
 
 function JourneyDetails ({ navigation, route }) {
   const item = route?.params?.item
+  const successDelivered = route?.params?.successDelivered
+  const order = route?.params?.order
   const [state, setState] = useState({
     loading: false,
     active: 'Offers',
     onRouteOrders: [],
-    journeyData: null
+    loadingJourney: false,
+    loadingStatus: false,
+    successfullyDelivered: false,
+    writeReview: false,
+    journeyData: null,
+    rating: 0,
+    content: '',
+    respectful_attitude: false,
+    no_additional_payment_asked: false,
+    d2d_delivery: false,
+    loadingReview: false
   })
 
   // Context
   const context = useContext(AppContext)
-  const { onRouteOrders, loading, journeyData, active } = state
-  const { journeys } = context
+  const {
+    onRouteOrders,
+    loading,
+    journeyData,
+    active,
+    loadingJourney,
+    loadingStatus,
+    successfullyDelivered,
+    writeReview,
+    rating,
+    content,
+    respectful_attitude,
+    no_additional_payment_asked,
+    d2d_delivery,
+    loadingReview
+  } = state
+  const { user, _getOrders } = context
 
   const handleChange = (name, value) => {
     setState(pre => ({ ...pre, [name]: value }))
   }
 
   const tabs = [
-    { title: 'Offers' },
-    { title: 'Accepted' },
-    { title: 'In Transit' },
-    { title: 'Delivered' }
+    { title: 'Offers', total: onRouteOrders?.offers_count || 0 },
+    {
+      title: 'Accepted',
+      total:
+        onRouteOrders?.accepted_count +
+          onRouteOrders?.requested_by_sender_count || 0
+    },
+    { title: 'In Transit', total: onRouteOrders?.in_transit_count || 0 },
+    { title: 'Delivered', total: onRouteOrders?.delivered_count || 0 }
   ]
 
-  useEffect(() => {
-    if (item) {
-      const id = `?journey_id=${item?.id}`
-      _getOnrouteOrders(id)
-      _getJourneyDetails()
-    }
-  }, [item])
+  useFocusEffect(
+    useCallback(() => {
+      if (item) {
+        getData()
+      }
+      if (successDelivered) {
+        handleChange('successfullyDelivered', true)
+      }
+    }, [item, successDelivered])
+  )
+
+  const getData = () => {
+    const id = `?journey_id=${item?.id}`
+    _getOnrouteOrders(id)
+    _getOrders(`?user=${user?.id}`)
+    _getJourneyDetails()
+  }
 
   const _getOnrouteOrders = async payload => {
     try {
@@ -70,12 +128,118 @@ function JourneyDetails ({ navigation, route }) {
     }
   }
 
+  console.warn('onRouteOrders', onRouteOrders?.requested_by_sender)
+
   const _getJourneyDetails = async () => {
     try {
       const token = await AsyncStorage.getItem('token')
       const res = await getJourneyDetails(item?.id, token)
       handleChange('journeyData', res?.data)
     } catch (error) {
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
+
+  const _makeOffer = async oid => {
+    try {
+      handleChange('loadingJourney', true)
+      const token = await AsyncStorage.getItem('token')
+      const payload = {
+        journey: item?.id,
+        order: oid,
+        user: 'carrier'
+      }
+      await makeOffer(payload, token)
+      Toast.show(`You have successfully make an offer`)
+      handleChange('loadingJourney', false)
+      getData()
+    } catch (error) {
+      handleChange('loadingJourney', false)
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
+
+  const _acceptOffer = async oid => {
+    try {
+      handleChange('loadingJourney', true)
+      const token = await AsyncStorage.getItem('token')
+      const payload = {
+        journey: item?.id,
+        order: oid,
+        user: 'carrier'
+      }
+      await makeOffer(payload, token)
+      Toast.show(`You have successfully accepted an offer`)
+      handleChange('loadingJourney', false)
+      getData()
+    } catch (error) {
+      handleChange('loadingJourney', false)
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
+
+  const handleCloseReview = () => {
+    handleChange('successfullyDelivered', false)
+    navigation.setParams({ successDelivered: null })
+    handleChange('writeReview', false)
+    handleChange('respectful_attitude', false)
+    handleChange('no_additional_payment_asked', false)
+    handleChange('d2d_delivery', false)
+    handleChange('review', 0)
+    handleChange('content', '')
+  }
+
+  const _addReview = async () => {
+    try {
+      handleChange('loadingReview', true)
+      const token = await AsyncStorage.getItem('token')
+      const payload = {
+        journey: item?.id,
+        order: order?.id,
+        respectful_attitude,
+        d2d_delivery,
+        no_additional_payment_asked,
+        rating,
+        added_by: user?.id,
+        target_user: order?.carrier?.id
+      }
+      console.warn('payload', payload)
+      await addReview(payload, token)
+      Toast.show(`You have successfully reviewed to the sender`)
+      handleChange('loadingReview', false)
+      handleChange('successfullyDelivered', false)
+      navigation.setParams({ successDelivered: null })
+      handleChange('writeReview', false)
+      handleChange('respectful_attitude', false)
+      handleChange('no_additional_payment_asked', false)
+      handleChange('d2d_delivery', false)
+      handleChange('review', 0)
+      handleChange('content', '')
+      getData()
+    } catch (error) {
+      handleChange('loadingReview', false)
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
+
+  const _makeInTransit = async oid => {
+    try {
+      handleChange('loadingStatus', true)
+      const token = await AsyncStorage.getItem('token')
+      const payload = {
+        order: oid,
+        status: 'In transit'
+      }
+      await updateOrderStatus(payload, token)
+      Toast.show(`Order now move in "In Transit"`)
+      handleChange('loadingStatus', false)
+      getData()
+    } catch (error) {
+      handleChange('loadingStatus', false)
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText}`)
     }
@@ -105,6 +269,18 @@ function JourneyDetails ({ navigation, route }) {
         .format()
       const utcTime = moment.utc(todayDate1).format('YYYY-MM-DDTHH:mm')
       return utcTime
+    }
+  }
+
+  const getOrderFromStatus = () => {
+    if (active === 'Offers') {
+      return onRouteOrders?.offers
+    } else if (active === 'Accepted') {
+      return onRouteOrders?.accepted?.concat(onRouteOrders?.requested_by_sender)
+    } else if (active === 'In Transit') {
+      return onRouteOrders?.in_transit
+    } else {
+      return onRouteOrders?.delivered
     }
   }
 
@@ -203,13 +379,13 @@ function JourneyDetails ({ navigation, route }) {
                 active === tab.title ? styles.activeTabText : styles.tabText
               }
             >
-              {tab.title === 'Offers' ? onRouteOrders?.length : 0} {tab.title}
+              {tab?.total} {tab.title}
             </Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
       <FlatList
-        data={onRouteOrders}
+        data={getOrderFromStatus()}
         scrollEnabled={false}
         showsVerticalScrollIndicator={false}
         style={{ width: '100%', height: '100%' }}
@@ -273,6 +449,7 @@ function JourneyDetails ({ navigation, route }) {
                   />
                 )}
               </View>
+              <View style={styles.hline} />
               <View style={[styles.row, { width: '90%' }]}>
                 <SvgXml xml={enRoute} />
                 <View
@@ -307,7 +484,196 @@ function JourneyDetails ({ navigation, route }) {
                   </Text>
                 </View>
               </View>
-              <AppButton title={'Make Offer'} />
+              {active === 'Offers' && (
+                <AppButton
+                  title={'Make Offer'}
+                  disabled={loadingJourney}
+                  onPress={() => _makeOffer(item?.id)}
+                />
+              )}
+              {active !== 'Offers' && (
+                <View
+                  style={{
+                    width: '100%',
+                    marginTop: -20,
+                    alignItems: 'center'
+                  }}
+                >
+                  <View style={styles.hline} />
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate('JourneyOrderDetails', {
+                        item,
+                        active,
+                        jItem: route?.params?.item
+                      })
+                    }
+                  >
+                    <Text
+                      style={{
+                        color: COLORS.successBGBorder,
+                        fontFamily: FONT1REGULAR,
+                        fontSize: hp(1.8),
+                        textDecorationLine: 'underline'
+                      }}
+                    >
+                      View full details
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+              {active === 'Accepted' &&
+                onRouteOrders?.requested_by_sender?.filter(
+                  e => e.id === item?.id
+                )?.length === 0 && (
+                  <AppButton
+                    title={'Chat with sender'}
+                    outlined
+                    backgroundColor={COLORS.white}
+                    color={COLORS.darkBlack}
+                    titleLight
+                    prefix={
+                      <SvgXml xml={chatIcon} style={{ marginRight: 8 }} />
+                    }
+                    // onPress={() => _makeOffer(item?.id)}
+                  />
+                )}
+              {active === 'Accepted' &&
+                onRouteOrders?.requested_by_sender?.filter(
+                  e => e.id === item?.id
+                )?.length === 0 && (
+                  <AppButton
+                    title={
+                      item?.can_transit
+                        ? 'Move to Transit'
+                        : 'Waiting for sender approval...'
+                    }
+                    disabled={!item?.can_transit}
+                    backgroundColor={
+                      item?.can_transit ? COLORS.primary : COLORS.primaryLight
+                    }
+                    loading={loadingStatus}
+                    color={item?.can_transit ? COLORS.white : COLORS.primary}
+                    onPress={() => _makeInTransit(item?.id)}
+                  />
+                )}
+              {active === 'Accepted' &&
+                onRouteOrders?.requested_by_sender?.filter(
+                  e => e.id === item?.id
+                )?.length > 0 &&
+                item?.can_transit && (
+                  <AppButton
+                    title={
+                      item?.can_transit
+                        ? 'Move to Transit'
+                        : 'Waiting for sender approval...'
+                    }
+                    disabled={!item?.can_transit}
+                    backgroundColor={
+                      item?.can_transit ? COLORS.primary : COLORS.primaryLight
+                    }
+                    loading={loadingStatus}
+                    color={item?.can_transit ? COLORS.white : COLORS.primary}
+                    onPress={() => _makeInTransit(item?.id)}
+                  />
+                )}
+              {active === 'Accepted' &&
+                onRouteOrders?.requested_by_sender?.filter(
+                  e => e.id === item?.id
+                )?.length > 0 &&
+                !item?.can_transit && (
+                  <View style={styles.rowBetween}>
+                    <AppButton
+                      title={'Decline'}
+                      width={'48%'}
+                      backgroundColor={COLORS.white}
+                      color={COLORS.darkBlack}
+                      outlined
+                      // onPress={() => _makeOffer(item?.id)}
+                    />
+                    <AppButton
+                      title={'Accept'}
+                      disabled={item?.can_transit}
+                      width={'48%'}
+                      backgroundColor={COLORS.primary}
+                      loading={loadingJourney}
+                      color={!item?.can_transit ? COLORS.white : COLORS.primary}
+                      onPress={() => _acceptOffer(item?.id)}
+                    />
+                  </View>
+                )}
+
+              {active === 'In Transit' && (
+                <>
+                  <View style={styles.rowBetween}>
+                    <AppButton
+                      title={'Chat'}
+                      outlined
+                      backgroundColor={COLORS.white}
+                      color={COLORS.darkBlack}
+                      titleLight
+                      width={'48%'}
+                      prefix={
+                        <SvgXml xml={chatIcon} style={{ marginRight: 8 }} />
+                      }
+                      // onPress={() => _makeOffer(item?.id)}
+                    />
+                    <AppButton
+                      title={'Locate'}
+                      backgroundColor={COLORS.stepGreen}
+                      color={COLORS.white}
+                      width={'48%'}
+                      prefix={
+                        <SvgXml xml={locateIcon} style={{ marginRight: 8 }} />
+                      }
+                      // onPress={() => _makeOffer(item?.id)}
+                    />
+                  </View>
+                  <AppButton
+                    title={'Deliver Order'}
+                    disabled={!item?.can_transit}
+                    backgroundColor={
+                      item?.can_transit ? COLORS.primary : COLORS.primaryLight
+                    }
+                    loading={loadingStatus}
+                    color={item?.can_transit ? COLORS.white : COLORS.primary}
+                    onPress={() =>
+                      navigation.navigate('ScanQR', {
+                        orderID: item?.id,
+                        order: item,
+                        jItem: route?.params?.item
+                      })
+                    }
+                  />
+                </>
+              )}
+              {active === 'Delivered' && (
+                <View
+                  // onPress={() => handleChange('writeReview', true)}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: COLORS.successBG,
+                    borderRadius: 30,
+                    height: hp(6),
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: 15
+                  }}
+                >
+                  <SvgXml xml={cehcked} />
+                  <Text
+                    style={{
+                      fontFamily: FONT1REGULAR,
+                      fontSize: hp(2),
+                      color: COLORS.successBGBorder,
+                      marginLeft: 10
+                    }}
+                  >
+                    Order Delivered
+                  </Text>
+                </View>
+              )}
             </View>
           </View>
         )}
@@ -327,6 +693,204 @@ function JourneyDetails ({ navigation, route }) {
           </View>
         )}
       />
+      <Modal
+        animationType='slide'
+        transparent={true}
+        visible={successfullyDelivered}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Image
+              source={successImage}
+              style={{
+                width: '100%',
+                height: 150,
+                marginTop: -30,
+                resizeMode: 'cover'
+              }}
+            />
+            <View style={styles.textView}>
+              <Text style={styles.successText}>Successfully Delivered</Text>
+              <Text style={styles.collectReward}>Collect your Reward</Text>
+              <Text style={styles.reward}>${order?.carrier_reward}</Text>
+              <Text style={[styles.successText, { color: COLORS.darkBlack }]}>
+                Your delivery of Order ID #WC021654
+              </Text>
+              <Text
+                style={[
+                  styles.collectReward,
+                  { fontFamily: FONT1REGULAR, textAlign: 'center' }
+                ]}
+              >
+                “Carry my {order?.product_name} from{' '}
+                {order?.pickup_address_city
+                  ? order?.pickup_address_city + ', '
+                  : '' + order?.pickup_address_state
+                  ? order?.pickup_address_state + ', '
+                  : '' + order?.pickup_address_country}{' '}
+                to{' '}
+                {order?.arrival_address_city
+                  ? order?.arrival_address_city + ', '
+                  : '' + order?.arrival_address_state
+                  ? order?.arrival_address_state + ', '
+                  : '' + order?.arrival_address_country}
+                ”{' '}
+                <Text style={{ color: COLORS.darkBlack }}>is successfull.</Text>
+              </Text>
+              <AppButton
+                title={'Write a review'}
+                outlined
+                backgroundColor={COLORS.white}
+                color={COLORS.darkBlack}
+                titleLight
+                prefix={<SvgXml xml={starBlack} style={{ marginRight: 8 }} />}
+                onPress={() => {
+                  handleChange('successfullyDelivered', false)
+                  handleChange('writeReview', true)
+                }}
+              />
+              <AppButton
+                title={'Done'}
+                onPress={() => {
+                  handleChange('successfullyDelivered', false)
+                  navigation.setParams({ successDelivered: null })
+                }}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
+      <CustomModel
+        visible={writeReview}
+        height={'90%'}
+        onClose={handleCloseReview}
+      >
+        <View style={{ alignItems: 'center', width: '100%' }}>
+          <View style={{ alignItems: 'center', width: '90%' }}>
+            <Image
+              style={{
+                width: 100,
+                marginTop: 10,
+                height: 100,
+                borderRadius: 100
+              }}
+              source={
+                order?.carrier?.profile?.photo
+                  ? { uri: order?.carrier?.profile?.photo }
+                  : userProfile
+              }
+            />
+            <Text>{order?.carrier?.name}</Text>
+            <Text>Sender</Text>
+            <View style={styles.hline} />
+            <Text
+              style={{
+                fontFamily: FONT1REGULAR,
+                fontSize: hp(3.5),
+                color: COLORS.darkGrey
+              }}
+            >
+              {rating?.toFixed(1)}
+            </Text>
+            <Rating
+              type='custom'
+              style={{ marginBottom: 10 }}
+              startingValue={rating}
+              fractions={0.1}
+              onFinishRating={rating => handleChange('rating', rating)}
+              ratingBackgroundColor={COLORS.tripBoxBorder}
+              imageSize={35}
+            />
+
+            <AppInput
+              placeholder={'write review'}
+              value={content}
+              borderColor={COLORS.grey}
+              name={'content'}
+              onChange={handleChange}
+              multiline
+              height={100}
+            />
+            <View style={{ width: '100%' }}>
+              <BouncyCheckbox
+                size={20}
+                fillColor={COLORS.primary}
+                unfillColor={COLORS.white}
+                disableBuiltInState
+                isChecked={respectful_attitude}
+                text='Respectful attitude'
+                iconStyle={{ borderColor: COLORS.primary, borderRadius: 8 }}
+                textStyle={{
+                  fontFamily: FONT1REGULAR,
+                  fontSize: hp(2),
+                  color: COLORS.darkBlack,
+                  textDecorationLine: 'none'
+                }}
+                style={{ marginTop: 10 }}
+                onPress={() =>
+                  handleChange('respectful_attitude', !respectful_attitude)
+                }
+              />
+              <BouncyCheckbox
+                size={20}
+                fillColor={COLORS.primary}
+                unfillColor={COLORS.white}
+                disableBuiltInState
+                isChecked={no_additional_payment_asked}
+                text='Provide additional charge'
+                iconStyle={{ borderColor: COLORS.primary, borderRadius: 8 }}
+                textStyle={{
+                  fontFamily: FONT1REGULAR,
+                  fontSize: hp(2),
+                  color: COLORS.darkBlack,
+                  textDecorationLine: 'none'
+                }}
+                style={{ marginTop: 10 }}
+                onPress={() =>
+                  handleChange(
+                    'no_additional_payment_asked',
+                    !no_additional_payment_asked
+                  )
+                }
+              />
+              <BouncyCheckbox
+                size={20}
+                fillColor={COLORS.primary}
+                unfillColor={COLORS.white}
+                disableBuiltInState
+                isChecked={d2d_delivery}
+                text='Carry again for them'
+                iconStyle={{ borderColor: COLORS.primary, borderRadius: 8 }}
+                textStyle={{
+                  fontFamily: FONT1REGULAR,
+                  fontSize: hp(2),
+                  color: COLORS.darkBlack,
+                  textDecorationLine: 'none'
+                }}
+                style={{ marginTop: 10, marginBottom: 10 }}
+                onPress={() => handleChange('d2d_delivery', !d2d_delivery)}
+              />
+            </View>
+            <View style={[styles.rowBetween, { width: '100%' }]}>
+              <AppButton
+                title={'Cancel'}
+                onPress={handleCloseReview}
+                outlined
+                width={'48%'}
+                color={COLORS.darkBlack}
+                backgroundColor={COLORS.white}
+              />
+              <AppButton
+                title={'Submit'}
+                loading={loadingReview}
+                width={'48%'}
+                onPress={_addReview}
+                disabled={!content || !rating}
+              />
+            </View>
+          </View>
+        </View>
+      </CustomModel>
     </ScrollView>
   )
 }
@@ -358,6 +922,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  textView: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   loading: {
     width: '100%',
@@ -428,6 +997,23 @@ const styles = StyleSheet.create({
     fontSize: hp(2.3),
     color: COLORS.white,
     fontFamily: FONT1MEDIUM
+  },
+  reward: {
+    fontSize: hp(3),
+    color: COLORS.darkBlack,
+    marginVertical: 15,
+    fontFamily: FONT1BOLD
+  },
+  collectReward: {
+    fontSize: hp(2),
+    color: COLORS.primary,
+    fontFamily: FONT1SEMIBOLD
+  },
+  successText: {
+    fontSize: hp(2),
+    color: COLORS.darkGrey,
+    fontFamily: FONT1REGULAR,
+    marginTop: 10
   },
   leftText: {
     fontSize: hp(2),
@@ -522,6 +1108,28 @@ const styles = StyleSheet.create({
     height: 130,
     borderRadius: 10,
     resizeMode: 'cover'
+  },
+  centeredView: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: COLORS.modalBG,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  modalView: {
+    width: '90%',
+    backgroundColor: COLORS.backgroud,
+    borderRadius: 20,
+    padding: 30,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
   }
 })
 

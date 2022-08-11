@@ -204,7 +204,7 @@ function CreateOrder ({ navigation }) {
         )
       const res = await createOrder(formData, token)
       handleChange('createdOrder', res?.data)
-      _getOrders('')
+      _getOrders(`?user=${user?.id}`)
       handleChange('loading', false)
       Toast.show('Order Created Successfully!')
       handleChange('step', 4)

@@ -36,7 +36,7 @@ function App () {
   const _getOrders = async payload => {
     try {
       const token = await AsyncStorage.getItem('token')
-      const qs = payload || ''
+      const qs = payload || ``
       const res = await getOrders(qs, token)
       setOrders(res?.data)
     } catch (error) {

@@ -28,7 +28,7 @@ function AuthLoading ({ navigation }) {
       const userData = JSON.parse(user)
       setUser(userData)
       _getProfile()
-      _getOrders('')
+      _getOrders(`?user=${userData?.id}`)
       _getJourneys('')
       _getMyAddresses()
       // if(userData?.)

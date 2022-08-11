@@ -6,7 +6,8 @@ import {
   Text,
   FlatList,
   Image,
-  ActivityIndicator
+  ActivityIndicator,
+  Modal
 } from 'react-native'
 import {
   widthPercentageToDP as wp,
@@ -16,6 +17,7 @@ import { SvgXml } from 'react-native-svg'
 import NoOrder from '../../assets/svg/NoOrder.svg'
 import planIcon from '../../assets/svg/plan.svg'
 import calendarIcon from '../../assets/svg/calendar.svg'
+import offerIcon from '../../assets/svg/offerIcon.svg'
 import weightIcon from '../../assets/svg/weight.svg'
 import userProfile from '../../assets/images/userProfile.png'
 import { AppButton, Header } from '../../components'
@@ -25,7 +27,7 @@ import moment from 'moment'
 import momenttimezone from 'moment-timezone'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Toast from 'react-native-simple-toast'
-import { getOnrouteJourneys } from '../../api/journey'
+import { getOnrouteJourneys, makeOffer } from '../../api/journey'
 import { getOrderDetails } from '../../api/order'
 
 function OrderDetails ({ navigation, route }) {
@@ -34,13 +36,22 @@ function OrderDetails ({ navigation, route }) {
     loading: false,
     active: 'Offers',
     onRouteJourneys: [],
-    orderData: null
+    orderData: null,
+    selectedItem: null,
+    loadingAccept: false
   })
+  const [modalVisible, setModalVisible] = useState(false)
 
   // Context
   const context = useContext(AppContext)
-  const { onRouteJourneys, loading, orderData, active } = state
-  const { journeys, _getJourneys } = context
+  const {
+    onRouteJourneys,
+    loading,
+    orderData,
+    selectedItem,
+    loadingAccept
+  } = state
+  const { journeys, user, _getOrders } = context
 
   const handleChange = (name, value) => {
     setState(pre => ({ ...pre, [name]: value }))
@@ -48,11 +59,16 @@ function OrderDetails ({ navigation, route }) {
 
   useEffect(() => {
     if (item) {
-      const id = `?order_id=${item?.id}`
-      _getOnrouteJourneys(id)
-      _getOrderDetails()
+      getData()
     }
   }, [item])
+
+  const getData = () => {
+    const id = `?order_id=${item?.id}`
+    _getOnrouteJourneys(id)
+    _getOrderDetails()
+    _getOrders(`?user=${user?.id}`)
+  }
 
   const _getOnrouteJourneys = async payload => {
     try {
@@ -77,7 +93,27 @@ function OrderDetails ({ navigation, route }) {
     }
   }
 
-  console.warn('_getJourneys', orderData)
+  const _makeOffer = async () => {
+    try {
+      handleChange('loadingAccept', true)
+      const token = await AsyncStorage.getItem('token')
+      const payload = {
+        journey: selectedItem?.id,
+        order: item?.id,
+        user: 'sender'
+      }
+      await makeOffer(payload, token)
+      getData()
+      handleChange('loadingAccept', false)
+      Toast.show(`Offer has been accepted`)
+      // navigation.goBack()
+      setModalVisible(false)
+    } catch (error) {
+      handleChange('loadingAccept', false)
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
 
   const getOrderType = status => {
     if (status) {
@@ -124,6 +160,7 @@ function OrderDetails ({ navigation, route }) {
   var text = orderData?.product_name
   var count = 30
 
+  console.warn('onRouteJourneys', onRouteJourneys)
   var result =
     text && text?.slice(0, count) + (text?.length > count ? '...' : '')
 
@@ -169,7 +206,7 @@ function OrderDetails ({ navigation, route }) {
                     <Text style={styles.nameText}>{item?.user?.name}</Text>
                     <Text style={styles.postedText}>
                       Delivery{' '}
-                      {convertLocalDateToUTCDate(item?.created_at, true)}
+                      {convertLocalDateToUTCDate(item?.date_of_journey, true)}
                     </Text>
                   </View>
                 </View>
@@ -243,7 +280,13 @@ function OrderDetails ({ navigation, route }) {
                   </View>
                 )}
               />
-              <AppButton title={'Make Offer'} />
+              <AppButton
+                title={'Request Offer'}
+                onPress={() => {
+                  handleChange('selectedItem', item)
+                  setModalVisible(true)
+                }}
+              />
             </View>
           </View>
         )}
@@ -263,6 +306,173 @@ function OrderDetails ({ navigation, route }) {
           </View>
         )}
       />
+      <Modal
+        animationType='slide'
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false)
+          handleChange('selectedItem', null)
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View
+              style={{ width: '100%', alignItems: 'center', marginBottom: 20 }}
+            >
+              <View style={{ width: '100%' }}>
+                <View
+                  style={{
+                    width: '100%',
+                    height: hp(6),
+                    backgroundColor: COLORS.successBG,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'row',
+                    borderRadius: 30,
+                    marginVertical: 20
+                  }}
+                >
+                  <SvgXml xml={offerIcon} />
+                  <Text
+                    style={{
+                      marginLeft: 8,
+                      color: COLORS.successBGBorder,
+                      fontFamily: FONT1REGULAR,
+                      fontSize: hp(2)
+                    }}
+                  >
+                    New offer inquiry
+                  </Text>
+                </View>
+                <View style={[styles.rowBetween, { width: '100%' }]}>
+                  <View style={styles.row}>
+                    <Image
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 40,
+                        marginRight: 10
+                      }}
+                      source={
+                        selectedItem?.user?.profile?.photo
+                          ? { uri: selectedItem?.user?.profile?.photo }
+                          : userProfile
+                      }
+                    />
+                    <View>
+                      <Text style={styles.nameText}>
+                        {selectedItem?.user?.name}
+                      </Text>
+                      <Text style={styles.postedText}>
+                        Delivery{' '}
+                        {convertLocalDateToUTCDate(
+                          selectedItem?.date_of_journey,
+                          true
+                        )}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={styles.hline} />
+
+                <View style={[styles.row, { width: '90%' }]}>
+                  <Text
+                    style={[
+                      styles.nameText,
+                      { color: COLORS.primary, maxWidth: '40%' }
+                    ]}
+                  >
+                    {selectedItem?.departure_country}
+                  </Text>
+                  <SvgXml xml={planIcon} style={{ marginTop: 5 }} />
+                  <Text
+                    style={[
+                      styles.nameText,
+                      { color: COLORS.primary, maxWidth: '60%' }
+                    ]}
+                  >
+                    {selectedItem?.arrival_country}
+                  </Text>
+                </View>
+                <View
+                  style={[
+                    styles.rowBetween,
+                    { marginVertical: 10, width: '100%' }
+                  ]}
+                >
+                  <View style={styles.box}>
+                    <SvgXml xml={calendarIcon} style={{ opacity: 0.6 }} />
+                    <Text style={styles.boxText}>
+                      {' '}
+                      {moment(selectedItem?.date_of_journey).format(
+                        'DD / MM / YYYY'
+                      )}
+                    </Text>
+                  </View>
+                  <View style={styles.box}>
+                    <SvgXml xml={weightIcon} />
+                    <Text style={styles.boxText}>
+                      {selectedItem?.total_weight}Kg
+                    </Text>
+                  </View>
+                </View>
+                <FlatList
+                  data={selectedItem?.willing_to_carry}
+                  numColumns={2}
+                  renderItem={({ item: res, index }) => (
+                    <View
+                      key={index}
+                      style={{
+                        marginRight: 10,
+                        paddingHorizontal: 8,
+                        height: 30,
+                        borderRadius: 50,
+                        marginTop: 10,
+                        borderWidth: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderColor: COLORS.grey
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontFamily: FONT1REGULAR,
+                          fontSize: hp(1.8),
+                          color: COLORS.black
+                        }}
+                      >
+                        {res}
+                      </Text>
+                    </View>
+                  )}
+                />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                  }}
+                >
+                  <AppButton
+                    title={'Decline'}
+                    width={'48%'}
+                    outlined
+                    color={COLORS.darkBlack}
+                    backgroundColor={COLORS.white}
+                  />
+                  <AppButton
+                    title={'Accept'}
+                    width={'48%'}
+                    loading={loadingAccept}
+                    onPress={_makeOffer}
+                  />
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   )
 }
@@ -467,6 +677,28 @@ const styles = StyleSheet.create({
     height: 130,
     borderRadius: 10,
     resizeMode: 'cover'
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.modalBG
+  },
+  modalView: {
+    width: '90%',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 0,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
   }
 })
 
