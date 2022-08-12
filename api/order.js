@@ -20,6 +20,10 @@ export const createOrder = (body, token) => {
   return API.post(`api/v1/orders/`, body, token)
 }
 
+export const updateOrderStatus = (body, token) => {
+  return API.put(`api/v1/orders/status/update`, body, token)
+}
+
 export const allNotificationRead = token => {
   return API.get(`api/v1/motifications/read/`, token)
 }

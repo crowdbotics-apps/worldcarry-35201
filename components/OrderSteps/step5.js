@@ -16,6 +16,7 @@ import momenttimezone from 'moment-timezone'
 import { SvgXml } from 'react-native-svg'
 import AppButton from '../AppButton'
 import enRoute from '../../assets/svg/enRoute.svg'
+import userProfile from '../../assets/images/userProfile.png'
 import { Icon } from 'react-native-elements'
 
 export default function Step5 ({ createdOrder, navigation }) {

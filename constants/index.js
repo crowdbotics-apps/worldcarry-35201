@@ -53,6 +53,8 @@ export const COLORS = {
   linkColor: '#34CD8333',
   successBG: '#D7FFEC',
   ratingColor: '#CECE00',
+  toastColor: '#303030DE',
+  scanIcon: '#A0FA46',
   blueBG: '#0C2232',
   balanceBG: '#1A3549',
   successBGBorder: '#34C27E',

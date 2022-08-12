@@ -28,7 +28,7 @@ import Toast from 'react-native-simple-toast'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createJourney, createMyAddresses } from '../../api/journey'
 import Geocoder from 'react-native-geocoding'
-Geocoder.init('AIzaSyA8qkmVxCJuE2_LSU14ogM1vjnoEsRi_Iw')
+Geocoder.init('AIzaSyAEmKGJ68eGUiasdk3A3Ws5PJ2VvB0wSPg')
 
 function CreateJourney ({ navigation, route }) {
   const activeRoundParams = route?.params?.activeRoundParams
@@ -205,8 +205,8 @@ function CreateJourney ({ navigation, route }) {
   const handleSearch = (data, details) => {
     if (details?.geometry?.location) {
       Geocoder.from(
-        details?.geometry?.location?.lat,
-        details?.geometry?.location?.lng
+        details?.geometry?.location?.lat?.toFixed(6),
+        details?.geometry?.location?.lng?.toFixed(6)
       )
         .then(async json => {
           var address_components = json.results[0].address_components
@@ -281,7 +281,6 @@ function CreateJourney ({ navigation, route }) {
         !arrival_country ||
         !date_of_journey
       : willing_to_carry.length === 0 || !total_weight || isNotValidWeight
-  console.warn('myAddresses', myAddresses)
 
   return (
     <View style={{ height: '100%', width: '100%' }}>

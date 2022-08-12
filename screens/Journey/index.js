@@ -163,7 +163,7 @@ function Journey ({ navigation }) {
       </View>
       {loading && <ActivityIndicator color={COLORS.primary} size={'small'} />}
       <FlatList
-        data={journeys}
+        data={getOrderType(active?.toLocaleLowerCase())}
         showsVerticalScrollIndicator={false}
         style={{ width: '100%', height: '100%' }}
         renderItem={({ item, index }) => (
@@ -177,34 +177,33 @@ function Journey ({ navigation }) {
                   style={[
                     styles.ongoingBox,
                     {
-                      backgroundColor: moment(new Date()).isBefore(
-                        item?.date_of_journey
-                      )
-                        ? COLORS.upcoming
-                        : COLORS.ongoing
+                      backgroundColor:
+                        item?.status === 'upcoming'
+                          ? COLORS.upcoming
+                          : COLORS.ongoing
                     }
                   ]}
                 >
                   <SvgXml
                     xml={
-                      moment(new Date()).isBefore(item?.date_of_journey)
-                        ? UpcomingIcon
-                        : OngoingIcon
+                      item?.status === 'upcoming' ? UpcomingIcon : OngoingIcon
                     }
                     style={{ marginLeft: -10, marginTop: 8 }}
                   />
                   <Text
                     style={[
                       styles.nameText,
-                      { fontFamily: FONT1LIGHT, fontSize: hp(1.8) }
+                      {
+                        fontFamily: FONT1LIGHT,
+                        fontSize: hp(1.8),
+                        textTransform: 'capitalize'
+                      }
                     ]}
                   >
-                    {moment(new Date()).isBefore(item?.date_of_journey)
-                      ? 'Upcoming'
-                      : 'Ongoing'}
+                    {item?.status}
                   </Text>
                 </View>
-                {moment(new Date()).isBefore(item?.date_of_journey) && (
+                {item?.status === 'upcoming' && (
                   <Menu
                     rendererProps={{
                       placement: 'bottom'
@@ -262,6 +261,7 @@ function Journey ({ navigation }) {
                       height: 30,
                       borderRadius: 50,
                       borderWidth: 1,
+                      marginBottom: 5,
                       alignItems: 'center',
                       justifyContent: 'center',
                       borderColor: COLORS.grey
@@ -294,14 +294,16 @@ function Journey ({ navigation }) {
               <View style={styles.rowBetween}>
                 <Text style={[styles.postedText]}>To Deliver</Text>
                 <Text style={styles.nameText}>
-                  {moment(item?.date_of_return).format('DD / MM / YYYY')}
+                  {moment(item?.date_of_return || item?.date_of_journey).format(
+                    'DD / MM / YYYY'
+                  )}
                 </Text>
               </View>
               <View style={[styles.rowBetween, { marginTop: 10 }]}>
                 <Text style={[styles.postedText]}>Reward</Text>
                 <Text style={styles.nameText}>{item?.total_weight}</Text>
               </View>
-              {moment(new Date()).isBefore(item?.date_of_journey) && (
+              {item?.status === 'upcoming' && (
                 <AppButton
                   title={'View all 200 offers'}
                   backgroundColor={COLORS.upcoming}

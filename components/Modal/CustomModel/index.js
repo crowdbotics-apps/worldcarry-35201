@@ -5,11 +5,11 @@ import Modal from 'react-native-modal'
 import { COLORS } from '../../../constants'
 import styles from './styles'
 
-const CustomModel = ({ visible, onClose, children }) => {
+const CustomModel = ({ visible, onClose, height, children }) => {
   const content = () => {
     return (
       <View style={styles.screen}>
-        <View style={styles.screenContainer}>
+        <View style={[styles.screenContainer, { height: height || '50%' }]}>
           <View
             style={{
               height: 5,

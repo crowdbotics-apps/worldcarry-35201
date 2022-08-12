@@ -1,5 +1,4 @@
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
-from admin_panel.apps.push_notification.tasks import Pre_Lunch, Follow_Up
 from admin_panel.apps.push_notification.utils import get_day_of_week
 from admin_panel.apps.push_notification.models import Notification_Schedular
 import json
