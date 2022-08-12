@@ -5,4 +5,7 @@ class PushNotificationConfig(AppConfig):
     name = 'push_notification'
 
     def ready(self):
-        import push_notification.signals
+        try:
+            import admin_panel.apps.push_notification.signals
+        except ImportError:
+            pass
