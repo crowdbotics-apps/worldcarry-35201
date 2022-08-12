@@ -318,7 +318,6 @@ TWILIO_ACCOUNT_ID = env.str("TWILIO_ACCOUNT_ID", "")
 TWILIO_TOKEN = env.str("TWILIO_TOKEN", "")
 TWILIO_DEFAULT_NUMBER = env.str("TWILIO_DEFAULT_NUMBER", "")
 
-
 FCM_DJANGO_SETTINGS = {
     # default: _('FCM Django')
     "APP_VERBOSE_NAME": "World Carry",
@@ -332,3 +331,5 @@ FCM_DJANGO_SETTINGS = {
     # default: False
     "DELETE_INACTIVE_DEVICES": False,
 }
+
+PASSPORT_VERIFICATION_KEY = env.str("PASSPORT_VERIFICATION_KEY", "")

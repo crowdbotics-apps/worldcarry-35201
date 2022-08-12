@@ -134,3 +134,8 @@ class CustomAuthTokenSerializer(serializers.Serializer):
             raise serializers.ValidationError({'detail': 'Unable to authenticate with provided credentials'})
         attrs['user'] = user
         return attrs
+
+
+class PassportAuthenticationSerializer(serializers.Serializer):
+    passport_photo = serializers.ImageField(required=True)
+    selfie_photo = serializers.ImageField(required=True)

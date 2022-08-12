@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 import uuid
 from phonenumber_field.modelfields import PhoneNumberField
+from jsonfield import JSONField
 
 from home.models import UUIDModel
 
@@ -25,8 +26,6 @@ class User(AbstractUser):
     name = models.CharField(_("Name of User"), blank=True, null=True, max_length=255)
     activation_key = models.CharField(max_length=255, blank=True, null=True)
     otp = models.CharField(max_length=6, blank=True, null=True)
-
-
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
@@ -55,3 +54,19 @@ class Profile(UUIDModel):
     verified_email = models.EmailField(max_length=255, null=True, blank=True)
     email_verification_otp = models.CharField(max_length=6, blank=True, null=True)
     phone_verification_otp = models.CharField(max_length=6, blank=True, null=True)
+
+
+class UserPassportImage(UUIDModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    passport_photo = models.ImageField(upload_to='users/passport')
+    current_photo = models.ImageField(upload_to='users/passport')
+    is_passport_valid = models.BooleanField(default=False)
+    passport_score = models.FloatField(default=0)
+    passport_data = JSONField(null=True, blank=True)
+    is_valid_biometric = models.BooleanField(default=False)
+    biometric_score = models.FloatField(default=0)
+    biometric_error = models.CharField(null=True, blank=True, max_length=1000)
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+
+    def __str__(self):
+        return self.user.first_name
