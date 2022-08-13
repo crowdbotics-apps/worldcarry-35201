@@ -19,7 +19,6 @@ from admin_panel.apps.push_notification.utils import send_notification
 
 @receiver(post_save, sender=Notification)
 def send_notification_signal(sender, instance:Notification, **kwargs):
-    print("post_save_called")
     result = send_notification(
         user_id=instance.user.id,
         message=instance.description,
