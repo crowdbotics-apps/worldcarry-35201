@@ -322,7 +322,7 @@ FCM_DJANGO_SETTINGS = {
     # default: _('FCM Django')
     "APP_VERBOSE_NAME": "World Carry",
     # Your firebase API KEY
-    "FCM_SERVER_KEY": env.str("FCM_SERVER_KEY"),
+    "FCM_SERVER_KEY": env.str("FCM_SERVER_KEY", "FCM_SERVER_KEY"),
     # true if you want to have only one active device per registered user at a time
     # default: False
     "ONE_DEVICE_PER_USER": False,
