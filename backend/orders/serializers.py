@@ -34,6 +34,7 @@ class OrderSerializer(serializers.ModelSerializer):
         required=False
     )
     can_transit = serializers.ReadOnlyField()
+    journey = serializers.ReadOnlyField(allow_null=True, source='order_journey')
 
     class Meta:
         model = Order

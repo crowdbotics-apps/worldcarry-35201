@@ -146,7 +146,14 @@ class Order(UUIDModel):
             return True
         return False
 
- 
+    @property
+    def order_journey(self):
+        o_journey = self.journeyorder_set.filter(allowed_by_carrier=True, allowed_by_sender=True)
+        if o_journey.exists():
+            return o_journey.first().journey_id
+        return None
+
+
 class OrderImages(UUIDModel):
     """
     A data representation of the multiple Order Images attached
