@@ -29,6 +29,13 @@ class FeedbackAPIView(CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
+class FAQViewSet(ModelViewSet):
+    permission_classes = ""
+    serializer_class = FaqSerializer
+    queryset = FAQ.objects.filter(is_visible=True)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = ['categories']
+
 
 class FAQListAPIView(ListAPIView):
     permission_classes = ""
