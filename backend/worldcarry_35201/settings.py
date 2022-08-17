@@ -28,7 +28,7 @@ env = environ.Env()
 env.read_env(env_file)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool("DEBUG", default=False)
+DEBUG = env.bool("DEBUG", default=)
 
 try:
     # Pull secrets from Secret Manager
@@ -101,6 +101,7 @@ THIRD_PARTY_APPS = [
     'django_filters',
     'corsheaders',
     'phonenumber_field',
+    # 'notifications_rest'
 ]
 MODULES_APPS = get_modules()
 
