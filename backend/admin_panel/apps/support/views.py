@@ -17,7 +17,7 @@ class FeedbackViewSet(ModelViewSet):
 
 
 class FeedbackAPIView(CreateAPIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated]
     serializer_class = FeedbackSerializer
     queryset = Feedback.objects.filter()
 
@@ -38,7 +38,7 @@ class FAQViewSet(ModelViewSet):
 
 
 class FAQListAPIView(ListAPIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated]
     serializer_class = FaqSerializer
     queryset = FAQ.objects.filter(is_visible=True)
     filter_backends = (filters.DjangoFilterBackend,)
@@ -62,7 +62,7 @@ class SupportRequestViewSet(ModelViewSet):
 
 
 class SupportCreateAPIView(CreateAPIView):
-    permission_classes = ""
+    permission_classes = [IsAuthenticated]
     serializer_class = SupportRequestSerializer
     queryset = SupportRequest.objects.filter()
 
