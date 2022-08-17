@@ -7,6 +7,7 @@ from admin_panel.apps.support.models import FAQ, SupportRequest, Feedback
 from admin_panel.apps.support.serializers import FaqSerializer, FeedbackSerializer, SupportRequestSerializer
 from home.permissions import IsAdmin
 from rest_framework.generics import CreateAPIView, ListAPIView
+from django_filters import rest_framework as filters
 
 
 class FeedbackViewSet(ModelViewSet):
@@ -33,6 +34,8 @@ class FAQListAPIView(ListAPIView):
     permission_classes = ""
     serializer_class = FaqSerializer
     queryset = FAQ.objects.filter(is_visible=True)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = ['categories']
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())

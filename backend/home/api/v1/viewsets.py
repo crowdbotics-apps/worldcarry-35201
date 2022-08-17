@@ -14,6 +14,7 @@ from home.api.v1.serializers import (
 )
 
 
+
 class SignupViewSet(ModelViewSet):
     serializer_class = SignupSerializer
     http_method_names = ["post"]
