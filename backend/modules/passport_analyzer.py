@@ -5,8 +5,8 @@ from django.conf import settings
 def analyze_passport(passport, biometric):
     try:
 
-        passport = passport.path
-        biometric = biometric.path
+        passport = passport.name
+        biometric = biometric.name
 
         passport_authentication_score: float = 0
         passport_authentication_remarks: str = ''
