@@ -16,7 +16,6 @@ def analyze_passport(passport, biometric):
         biometric_error: str = ''
 
         # Initialize Core API with your api key and region (US/EU)
-        # core_api = idanalyzer.CoreAPI("j0BYyP3wkMCzXTtHeAIQeFZ5rQ1fU0m3", "US")
         core_api = idanalyzer.CoreAPI(settings.PASSPORT_VERIFICATION_KEY, "US")
 
         # Raise exceptions for API level errors
@@ -74,3 +73,12 @@ def analyze_passport(passport, biometric):
 
     except Exception as e:
         print(e)
+        return {
+            'passport_data': {},
+            'passport_authentication_score': 0,
+            'passport_authentication_remarks': str(e),
+            'passport_valid': False,
+            'biometric_verified': False,
+            'biometric_verification_score': 0,
+            'biometric_error': str(e)
+        }

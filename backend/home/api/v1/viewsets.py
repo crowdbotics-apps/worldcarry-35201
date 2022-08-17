@@ -61,10 +61,10 @@ class ValidatePassport(APIView):
         user_password_new.save()
 
         if not result.get('passport_valid', False):
-            return Response({'success': False, 'message': 'Fake Passport'})
+            return Response({'success': False, 'message': 'Fake Passport', 'api_response': result})
 
         if result.get('passport_valid', False) and result.get('biometric_verified', False):
-            return Response({'success': True, 'message': 'Passport is verified Successfully'})
+            return Response({'success': True, 'message': 'Passport is verified Successfully', 'api_response': result})
 
         if result.get('passport_valid', False) and not result.get('biometric_verified', False):
-            return Response({'success': False, 'message': result.get('biometric_error')})
+            return Response({'success': False, 'message': result.get('biometric_error'), 'api_response': result})
