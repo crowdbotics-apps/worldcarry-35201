@@ -50,7 +50,7 @@ def analyze_passport(passport, biometric):
                 biometric_error = face_result.get('error_message')
 
         result = {
-            'passport_data': response['result'],
+            'passport_data': response.get('result', None),
             'passport_authentication_score': passport_authentication_score,
             'passport_authentication_remarks': passport_authentication_remarks,
             'passport_valid': passport_verified,

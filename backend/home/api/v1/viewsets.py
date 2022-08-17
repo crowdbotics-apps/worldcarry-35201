@@ -51,7 +51,7 @@ class ValidatePassport(APIView):
                                                              current_photo=data['selfie_photo'])
         result = analyze_passport(passport=user_password_new.passport_photo, biometric=user_password_new.current_photo)
 
-        user_password_new.passport_data = result.get('passport_data')
+        user_password_new.passport_data = result.get('passport_data', None)
         user_password_new.is_passport_valid = result.get('passport_valid')
         user_password_new.passport_score = result.get('passport_authentication_score')
         user_password_new.is_valid_biometric = result.get('biometric_verified')
@@ -59,11 +59,11 @@ class ValidatePassport(APIView):
         user_password_new.biometric_error = result.get('biometric_error')
         user_password_new.save()
 
-        if not result.get('passport_valid'):
-            return Response({'success': False, 'message': 'Invalid Passport'})
+        if not result.get('passport_valid', False):
+            return Response({'success': False, 'message': 'Fake Passport'})
 
-        if result.get('passport_valid') and result.get('biometric_verified'):
+        if result.get('passport_valid', False) and result.get('biometric_verified', False):
             return Response({'success': True, 'message': 'Passport is verified Successfully'})
 
-        if result.get('passport_valid') and not result.get('biometric_verified'):
+        if result.get('passport_valid', False) and not result.get('biometric_verified', False):
             return Response({'success': False, 'message': result.get('biometric_error')})
