@@ -33,5 +33,6 @@ urlpatterns = [
     path("feedback", FeedbackAPIView.as_view(), name='feedback_create'),
     path("faq", FAQListAPIView.as_view(), name='faq_list'),
     path("support", SupportCreateAPIView.as_view(), name='support_create'),
+    #path('notifications/', include('notifications_rest.urls')),
 
 ]

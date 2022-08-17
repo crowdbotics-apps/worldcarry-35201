@@ -7,7 +7,7 @@ from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
 
 router = DefaultRouter()
 router.register("notification", NotificationViewSet, basename="notification")
-router.register('devices', FCMDeviceAuthorizedViewSet),
+router.register('device', FCMDeviceAuthorizedViewSet),
 
 
 urlpatterns = [

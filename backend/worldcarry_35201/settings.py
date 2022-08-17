@@ -101,6 +101,7 @@ THIRD_PARTY_APPS = [
     'django_filters',
     'corsheaders',
     'phonenumber_field',
+    # 'notifications_rest'
 ]
 MODULES_APPS = get_modules()
 
@@ -333,3 +334,5 @@ FCM_DJANGO_SETTINGS = {
 }
 
 PASSPORT_VERIFICATION_KEY = env.str("PASSPORT_VERIFICATION_KEY", "")
+
+USE_TZ = True

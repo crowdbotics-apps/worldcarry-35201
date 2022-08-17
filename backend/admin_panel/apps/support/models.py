@@ -2,6 +2,7 @@ from django.db import models
 import uuid
 
 from django.contrib.auth import get_user_model
+from admin_panel.apps.support.enums import FAQCategoriesEnum
 
 User = get_user_model()
 
@@ -24,6 +25,7 @@ class FAQ(models.Model):
     id = models.BigAutoField(primary_key=True, editable=False)
     question = models.CharField(max_length=250)
     answer = models.TextField()
+    categories = models.CharField(max_length=10, default=FAQCategoriesEnum.BASIC.value, choices=FAQCategoriesEnum.choices())
     is_visible = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

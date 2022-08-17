@@ -12,6 +12,6 @@ from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet, FCMDeviceV
 from fcm_django.api.rest_framework import Serializer
 
 class NotificationViewSet(ModelViewSet):
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated]
     serializer_class = NotificationSerializer
     queryset = Notification.objects.filter()
