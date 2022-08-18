@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "487049617739",
+    "firebase_url": "https://worldcarry-402ab-default-rtdb.firebaseio.com",
+    "project_id": "worldcarry-402ab",
+    "storage_bucket": "worldcarry-402ab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:487049617739:android:522742db6476ae176288ce",
+        "android_client_info": {
+          "package_name": "com.worldcarry_35201"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "487049617739-4ogjm2s6451l1625h2ojhsjuu2p7vokc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwwDhk9ewbSo5iOtYmwj5xThy8BnjpH74"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "487049617739-4ogjm2s6451l1625h2ojhsjuu2p7vokc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

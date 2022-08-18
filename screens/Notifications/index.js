@@ -112,7 +112,7 @@ function Notifications ({ navigation }) {
           </TouchableOpacity>
         </View>
         <FlatList
-          data={['notifications','notifications']}
+          data={[notifications]}
           style={{ width: '100%' }}
           renderItem={({ item, index }) => {
             return (

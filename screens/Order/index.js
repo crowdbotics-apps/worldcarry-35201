@@ -47,6 +47,7 @@ import Toast from 'react-native-simple-toast'
 import { addReview } from '../../api/journey'
 import { Rating } from 'react-native-ratings'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import database from '@react-native-firebase/database'
 
 function Order ({ navigation }) {
   const [state, setState] = useState({
@@ -194,6 +195,29 @@ function Order ({ navigation }) {
         return filtered || []
       }
     } else return []
+  }
+
+  const createMessageList = item => {
+    let value = {
+      sender: item.carrier,
+      itemtitle: item?.product_name,
+      senderId: item.carrier?.id,
+      id: item?.id,
+      timeStamp: Date.now(),
+      receiverRead: 0,
+      receiverId: user?.id,
+      receiver: user,
+      order: item
+    }
+    database()
+      .ref('Messages/' + item?.id)
+      .update(value)
+      .then(res => {
+        navigation.navigate('Chat', { orderID: item?.id })
+      })
+      .catch(err => {
+        Toast.show('Something went wrong!')
+      })
   }
 
   console.warn('orders', orders)
@@ -381,7 +405,7 @@ function Order ({ navigation }) {
                         prefix={
                           <SvgXml xml={chatIcon} style={{ marginRight: 8 }} />
                         }
-                        // onPress={() => _makeOffer(item?.id)}
+                        onPress={() => createMessageList(item)}
                       />
                     </View>
                   </View>

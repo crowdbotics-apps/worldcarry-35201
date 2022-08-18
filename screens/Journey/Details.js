@@ -40,6 +40,7 @@ import { getOnrouteOrders, updateOrderStatus } from '../../api/order'
 import { useFocusEffect } from '@react-navigation/native'
 import { Rating } from 'react-native-ratings'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
+import database from '@react-native-firebase/database'
 
 function JourneyDetails ({ navigation, route }) {
   const item = route?.params?.item
@@ -284,6 +285,29 @@ function JourneyDetails ({ navigation, route }) {
     }
   }
 
+  const createMessageList = item => {
+    let value = {
+      sender: user,
+      itemtitle: item?.product_name,
+      senderId: user?.id,
+      id: item?.id,
+      timeStamp: Date.now(),
+      receiverRead: 0,
+      receiverId: item.user?.id,
+      receiver: item.user,
+      order: item
+    }
+      database()
+      .ref('Messages/' + item?.id)
+      .update(value)
+      .then(res => {
+        navigation.navigate('Chat', { orderID: item?.id })
+      })
+      .catch(err => {
+        Toast.show('Something went wrong!')
+      })
+  }
+
   if (loading) {
     return (
       <View style={styles.loading}>
@@ -291,6 +315,8 @@ function JourneyDetails ({ navigation, route }) {
       </View>
     )
   }
+
+  console.warn('getOrderFromStatus()', getOrderFromStatus())
 
   return (
     <ScrollView
@@ -535,7 +561,7 @@ function JourneyDetails ({ navigation, route }) {
                     prefix={
                       <SvgXml xml={chatIcon} style={{ marginRight: 8 }} />
                     }
-                    // onPress={() => _makeOffer(item?.id)}
+                    onPress={() => createMessageList(item)}
                   />
                 )}
               {active === 'Accepted' &&
@@ -616,7 +642,7 @@ function JourneyDetails ({ navigation, route }) {
                       prefix={
                         <SvgXml xml={chatIcon} style={{ marginRight: 8 }} />
                       }
-                      // onPress={() => _makeOffer(item?.id)}
+                      onPress={() => createMessageList(item)}
                     />
                     <AppButton
                       title={'Locate'}
