@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import 'react-native-gesture-handler'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Toast from 'react-native-simple-toast'
@@ -7,9 +7,10 @@ import RootStackNav from './navigation/RootStackNav'
 import AppContext from './store/Context'
 import { NavigationContainer } from '@react-navigation/native'
 import { MenuProvider } from 'react-native-popup-menu'
-import { getOrders } from './api/order'
+import { getNotification, getOrders } from './api/order'
 import { getJourneys, getMyAddresses } from './api/journey'
-
+import messaging from '@react-native-firebase/messaging';
+import { Alert } from 'react-native'
 function App () {
   const [user, setUser] = useState(null)
   const [userType, setUserType] = useState('')
@@ -18,6 +19,7 @@ function App () {
   const [orders, setOrders] = useState([])
   const [journeys, setJourneys] = useState([])
   const [myAddresses, setMyAddresses] = useState([])
+  const [notifications, setNotifications] = useState([])
 
   const _getProfile = async () => {
     try {
@@ -32,6 +34,18 @@ function App () {
       Toast.show(`Error: ${errorText}`)
     }
   }
+
+  const _getNotification = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token')
+      const res = await getNotification(token)
+      setNotifications(res?.data)
+    } catch (error) {
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
+
 
   const _getOrders = async payload => {
     try {
@@ -67,6 +81,36 @@ function App () {
     }
   }
 
+  
+  useEffect(() => {
+    requestUserPermission()
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+      console.log('Message handled in the background!', remoteMessage);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  async function registerAppWithFCM() {
+    const registered = await messaging().registerDeviceForRemoteMessages();
+  }
+
+  async function requestUserPermission() {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      console.warn('Authorization status:', authStatus);
+      registerAppWithFCM()
+    }
+  }
+
   return (
     <AppContext.Provider
       value={{
@@ -84,7 +128,9 @@ function App () {
         journeys,
         _getJourneys,
         myAddresses,
-        _getMyAddresses
+        _getMyAddresses,
+        notifications,
+        _getNotification,
       }}
     >
       <NavigationContainer>

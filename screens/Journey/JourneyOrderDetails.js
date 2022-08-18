@@ -40,6 +40,7 @@ import { getOnrouteOrders, updateOrderStatus } from '../../api/order'
 import { useFocusEffect } from '@react-navigation/native'
 import { Rating } from 'react-native-ratings'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
+import database from '@react-native-firebase/database'
 
 function JourneyOrderDetails ({ navigation, route }) {
   const item = route?.params?.item
@@ -248,16 +249,27 @@ function JourneyOrderDetails ({ navigation, route }) {
     }
   }
 
-  const getOrderFromStatus = () => {
-    if (active === 'Offers') {
-      return onRouteOrders?.offers
-    } else if (active === 'Accepted') {
-      return onRouteOrders?.accepted?.concat(onRouteOrders?.requested_by_sender)
-    } else if (active === 'In Transit') {
-      return onRouteOrders?.in_transit
-    } else {
-      return onRouteOrders?.delivered
+  const createMessageList = item => {
+    let value = {
+      sender: user,
+      itemtitle: item?.product_name,
+      senderId: user?.id,
+      id: item?.id,
+      timeStamp: Date.now(),
+      receiverRead: 0,
+      receiverId: item.user?.id,
+      receiver: item.user,
+      order: item
     }
+    database()
+      .ref('Messages/' + item?.id)
+      .update(value)
+      .then(res => {
+        navigation.navigate('Chat', { orderID: item?.id })
+      })
+      .catch(err => {
+        Toast.show('Something went wrong!')
+      })
   }
 
   if (loading) {
@@ -423,7 +435,7 @@ function JourneyOrderDetails ({ navigation, route }) {
               color={COLORS.darkBlack}
               titleLight
               prefix={<SvgXml xml={chatIcon} style={{ marginRight: 8 }} />}
-              // onPress={() => _makeOffer(item?.id)}
+              onPress={() => createMessageList(item)}
             />
           )}
           {active === 'Accepted' && (
@@ -454,7 +466,7 @@ function JourneyOrderDetails ({ navigation, route }) {
                   titleLight
                   width={'48%'}
                   prefix={<SvgXml xml={chatIcon} style={{ marginRight: 8 }} />}
-                  // onPress={() => _makeOffer(item?.id)}
+                  onPress={() => createMessageList(item)}
                 />
                 <AppButton
                   title={'Locate'}
@@ -486,32 +498,32 @@ function JourneyOrderDetails ({ navigation, route }) {
             </>
           )}
           {active === 'Delivered' && (
-                <View
-                  // onPress={() => handleChange('writeReview', true)}
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    backgroundColor: COLORS.successBG,
-                    borderRadius: 30,
-                    height: hp(6),
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: 15
-                  }}
-                >
-                  <SvgXml xml={cehcked} />
-                  <Text
-                    style={{
-                      fontFamily: FONT1REGULAR,
-                      fontSize: hp(2),
-                      color: COLORS.successBGBorder,
-                      marginLeft: 10
-                    }}
-                  >
-                    Order Delivered
-                  </Text>
-                </View>
-              )}
+            <View
+              // onPress={() => handleChange('writeReview', true)}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: COLORS.successBG,
+                borderRadius: 30,
+                height: hp(6),
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 15
+              }}
+            >
+              <SvgXml xml={cehcked} />
+              <Text
+                style={{
+                  fontFamily: FONT1REGULAR,
+                  fontSize: hp(2),
+                  color: COLORS.successBGBorder,
+                  marginLeft: 10
+                }}
+              >
+                Order Delivered
+              </Text>
+            </View>
+          )}
         </View>
       </View>
     </ScrollView>

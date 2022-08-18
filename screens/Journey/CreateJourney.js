@@ -233,7 +233,7 @@ function CreateJourney ({ navigation, route }) {
           handleChange('departure_country', country)
           handleChange('departure_state', dState)
         })
-        .catch(error => console.warn('Geocodererror', error))
+        .catch(error => alert(error?.origin?.error_message))
     }
   }
   const handleSearch1 = (data, details) => {
@@ -270,7 +270,21 @@ function CreateJourney ({ navigation, route }) {
         .catch(error => console.warn('Geocodererror', error))
     }
   }
-
+  const clearForm = () => {
+    if (step === 0) {
+      handleChange('departure_city', '')
+      handleChange('departure_state', '')
+      handleChange('departure_country', '')
+      handleChange('arrival_city', '')
+      handleChange('arrival_state', '')
+      handleChange('arrival_country', '')
+      handleChange('date_of_journey', '')
+    } else if (step === 1) {
+      handleChange('willing_to_carry', [])
+      handleChange('total_weight', '')
+      handleChange('isNotValidWeight', false)
+    }
+  }
   const disabled =
     step === 0
       ? !departure_city ||
@@ -290,7 +304,7 @@ function CreateJourney ({ navigation, route }) {
         rightItem={
           <TouchableOpacity
             onPress={() =>
-              step === 2 ? navigation.navigate('Journey') : console.log()
+              step === 2 ? navigation.navigate('Journey') : clearForm()
             }
           >
             <Text style={styles.activeTabText}>

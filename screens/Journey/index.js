@@ -1,27 +1,14 @@
-import React, {
-  createRef,
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
   View,
   StyleSheet,
-  ScrollView,
   Text,
   TouchableOpacity,
-  Dimensions,
-  PermissionsAndroid,
   FlatList,
-  ImageBackground,
   Image,
   ActivityIndicator
 } from 'react-native'
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp
-} from 'react-native-responsive-screen'
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { SvgXml } from 'react-native-svg'
 import NoOrder from '../../assets/svg/NoOrder.svg'
 import planIcon from '../../assets/svg/plan.svg'
@@ -29,16 +16,8 @@ import OngoingIcon from '../../assets/svg/Ongoing.svg'
 import UpcomingIcon from '../../assets/svg/Upcoming.svg'
 import menuJourney from '../../assets/svg/menuJourney.svg'
 import usersIcon from '../../assets/images/users.png'
-import userProfile from '../../assets/images/userProfile.png'
 import { AppButton, Header } from '../../components'
-import {
-  COLORS,
-  FONT1BOLD,
-  FONT1LIGHT,
-  FONT1MEDIUM,
-  FONT1REGULAR,
-  FONT1SEMIBOLD
-} from '../../constants'
+import { COLORS, FONT1LIGHT, FONT1MEDIUM, FONT1REGULAR } from '../../constants'
 import AppContext from '../../store/Context'
 import moment from 'moment'
 import momenttimezone from 'moment-timezone'
@@ -305,7 +284,7 @@ function Journey ({ navigation }) {
               </View>
               {item?.status === 'upcoming' && (
                 <AppButton
-                  title={'View all 200 offers'}
+                  title={`View all ${item?.total_orders} offers`}
                   backgroundColor={COLORS.upcoming}
                   color={COLORS.upcomingDark}
                   onPress={() =>
