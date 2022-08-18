@@ -13,6 +13,10 @@ from home.api.v1.serializers import (
     UserSerializer,
 )
 
+from django.conf import settings
+from django.core.files import File
+import os
+from django.core.files.storage import default_storage
 
 
 class SignupViewSet(ModelViewSet):
@@ -40,6 +44,7 @@ class ValidatePassport(APIView):
     serializer_class = PassportAuthenticationSerializer
     permission_classes = (IsAuthenticated,)
     authentication_classes = [ExpiringTokenAuthentication]
+    # permission_classes = []
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -48,8 +53,37 @@ class ValidatePassport(APIView):
         user_password_old = UserPassportImage.objects.filter(user=request.user)
         if user_password_old:
             user_password_old.delete()
-        user_password_new = UserPassportImage.objects.create(user=request.user, passport_photo=data['passport_photo'],
-                                                             current_photo=data['selfie_photo'])
+
+        user_password_new = UserPassportImage.objects.create(user=request.user)
+
+        passport_photo = data['passport_photo']
+        pp_filename = passport_photo.name
+
+        with default_storage.open(pp_filename, 'wb+') as destination:
+            for chunk in passport_photo.chunks():
+                destination.write(chunk)
+
+        with open(settings.MEDIA_ROOT + pp_filename, "rb") as reopen:
+            django_file = File(reopen)
+            user_password_new.passport_photo.save(pp_filename, django_file, save=False)
+        path = settings.MEDIA_ROOT + pp_filename
+        os.remove(path)
+        user_password_new.save()
+
+        # biometric photo
+        selfie_photo = data['selfie_photo']
+        sp_filename = selfie_photo.name
+        with default_storage.open(sp_filename, 'wb+') as destination:
+            for chunk in selfie_photo.chunks():
+                destination.write(chunk)
+
+        with open(settings.MEDIA_ROOT + sp_filename, "rb") as reopen:
+            django_file = File(reopen)
+            user_password_new.current_photo.save(pp_filename, django_file, save=False)
+        path = settings.MEDIA_ROOT + sp_filename
+        os.remove(path)
+        user_password_new.save()
+
         result = analyze_passport(passport=user_password_new.passport_photo, biometric=user_password_new.current_photo)
 
         user_password_new.passport_data = result.get('passport_data', None)
@@ -61,10 +95,13 @@ class ValidatePassport(APIView):
         user_password_new.save()
 
         if not result.get('passport_valid', False):
-            return Response({'success': False, 'message': 'Fake Passport', 'api_response': result})
+            return Response({'success': False, 'message': 'Fake Passport', 'api_response': result,
+                             "test": [user_password_new.passport_photo.path]})
 
         if result.get('passport_valid', False) and result.get('biometric_verified', False):
-            return Response({'success': True, 'message': 'Passport is verified Successfully', 'api_response': result})
+            return Response({'success': True, 'message': 'Passport is verified Successfully', 'api_response': result,
+                             "test": [user_password_new.passport_photo.path]})
 
         if result.get('passport_valid', False) and not result.get('biometric_verified', False):
-            return Response({'success': False, 'message': result.get('biometric_error'), 'api_response': result})
+            return Response({'success': False, 'message': result.get('biometric_error'), 'api_response': result,
+                             "test": [user_password_new.passport_photo.path]})
