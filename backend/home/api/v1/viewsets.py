@@ -50,59 +50,36 @@ class ValidatePassport(APIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
-        user_password_old = UserPassportImage.objects.filter(user=request.user)
-        if user_password_old:
-            user_password_old.delete()
+        user_passport_old = UserPassportImage.objects.filter(user=request.user)
+        if user_passport_old:
+            user_passport_old.delete()
 
-        user_password_new = UserPassportImage.objects.create(user=request.user, passport_photo=data['passport_photo'],
+        user_passport_new = UserPassportImage.objects.create(user=request.user, passport_photo=data['passport_photo'],
                                                              current_photo=data['selfie_photo'])
 
-        # passport_photo = data['passport_photo']
-        # pp_filename = passport_photo.name
+        photo_url = request.build_absolute_uri(user_passport_new.passport_photo.url)
+        # print(user_password_new.passport_photo.ge)
+        # data = UserPassportSerializer(user_password_new, context={'request': request}).data
+        return Response({"data": photo_url})
         #
-        # with default_storage.open(pp_filename, 'wb+') as destination:
-        #     for chunk in passport_photo.chunks():
-        #         destination.write(chunk)
+        # result = analyze_passport(passport=user_password_new.passport_photo, biometric=user_password_new.current_photo)
         #
-        # with open(settings.MEDIA_ROOT + pp_filename, "rb") as reopen:
-        #     django_file = File(reopen)
-        #     user_password_new.passport_photo.save(pp_filename, django_file, save=False)
-        # path = settings.MEDIA_ROOT + pp_filename
-        # os.remove(path)
+        # user_password_new.passport_data = result.get('passport_data', None)
+        # user_password_new.is_passport_valid = result.get('passport_valid')
+        # user_password_new.passport_score = result.get('passport_authentication_score')
+        # user_password_new.is_valid_biometric = result.get('biometric_verified')
+        # user_password_new.biometric_score = result.get('biometric_verification_score')
+        # user_password_new.biometric_error = result.get('biometric_error')
         # user_password_new.save()
-
-        # biometric photo
-        # selfie_photo = data['selfie_photo']
-        # sp_filename = selfie_photo.name
-        # with default_storage.open(sp_filename, 'wb+') as destination:
-        #     for chunk in selfie_photo.chunks():
-        #         destination.write(chunk)
         #
-        # with open(settings.MEDIA_ROOT + sp_filename, "rb") as reopen:
-        #     django_file = File(reopen)
-        #     user_password_new.current_photo.save(pp_filename, django_file, save=False)
-        # path = settings.MEDIA_ROOT + sp_filename
-        # os.remove(path)
-        # user_password_new.save()
-
-        result = analyze_passport(passport=user_password_new.passport_photo, biometric=user_password_new.current_photo)
-
-        user_password_new.passport_data = result.get('passport_data', None)
-        user_password_new.is_passport_valid = result.get('passport_valid')
-        user_password_new.passport_score = result.get('passport_authentication_score')
-        user_password_new.is_valid_biometric = result.get('biometric_verified')
-        user_password_new.biometric_score = result.get('biometric_verification_score')
-        user_password_new.biometric_error = result.get('biometric_error')
-        user_password_new.save()
-
-        if not result.get('passport_valid', False):
-            return Response({'success': False, 'message': 'Fake Passport', 'api_response': result,
-                             "test": [user_password_new.passport_photo.path]})
-
-        if result.get('passport_valid', False) and result.get('biometric_verified', False):
-            return Response({'success': True, 'message': 'Passport is verified Successfully', 'api_response': result,
-                             "test": [user_password_new.passport_photo.path]})
-
-        if result.get('passport_valid', False) and not result.get('biometric_verified', False):
-            return Response({'success': False, 'message': result.get('biometric_error'), 'api_response': result,
-                             "test": [user_password_new.passport_photo.path]})
+        # if not result.get('passport_valid', False):
+        #     return Response({'success': False, 'message': 'Fake Passport', 'api_response': result,
+        #                      "test": [user_password_new.passport_photo.path]})
+        #
+        # if result.get('passport_valid', False) and result.get('biometric_verified', False):
+        #     return Response({'success': True, 'message': 'Passport is verified Successfully', 'api_response': result,
+        #                      "test": [user_password_new.passport_photo.path]})
+        #
+        # if result.get('passport_valid', False) and not result.get('biometric_verified', False):
+        #     return Response({'success': False, 'message': result.get('biometric_error'), 'api_response': result,
+        #                      "test": [user_password_new.passport_photo.path]})
