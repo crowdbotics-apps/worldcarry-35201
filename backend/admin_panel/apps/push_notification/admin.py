@@ -6,3 +6,4 @@ from admin_panel.apps.push_notification.models import *
 admin.site.register(Template)
 admin.site.register(PushNotificationGroup)
 admin.site.register(NotificationSchedular)
+admin.site.register(Notification)

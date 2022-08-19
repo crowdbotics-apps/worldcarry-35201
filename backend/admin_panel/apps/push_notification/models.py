@@ -65,8 +65,9 @@ class Notification(models.Model):
     is_send_now = models.BooleanField(default=False)
     send_date = models.DateTimeField(null=True, blank=True)
     group = models.ForeignKey(PushNotificationGroup, on_delete=models.CASCADE, null=True, blank=True)
-    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     is_sent = models.BooleanField(default=False)
+    is_read = models.BooleanField(default=False)
     is_paused = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)
@@ -78,7 +79,7 @@ class Notification(models.Model):
     def __str__(self):
         return self.name
 
-    def save(self, request=None):
-        print("testings")
-
-        return super().save()
+    # def save(self, request=None):
+    #     print("testings")
+    #
+    #     return super().save()

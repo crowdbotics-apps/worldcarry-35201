@@ -11,7 +11,7 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         exclude = [
-            'id', 'created_at'
+
         ]
 
     def get_user_detail(self, obj):
