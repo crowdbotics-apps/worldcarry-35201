@@ -57,29 +57,27 @@ class ValidatePassport(APIView):
         user_passport_new = UserPassportImage.objects.create(user=request.user, passport_photo=data['passport_photo'],
                                                              current_photo=data['selfie_photo'])
 
-        photo_url = request.build_absolute_uri(user_passport_new.passport_photo.url)
-        # print(user_password_new.passport_photo.ge)
-        # data = UserPassportSerializer(user_password_new, context={'request': request}).data
-        return Response({"data": photo_url})
-        #
-        # result = analyze_passport(passport=user_password_new.passport_photo, biometric=user_password_new.current_photo)
-        #
-        # user_password_new.passport_data = result.get('passport_data', None)
-        # user_password_new.is_passport_valid = result.get('passport_valid')
-        # user_password_new.passport_score = result.get('passport_authentication_score')
-        # user_password_new.is_valid_biometric = result.get('biometric_verified')
-        # user_password_new.biometric_score = result.get('biometric_verification_score')
-        # user_password_new.biometric_error = result.get('biometric_error')
-        # user_password_new.save()
-        #
-        # if not result.get('passport_valid', False):
-        #     return Response({'success': False, 'message': 'Fake Passport', 'api_response': result,
-        #                      "test": [user_password_new.passport_photo.path]})
-        #
-        # if result.get('passport_valid', False) and result.get('biometric_verified', False):
-        #     return Response({'success': True, 'message': 'Passport is verified Successfully', 'api_response': result,
-        #                      "test": [user_password_new.passport_photo.path]})
-        #
-        # if result.get('passport_valid', False) and not result.get('biometric_verified', False):
-        #     return Response({'success': False, 'message': result.get('biometric_error'), 'api_response': result,
-        #                      "test": [user_password_new.passport_photo.path]})
+        passport = request.build_absolute_uri(user_passport_new.passport_photo.url)
+        photo = request.build_absolute_uri(user_passport_new.passport_photo.url)
+
+        result = analyze_passport(passport=passport, biometric=photo)
+
+        user_passport_new.passport_data = result.get('passport_data', None)
+        user_passport_new.is_passport_valid = result.get('passport_valid')
+        user_passport_new.passport_score = result.get('passport_authentication_score')
+        user_passport_new.is_valid_biometric = result.get('biometric_verified')
+        user_passport_new.biometric_score = result.get('biometric_verification_score')
+        user_passport_new.biometric_error = result.get('biometric_error')
+        user_passport_new.save()
+
+        if not result.get('passport_valid', False):
+            return Response({'success': False, 'message': 'Fake Passport', 'api_response': result,
+                             "photos_url": [passport, photo]})
+
+        if result.get('passport_valid', False) and result.get('biometric_verified', False):
+            return Response({'success': True, 'message': 'Passport is verified Successfully', 'api_response': result,
+                             "photos_url": [passport, photo]})
+
+        if result.get('passport_valid', False) and not result.get('biometric_verified', False):
+            return Response({'success': False, 'message': result.get('biometric_error'), 'api_response': result,
+                             "photos_url": [passport, photo]})
