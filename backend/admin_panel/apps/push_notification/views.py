@@ -11,6 +11,8 @@ class NotificationViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = NotificationSerializer
     queryset = Notification.objects.filter()
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = ['user', 'is_read']
 
     @action(detail=False, methods=['GET'])
     def read_notification(self, request):
