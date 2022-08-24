@@ -21,6 +21,8 @@ import ImagePicker from 'react-native-image-crop-picker'
 import attachment from '../../assets/svg/attachment.svg'
 import Toast from 'react-native-simple-toast'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { postSupport } from '../../api/auth'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 function Support ({ navigation, route }) {
   // Context
@@ -29,9 +31,19 @@ function Support ({ navigation, route }) {
     avatarSourceURL: [],
     message: '',
     email: '',
-    name: ''
+    name: '',
+    file: [],
+    loading: false
   })
-  const { questions, avatarSourceURL, message, email, name } = state
+  const {
+    questions,
+    loading,
+    avatarSourceURL,
+    message,
+    email,
+    name,
+    file
+  } = state
   const handleChange = (key, value) => {
     setState(pre => ({ ...pre, [key]: value }))
   }
@@ -44,6 +56,26 @@ function Support ({ navigation, route }) {
       Alert.alert(`Don't know how to open this URL: ${url}`)
     }
   }, [])
+
+  const _postSupport = async () => {
+    try {
+      handleChange('loading', true)
+      const token = await AsyncStorage.getItem('token')
+      const payload = new FormData()
+      payload.append('name', name)
+      payload.append('email', email)
+      payload.append('message', message)
+      file && file.map((fil, index) => payload.append('file', fil))
+      const res = await postSupport(payload, token)
+      handleChange('loading', false)
+      Toast.show(`Support has been submitted`)
+      navigation.goBack()
+    } catch (error) {
+      handleChange('loading', false)
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
 
   const _uploadImage = async type => {
     handleChange('uploading', true)
@@ -78,7 +110,7 @@ function Support ({ navigation, route }) {
             avatarSourceURLs.push(uploadUri)
           }
           handleChange('avatarSourceURL', avatarSourceURLs)
-          handleChange('photos', photos)
+          handleChange('file', photos)
           handleChange('uploading', false)
 
           Toast.show('Attachment Add Successfully')
@@ -200,7 +232,9 @@ function Support ({ navigation, route }) {
         />
         <AppButton
           title={'Submit'}
-          onPress={() => handleChange('modalVisible', true)}
+          loading={loading}
+          disabled={!name || !email || !message}
+          onPress={_postSupport}
         />
       </View>
     </KeyboardAwareScrollView>

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import {
   View,
   Text,
@@ -14,30 +14,34 @@ import {
   FONT1BOLD,
   FONT1LIGHT,
   FONT1MEDIUM,
-  FONT1REGULAR,
   FONT1SEMIBOLD,
-  FONT2REGULAR,
-  FONT2SEMIBOLD
+  FONT2REGULAR
 } from '../../constants'
 import { AppButton, AppInput, Header } from '../../components'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Icon } from 'react-native-elements'
-import { getPayMethod } from '../../api/business'
+import { AddPayMethod, getPayMethod } from '../../api/business'
 import { useFocusEffect } from '@react-navigation/native'
 import Toast from 'react-native-simple-toast'
-import stripe from '../../assets/svg/stripe.svg'
+import stripeIcon from '../../assets/svg/stripe.svg'
 import addcard from '../../assets/svg/addcard.svg'
 import cardOrange from '../../assets/svg/cardOrange.svg'
 import Svg, { SvgXml } from 'react-native-svg'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
+import { useStripe, CardField } from '@stripe/stripe-react-native'
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger
 } from 'react-native-popup-menu'
+import AppContext from '../../store/Context'
 
 function AddPaymentMethod ({ navigation }) {
+  // Context
+  const context = useContext(AppContext)
+  const stripe = useStripe()
+  const { user } = context
   // State
   const [state, setState] = useState({
     loading: false,
@@ -49,7 +53,8 @@ function AddPaymentMethod ({ navigation }) {
     cvc: '',
     zip: '',
     date: '',
-    cardNumber: ''
+    cardNumber: '',
+    cardDetails: null
   })
 
   const {
@@ -61,7 +66,8 @@ function AddPaymentMethod ({ navigation }) {
     cvc,
     zip,
     date,
-    cardNumber
+    cardNumber,
+    cardDetails
   } = state
 
   useFocusEffect(
@@ -74,13 +80,48 @@ function AddPaymentMethod ({ navigation }) {
     setState(pre => ({ ...pre, [name]: value }))
   }
 
-  const _getPayMethod = async () => {
+  const handlePayment = async () => {
     try {
       handleChange('loading', true)
-      const token = await AsyncStorage.getItem('token')
-      const res = await getPayMethod(token)
+      console.warn('cardDetails', cardDetails)
+      stripe
+        .createPaymentMethod({
+          type: 'Card',
+          card: cardDetails,
+          billing_details: {
+            name: name,
+            addressPostalCode: zip,
+            addressCountry: country
+          }
+        })
+        .then(result => {
+          console.warn('result', result?.paymentMethod?.id)
+          if (result?.paymentMethod?.id) {
+            _AddPayMethod(result?.paymentMethod?.id)
+          } else {
+            alert(result.error.message)
+            handleChange('loading', false)
+          }
+        })
+    } catch (error) {
       handleChange('loading', false)
-      handleChange('paymethods', res?.data?.data)
+      console.warn('error', error)
+      // const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${JSON.stringify(error)}`)
+    }
+  }
+
+  const _AddPayMethod = async payment_method => {
+    try {
+      const payload = {
+        payment_method
+      }
+      const token = await AsyncStorage.getItem('token')
+      const res = await AddPayMethod(payload, token)
+      handleChange('loading', false)
+      console.warn('res?.data', res?.data)
+      Toast.show(`Card has been added!`)
+      handleChange('modalVisible', true)
     } catch (error) {
       handleChange('loading', false)
       const errorText = Object.values(error?.response?.data)
@@ -88,13 +129,6 @@ function AddPaymentMethod ({ navigation }) {
     }
   }
 
-  if (loading) {
-    return (
-      <View style={styles.loading}>
-        <ActivityIndicator size={'large'} color={COLORS.primary} />
-      </View>
-    )
-  }
   return (
     <ScrollView
       style={styles.container}
@@ -116,7 +150,45 @@ function AddPaymentMethod ({ navigation }) {
           onChange={handleChange}
           marginBottom={20}
         />
-        <AppInput
+        <View
+          style={{
+            width: '100%',
+            borderRadius: 12,
+            borderWidth: 1,
+            borderColor: COLORS.borderColor1,
+            backgroundColor: COLORS.white,
+            height: hp(6),
+            paddingHorizontal: 5,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: hp('1%'),
+            marginTop: -10
+          }}
+        >
+          <CardField
+            postalCodeEnabled={false}
+            placeholder={{
+              number: '4242 4242 4242 4242'
+            }}
+            cardStyle={{
+              backgroundColor: '#FFFFFF',
+              textColor: '#000000'
+            }}
+            style={{
+              width: '100%',
+              height: hp(5.8)
+            }}
+            onCardChange={cardDetails => {
+              // console.log('cardDetails', cardDetails)
+              handleChange('cardDetails', cardDetails)
+            }}
+            onFocus={focusedField => {
+              console.log('focusField', focusedField)
+            }}
+          />
+        </View>
+        {/* <AppInput
           marginBottom={10}
           placeholder={'Card Number'}
           value={cardNumber}
@@ -144,7 +216,7 @@ function AddPaymentMethod ({ navigation }) {
               borderColor={COLORS.borderColor1}
             />
           </View>
-        </View>
+        </View> */}
         <View style={styles.billingType}>
           <Menu
             style={{ width: '100%' }}
@@ -204,12 +276,14 @@ function AddPaymentMethod ({ navigation }) {
         />
         <AppButton
           title={'Add card'}
-          onPress={() => handleChange('modalVisible', true)}
+          onPress={handlePayment}
+          loading={loading}
+          disabled={!cardDetails || !country || !name || !zip || !email}
         />
         <View style={{ width: '100%', alignItems: 'center' }}>
           <View style={[styles.row, { marginTop: 10 }]}>
             <Text style={styles.text1}>Powered by</Text>
-            <SvgXml xml={stripe} />
+            <SvgXml xml={stripeIcon} />
           </View>
           <View style={[styles.row, { marginTop: 10 }]}>
             <TouchableOpacity>
@@ -232,7 +306,7 @@ function AddPaymentMethod ({ navigation }) {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.imageView}>
-              <SvgXml xml={cardOrange} width={50} height={50} />
+              {/* <SvgXml xml={cardOrange} width={50} height={50} /> */}
             </View>
             <View style={styles.textView}>
               <Text style={styles.textBold}>Credit card</Text>

@@ -9,8 +9,10 @@ import { NavigationContainer } from '@react-navigation/native'
 import { MenuProvider } from 'react-native-popup-menu'
 import { getNotification, getOrders } from './api/order'
 import { getJourneys, getMyAddresses } from './api/journey'
-import messaging from '@react-native-firebase/messaging';
+import messaging from '@react-native-firebase/messaging'
 import { Alert } from 'react-native'
+import { StripeProvider } from '@stripe/stripe-react-native'
+
 function App () {
   const [user, setUser] = useState(null)
   const [userType, setUserType] = useState('')
@@ -35,17 +37,18 @@ function App () {
     }
   }
 
-  const _getNotification = async () => {
+  const _getNotification = async qs => {
     try {
       const token = await AsyncStorage.getItem('token')
-      const res = await getNotification(token)
+      const payload = qs || ''
+      const res = await getNotification(payload, token)
+      console.warn('getNotification', res?.data)
       setNotifications(res?.data)
     } catch (error) {
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText}`)
     }
   }
-
 
   const _getOrders = async payload => {
     try {
@@ -81,32 +84,31 @@ function App () {
     }
   }
 
-  
   useEffect(() => {
     requestUserPermission()
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    });
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage))
+    })
 
     messaging().setBackgroundMessageHandler(async remoteMessage => {
-      console.log('Message handled in the background!', remoteMessage);
-    });
+      console.log('Message handled in the background!', remoteMessage)
+    })
 
-    return unsubscribe;
-  }, []);
+    return unsubscribe
+  }, [])
 
-  async function registerAppWithFCM() {
-    const registered = await messaging().registerDeviceForRemoteMessages();
+  async function registerAppWithFCM () {
+    const registered = await messaging().registerDeviceForRemoteMessages()
   }
 
-  async function requestUserPermission() {
-    const authStatus = await messaging().requestPermission();
+  async function requestUserPermission () {
+    const authStatus = await messaging().requestPermission()
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL
 
     if (enabled) {
-      console.warn('Authorization status:', authStatus);
+      console.warn('Authorization status:', authStatus)
       registerAppWithFCM()
     }
   }
@@ -130,14 +132,19 @@ function App () {
         myAddresses,
         _getMyAddresses,
         notifications,
-        _getNotification,
+        _getNotification
       }}
     >
-      <NavigationContainer>
-        <MenuProvider>
-          <RootStackNav />
-        </MenuProvider>
-      </NavigationContainer>
+      <StripeProvider
+        publishableKey='pk_test_51KZK9jLztvigKU7K5CptuvUpCXeDccpRZ14y9cR5wWl7neG8aj84s6IUl1hRzhOjKrpLit46ZEczBzZnSWqOyJGB00hdoLxDvv'
+        merchantIdentifier='merchant.com.worldcarry_35201'
+      >
+        <NavigationContainer>
+          <MenuProvider>
+            <RootStackNav />
+          </MenuProvider>
+        </NavigationContainer>
+      </StripeProvider>
     </AppContext.Provider>
   )
 }

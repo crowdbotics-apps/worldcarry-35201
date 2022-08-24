@@ -125,7 +125,7 @@ export default function JourneyStep1 ({
               row: { backgroundColor: COLORS.white }
             }}
             query={{
-              key: 'AIzaSyAEmKGJ68eGUiasdk3A3Ws5PJ2VvB0wSPg',
+              key: 'AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU',
               language: 'en'
             }}
             GooglePlacesDetailsQuery={{
@@ -224,7 +224,7 @@ export default function JourneyStep1 ({
               row: { backgroundColor: COLORS.white }
             }}
             query={{
-              key: 'AIzaSyAEmKGJ68eGUiasdk3A3Ws5PJ2VvB0wSPg',
+              key: 'AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU',
               language: 'en'
             }}
             GooglePlacesDetailsQuery={{

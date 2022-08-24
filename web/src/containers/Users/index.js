@@ -127,18 +127,18 @@ function UsersContent () {
             </span>
           </div>
         </Grid>
-        {allUsers && (
+        {/* {filteredList?.length > 0 && ( */}
           <AppTable
-            rows={filteredList}
+            rows={[]}
             flagAction={_updateUser}
             deleteAction={_deleteUser}
             approval
             rowsPage={15}
-            headingLeft={'User activity'}
+            headingLeft={'All Users'}
             headingRight={''}
             headCells={headCells1}
           />
-        )}
+        {/* )} */}
       </Container>
     </Layout>
   )

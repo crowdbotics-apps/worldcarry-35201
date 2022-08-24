@@ -284,7 +284,7 @@ function Journey ({ navigation }) {
               </View>
               {item?.status === 'upcoming' && (
                 <AppButton
-                  title={`View all ${item?.total_orders} offers`}
+                  title={`View all ${item?.offers} offers`}
                   backgroundColor={COLORS.upcoming}
                   color={COLORS.upcomingDark}
                   onPress={() =>

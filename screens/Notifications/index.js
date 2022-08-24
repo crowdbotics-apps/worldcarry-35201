@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import {
   View,
   StyleSheet,
@@ -20,15 +20,22 @@ import AppContext from '../../store/Context'
 import NoNotification from '../../assets/svg/noNotification.svg'
 import noti from '../../assets/images/noti.png'
 import { SvgXml } from 'react-native-svg'
+import { useFocusEffect } from '@react-navigation/native'
 
 function Notifications ({ navigation }) {
   // Context
   const context = useContext(AppContext)
-  const { _getNotification, notifications } = context
+  const { _getNotification, notifications, user } = context
   const [state, setState] = useState({
     loading: false,
     active: 0
   })
+
+  useFocusEffect(
+    useCallback(() => {
+      _getNotification(`?user=${user?.id}`)
+    }, [])
+  )
   const handleRead = async notification => {
     try {
       const token = await AsyncStorage.getItem('token')
@@ -40,7 +47,7 @@ function Notifications ({ navigation }) {
       await notificationRead(formData, token)
       handleChange('loading', false)
       Toast.show('Notification Opened!')
-      _getNotification()
+      _getNotification(`?user=${user?.id}`)
     } catch (error) {
       handleChange('loading', false)
       const errorText = Object.values(error?.response?.data)
@@ -60,7 +67,7 @@ function Notifications ({ navigation }) {
       await allNotificationRead(token)
       handleChange('loading', false)
       Toast.show('All Notification Opened!')
-      _getNotification()
+      _getNotification(`?user=${user?.id}`)
     } catch (error) {
       handleChange('loading', false)
       const errorText = Object.values(error?.response?.data)
@@ -78,6 +85,7 @@ function Notifications ({ navigation }) {
     setState(pre => ({ ...pre, [name]: value }))
   }
 
+  console.warn('notifications', notifications)
   return (
     <View style={styles.container}>
       <Header back title={'Notifications'} color={COLORS.darkBlack} />
@@ -87,7 +95,7 @@ function Notifications ({ navigation }) {
             flexDirection: 'row',
             alignItems: 'center',
             marginVertical: 20,
-            width:'90%'
+            width: '90%'
           }}
         >
           <TouchableOpacity
@@ -97,7 +105,7 @@ function Notifications ({ navigation }) {
             style={active === 0 ? styles.activeTab : styles.inavtive}
           >
             <Text style={active === 0 ? styles.activeTabText : styles.tabText}>
-              All (6)
+              All ({notifications?.length})
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -107,12 +115,12 @@ function Notifications ({ navigation }) {
             style={active === 1 ? styles.activeTab : styles.inavtive}
           >
             <Text style={active === 1 ? styles.activeTabText : styles.tabText}>
-              Unread (2)
+              Unread ({notifications?.length})
             </Text>
           </TouchableOpacity>
         </View>
         <FlatList
-          data={[notifications]}
+          data={notifications}
           style={{ width: '100%' }}
           renderItem={({ item, index }) => {
             return (

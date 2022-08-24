@@ -32,11 +32,6 @@ function PhoneVerificationOTP ({ navigation, route }) {
 
   const { loading, modalVisible, otp, loadingAgain } = state
 
-  useFocusEffect(
-    useCallback(() => {
-      // _getPayMethod()
-    }, [])
-  )
 
   const handleChange = (name, value) => {
     setState(pre => ({ ...pre, [name]: value }))

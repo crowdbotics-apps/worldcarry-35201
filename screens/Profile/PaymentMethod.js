@@ -31,7 +31,7 @@ function PaymentMethod ({ navigation }) {
 
   useFocusEffect(
     useCallback(() => {
-      // _getPayMethod()
+      _getPayMethod()
     }, [])
   )
 
@@ -115,11 +115,11 @@ function PaymentMethod ({ navigation }) {
               marginTop: 10,
               paddingHorizontal: 10,
               borderWidth: 1,
-              borderColor:
-                paymethods === 'credit' ? COLORS.primary : COLORS.borderColor
+              // borderColor:
+              //   paymethods === 'credit' ? COLORS.primary : COLORS.borderColor
             }
           ]}
-          onPress={() => handleChange('paymethods', 'credit')}
+          // onPress={() => handleChange('paymethods', 'credit')}
         >
           <View style={styles.row}>
             <BouncyCheckbox
@@ -138,7 +138,7 @@ function PaymentMethod ({ navigation }) {
       </View>
       <View style={{ width: '90%', marginBottom: 20 }}>
         <AppButton
-          title={'Continue'}
+          title={'Add'}
           onPress={() => navigation.navigate('AddPaymentMethod')}
         />
       </View>

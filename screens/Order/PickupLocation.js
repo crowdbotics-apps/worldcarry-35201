@@ -38,7 +38,7 @@ import { AppButton } from '../../components'
 import { SvgXml } from 'react-native-svg'
 import { Icon } from 'react-native-elements'
 import Geocoder from 'react-native-geocoding'
-Geocoder.init('AIzaSyAEmKGJ68eGUiasdk3A3Ws5PJ2VvB0wSPg')
+Geocoder.init('AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU')
 
 const { width, height } = Dimensions.get('window')
 const ASPECT_RATIO = width / height
@@ -254,7 +254,7 @@ function PickupLocation ({ navigation }) {
                   row: { backgroundColor: COLORS.white }
                 }}
                 query={{
-                  key: 'AIzaSyAEmKGJ68eGUiasdk3A3Ws5PJ2VvB0wSPg',
+                  key: 'AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU',
                   language: 'en'
                 }}
                 GooglePlacesDetailsQuery={{

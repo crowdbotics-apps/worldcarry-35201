@@ -81,3 +81,19 @@ export const sendOTPForVerification = (body, token) => {
 export const veriPhoneOTP = (body, token) => {
   return API.get(`api/v1/users/verify_phone/${body}`, token)
 }
+
+export const validatePassort = (body, token) => {
+  return API.post(`api/v1/validate/passport`, body, token)
+}
+
+export const postSupport = (body, token) => {
+  return API.post(`api/v1/support`, body, token)
+}
+
+export const postFeedback = (body, token) => {
+  return API.post(`api/v1/feedback`, body, token)
+}
+
+export const getFAQ = token => {
+  return API.get(`api/v1/faq?categories=BASIC`, token)
+}

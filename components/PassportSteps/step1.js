@@ -22,12 +22,12 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default function PassportStep1 ({
-  date,
-  gender,
   handleChange,
-  name,
-  lastname,
-  passport_number
+  first_name,
+  last_name,
+  passport_number,
+  date_of_birth,
+  gender
 }) {
   const [open, setOpen] = useState(false)
   return (
@@ -40,16 +40,16 @@ export default function PassportStep1 ({
       <AppInput
         borderColor={COLORS.borderColor1}
         marginBottom={5}
-        value={name}
-        name={'name'}
+        value={first_name}
+        name={'first_name'}
         onChange={handleChange}
         placeholder={'First name*'}
       />
       <AppInput
         borderColor={COLORS.borderColor1}
         marginBottom={5}
-        value={lastname}
-        name={'lastname'}
+        value={last_name}
+        name={'last_name'}
         onChange={handleChange}
         placeholder={'Last name'}
       />
@@ -63,19 +63,19 @@ export default function PassportStep1 ({
       />
       <TouchableOpacity onPress={() => setOpen(true)} style={styles.buttonView}>
         <Text style={styles.buttonText}>
-          {moment(date).format('LL') || 'Date of Birth*'}
+          {moment(date_of_birth).format('LL') || 'Date of Birth*'}
         </Text>
         <SvgXml xml={calendarIcon} style={{ opacity: 0.6 }} />
       </TouchableOpacity>
       <DatePicker
         modal
         open={open}
-        date={date}
+        date={date_of_birth}
         mode={'date'}
         maximumDate={new Date()}
         onConfirm={date => {
           setOpen(false)
-          handleChange('date', date)
+          handleChange('date_of_birth', date)
         }}
         onCancel={() => {
           setOpen(false)

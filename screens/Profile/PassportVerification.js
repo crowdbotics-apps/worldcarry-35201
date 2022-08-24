@@ -31,15 +31,21 @@ import calendarIcon from '../../assets/svg/calendarIcon.svg'
 import timeIcon from '../../assets/svg/time.svg'
 import moment from 'moment'
 import ImagePicker from 'react-native-image-crop-picker'
+import { validatePassort } from '../../api/auth'
 
 function PassportVerification ({ navigation }) {
   const [state, setState] = useState({
     loading: false,
     modalVisible: false,
     step: 0,
-    date: new Date(),
-    Videodate: new Date(),
+    schedule_video_date: new Date(),
+    first_name: '',
+    last_name: '',
+    passport_number: '',
+    date_of_birth: new Date(),
     gender: '',
+    passport_photo: '',
+    selfie_photo: '',
     avatarSourceURL: '',
     avatarSourceURL1: ''
   })
@@ -52,9 +58,15 @@ function PassportVerification ({ navigation }) {
     modalVisible,
     avatarSourceURL,
     avatarSourceURL1,
-    date,
-    Videodate,
-    gender
+    date_of_birth,
+    first_name,
+    last_name,
+    passport_number,
+    gender,
+    passport_photo,
+    selfie_photo,
+    schedule_video_date,
+    schedule_video_time
   } = state
   const {} = context
 
@@ -68,7 +80,38 @@ function PassportVerification ({ navigation }) {
     } else if (step === 1) {
       handleChange('step', 2)
     } else if (step === 2) {
-      handleChange('modalVisible', true)
+      _validatePassort()
+    }
+  }
+
+  const _validatePassort = async () => {
+    try {
+      handleChange('loading', true)
+      const token = await AsyncStorage.getItem('token')
+      const payload = new FormData()
+      payload.append('first_name', first_name)
+      payload.append('last_name', last_name)
+      payload.append('passport_number', passport_number)
+      payload.append('gender', gender)
+      payload.append('selfie_photo', selfie_photo)
+      payload.append('passport_photo', passport_photo)
+      payload.append(
+        'meeting_datetime',
+        moment(schedule_video_date).format('YYYY-MM-DD') + schedule_video_time
+      )
+      const res = await validatePassort(payload, token)
+      console.warn('res', res?.data?.success)
+      handleChange('loading', false)
+      if (res?.data?.success) {
+        handleChange('modalVisible', true)
+      } else {
+        Toast.show(`Error: ${res?.data?.api_response?.biometric_error}`)
+      }
+      // handleChange('paymethods', res?.data?.data)
+    } catch (error) {
+      handleChange('loading', false)
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
     }
   }
 
@@ -109,7 +152,7 @@ function PassportVerification ({ navigation }) {
             type: element.mime
           }
           handleChange('avatarSourceURL', uploadUri)
-          handleChange('photos', photo)
+          handleChange('selfie_photo', photo)
           handleChange('uploading', false)
           Toast.show('Passport Cover Add Successfully')
         }
@@ -147,7 +190,7 @@ function PassportVerification ({ navigation }) {
             type: element.mime
           }
           handleChange('avatarSourceURL1', uploadUri)
-          handleChange('photos1', photo)
+          handleChange('passport_photo', photo)
           handleChange('uploading', false)
           Toast.show('Passport Data Page Add Successfully')
         }
@@ -158,7 +201,12 @@ function PassportVerification ({ navigation }) {
       })
   }
 
-  const disabled = false
+  const disabled =
+    step === 0
+      ? !first_name || !last_name || !passport_number || !gender
+      : step === 1
+      ? !passport_photo || !selfie_photo
+      : !schedule_video_date || !schedule_video_time
 
   return (
     <View style={{ height: '100%', width: '100%' }}>
@@ -202,7 +250,10 @@ function PassportVerification ({ navigation }) {
         </View>
         {step === 0 && (
           <PassportStep1
-            date={date}
+            first_name={first_name}
+            last_name={last_name}
+            passport_number={passport_number}
+            date_of_birth={date_of_birth}
             gender={gender}
             handleChange={handleChange}
           />
@@ -211,13 +262,19 @@ function PassportVerification ({ navigation }) {
           <PassportStep2
             avatarSourceURL={avatarSourceURL}
             avatarSourceURL1={avatarSourceURL1}
+            passport_photo={passport_photo}
+            selfie_photo={selfie_photo}
             _uploadImage={_uploadImage}
             _uploadImage1={_uploadImage1}
             handleChange={handleChange}
           />
         )}
         {step === 2 && (
-          <PassportStep3 Videodate={Videodate} handleChange={handleChange} />
+          <PassportStep3
+            schedule_video_date={schedule_video_date}
+            schedule_video_time={schedule_video_time}
+            handleChange={handleChange}
+          />
         )}
       </ScrollView>
       {step < 3 && (
@@ -265,7 +322,7 @@ function PassportVerification ({ navigation }) {
                 <View style={styles.greyBox}>
                   <SvgXml xml={calendarIcon} />
                   <Text style={styles.dateText}>
-                    {moment(Videodate).format('YYYY-MM-DD')}
+                    {moment(schedule_video_date).format('YYYY-MM-DD')}
                   </Text>
                 </View>
                 <View style={styles.greyBox}>

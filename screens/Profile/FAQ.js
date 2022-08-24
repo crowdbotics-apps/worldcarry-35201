@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import {
   widthPercentageToDP as wp,
@@ -16,6 +16,10 @@ import { AppButton, AppInput, Header } from '../../components'
 import { SvgXml } from 'react-native-svg'
 import Accordion from 'react-native-collapsible/Accordion'
 import searchIcon from '../../assets/svg/searchIcon.svg'
+import { getFAQ } from '../../api/auth'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import Toast from 'react-native-simple-toast'
+import { useFocusEffect } from '@react-navigation/native'
 
 const list2 = [
   {
@@ -182,8 +186,24 @@ function FAQ ({ navigation, route }) {
   const handleChange = (key, value) => {
     setState(pre => ({ ...pre, [key]: value }))
   }
-  const goBack = () => {
-    navigation.goBack()
+  useFocusEffect(
+    useCallback(() => {
+      _getFAQ()
+    }, [])
+  )
+
+  const _getFAQ = async () => {
+    try {
+      handleChange('loading', true)
+      const token = await AsyncStorage.getItem('token')
+      const res = await getFAQ(token)
+      handleChange('loading', false)
+      console.warn('getFAQ', res?.data)
+    } catch (error) {
+      handleChange('loading', false)
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
   }
 
   const _renderHeader = section => {

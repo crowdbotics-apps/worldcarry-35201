@@ -12,7 +12,8 @@ function AuthLoading ({ navigation }) {
     _getProfile,
     _getOrders,
     _getJourneys,
-    _getMyAddresses
+    _getMyAddresses,
+    _getNotification
   } = context
 
   useEffect(() => {
@@ -28,6 +29,7 @@ function AuthLoading ({ navigation }) {
       const userData = JSON.parse(user)
       setUser(userData)
       _getProfile()
+      _getNotification(`?user=${userData?.id}`)
       _getOrders(`?user=${userData?.id}`)
       _getJourneys('')
       _getMyAddresses()

@@ -64,9 +64,9 @@ function LayoutContent ({ children }) {
     setUser(JSON.parse(userData))
     _getDashboard()
     _getAllUsers()
-    _getZipcodes()
-    _getOrders()
-    _getFeedbacks()
+    // _getZipcodes()
+    // _getOrders()
+    // _getFeedbacks()
   }, [])
 
   const handleListItemClick = (route, index) => {
@@ -162,10 +162,10 @@ function LayoutContent ({ children }) {
         <Grid
           container
           direction={'column'}
-          className='mt-4 mb-4'
+          className=' mb-4'
           alignItems={'center'}
         >
-          <img
+          {/* <img
             src={user?.customer?.photo || ProfileImage}
             className={'ProfileImage'}
           />
@@ -173,12 +173,12 @@ function LayoutContent ({ children }) {
             Welcome,
             <br />
             {user?.name + ' ' + user?.last_name}
-          </p>
+          </p> */}
           <p
             onClick={logout}
-            className='text-center text_secondary c-pointer mt-3'
+            className='text-center c-pointer'
           >
-            LOGOUT
+            Logout
           </p>
         </Grid>
       </Drawer>

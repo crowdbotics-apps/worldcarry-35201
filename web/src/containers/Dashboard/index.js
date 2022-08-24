@@ -123,7 +123,7 @@ function DashboardContent () {
     datasets: [
       {
         label: '# of Votes',
-        data: [dashboard?.users?.customers, dashboard?.users?.drivers],
+        data: [5, 15],
         backgroundColor: ['rgba(241, 241, 242, 1)', 'rgba(255, 129, 24, 1)']
       }
     ]
@@ -162,7 +162,7 @@ function DashboardContent () {
     <Layout>
       <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
         <Grid container spacing={3}>
-          <Grid item md={4}>
+          {/* <Grid item md={4}>
             <Paper className='chartPaper'>
               <Grid container alignItems={'center'}>
                 <div className='doughnut'>
@@ -183,8 +183,8 @@ function DashboardContent () {
                 </div>
               </Grid>
             </Paper>
-          </Grid>
-          <Grid item md={4}>
+          </Grid> */}
+          <Grid item md={6}>
             <Paper className='chartPaper'>
               <Grid container alignItems={'center'}>
                 <div className='doughnut'>
@@ -196,27 +196,21 @@ function DashboardContent () {
                   </div>
                   <div className='row'>
                     <div className='greyBox' />
-                    <div className='text_primary'>Drivers</div>
+                    <div className='text_primary'>Sender</div>
                   </div>
                   <div className='row'>
                     <div className='orangeBox' />
-                    <div className='text_primary'>Normal users</div>
+                    <div className='text_primary'>Carrier</div>
                   </div>
                 </div>
               </Grid>
             </Paper>
           </Grid>
-          <Grid item md={4}>
+          <Grid item md={6}>
             <Paper className='chartPaper'>
               <div className='pickup mt-3'>User feedback</div>
-              <div className='text_primary'>
-                {dashboard?.feedback?.user?.name +
-                  ' ' +
-                  dashboard?.feedback?.user?.last_name}
-              </div>
-              <div className='text_primary font-14 mt-2 mb-3'>
-                {dashboard?.feedback?.content}
-              </div>
+              <div className='text_primary'>User 1</div>
+              <div className='text_primary font-14 mt-2 mb-3'>Lorem espum</div>
             </Paper>
           </Grid>
         </Grid>

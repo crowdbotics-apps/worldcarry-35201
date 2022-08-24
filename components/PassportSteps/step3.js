@@ -5,32 +5,32 @@ import {
   Text,
   View,
   StyleSheet,
-  FlatList,
-  Modal
+  FlatList
 } from 'react-native'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { SvgXml } from 'react-native-svg'
 import { COLORS, FONT1LIGHT, FONT1MEDIUM, FONT1REGULAR } from '../../constants'
-import pinBlack from '../../assets/svg/pinBlack.svg'
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
-import pickupPlan from '../../assets/svg/pickupPlan.svg'
 import ShieldDone from '../../assets/svg/ShieldDone.svg'
 import DatePicker from 'react-native-date-picker'
 import calendarIcon from '../../assets/svg/calendarIcon.svg'
 import moment from 'moment'
 
-export default function PassportStep3 ({ Videodate, handleChange }) {
+export default function PassportStep3 ({
+  schedule_video_date,
+  schedule_video_time,
+  handleChange
+}) {
   const [open, setOpen] = useState(false)
   const timelist = [
-    { title: 'Now', value: 'Now' },
-    { title: '9:00 AM', value: '9:00 AM' },
-    { title: '10:00 AM', value: '10:00 AM' },
-    { title: '11:00 AM', value: '11:00 AM' },
-    { title: '12:00 PM', value: '12:00 PM' },
-    { title: '01:00 PM', value: '01:00 PM' },
-    { title: '03:00 PM', value: '03:00 PM' },
-    { title: '04:00 PM', value: '04:00 PM' },
-    { title: '05:00 PM', value: '05:00 PM' }
+    { title: 'Now', value: moment(Date.now()).format('HH:mm:ss') },
+    { title: '9:00 AM', value: '09:00:00' },
+    { title: '10:00 AM', value: '10:00:00' },
+    { title: '11:00 AM', value: '11:00:00' },
+    { title: '12:00 PM', value: '12:00:00' },
+    { title: '01:00 PM', value: '13:00:00' },
+    { title: '03:00 PM', value: '15:00:00' },
+    { title: '04:00 PM', value: '16:00:00' },
+    { title: '05:00 PM', value: '17:00:00' }
   ]
   return (
     <ScrollView
@@ -41,18 +41,18 @@ export default function PassportStep3 ({ Videodate, handleChange }) {
       <Text style={styles.head}>Schedule video call</Text>
       <TouchableOpacity onPress={() => setOpen(true)} style={styles.buttonView}>
         <Text style={styles.buttonText}>
-          {moment(Videodate).format('LL') || 'Date of Birth*'}
+          {moment(schedule_video_date).format('LL') || 'Date of Birth*'}
         </Text>
         <SvgXml xml={calendarIcon} style={{ opacity: 0.6 }} />
       </TouchableOpacity>
       <DatePicker
         modal
         open={open}
-        date={Videodate}
+        date={schedule_video_date}
         mode={'date'}
         onConfirm={date => {
           setOpen(false)
-          handleChange('Videodate', date)
+          handleChange('schedule_video_date', date)
         }}
         onCancel={() => {
           setOpen(false)
@@ -67,7 +67,25 @@ export default function PassportStep3 ({ Videodate, handleChange }) {
         style={{ width: '100%' }}
         columnWrapperStyle={{ justifyContent: 'space-between' }}
         renderItem={({ item, index }) => (
-          <TouchableOpacity key={index} style={styles.timeBox}>
+          <TouchableOpacity
+            key={index}
+            style={[
+              styles.timeBox,
+              {
+                backgroundColor:
+                  schedule_video_time === item?.value
+                    ? COLORS.primary
+                    : COLORS.primaryLight
+              }
+            ]}
+            onPress={() => {
+              if (schedule_video_time === item?.value) {
+                handleChange('schedule_video_time', '')
+              } else {
+                handleChange('schedule_video_time', item?.value)
+              }
+            }}
+          >
             <Text style={styles.timeText}>{item.title}</Text>
           </TouchableOpacity>
         )}

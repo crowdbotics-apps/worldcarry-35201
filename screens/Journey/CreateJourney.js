@@ -28,7 +28,7 @@ import Toast from 'react-native-simple-toast'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createJourney, createMyAddresses } from '../../api/journey'
 import Geocoder from 'react-native-geocoding'
-Geocoder.init('AIzaSyAEmKGJ68eGUiasdk3A3Ws5PJ2VvB0wSPg')
+Geocoder.init('AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU')
 
 function CreateJourney ({ navigation, route }) {
   const activeRoundParams = route?.params?.activeRoundParams

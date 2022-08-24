@@ -12,8 +12,8 @@ export const getOrderDetails = (id, token) => {
   return API.get(`api/v1/orders/${id}/`, token)
 }
 
-export const getNotification = token => {
-  return API.get(`api/v1/notifications/`, token)
+export const getNotification = (qs, token) => {
+  return API.get(`api/v1/admin/notification/${qs}`, token)
 }
 
 export const createOrder = (body, token) => {
