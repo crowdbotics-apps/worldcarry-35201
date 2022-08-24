@@ -7,6 +7,7 @@ import uuid
 from phonenumber_field.modelfields import PhoneNumberField
 from jsonfield import JSONField
 
+from djstripe.models import Customer as Account
 from home.models import UUIDModel
 
 phone_regex = RegexValidator(
@@ -26,6 +27,10 @@ class User(AbstractUser):
     name = models.CharField(_("Name of User"), blank=True, null=True, max_length=255)
     activation_key = models.CharField(max_length=255, blank=True, null=True)
     otp = models.CharField(max_length=6, blank=True, null=True)
+    account = models.ForeignKey(
+        Account, null=True, blank=True, on_delete=models.SET_NULL,
+        help_text="The user's Stripe Customer object, if it exists"
+    )
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})

@@ -12,6 +12,7 @@ from locations.views import LocationViewSet
 from orders.views import OrderViewSet, GetProductDetailView, QRScanOrder, UpdateOrderStatus
 from reviews.views import ReviewViewSet
 from users.viewsets import UserViewSet
+from payments.views import PaymentViewSet
 
 router = DefaultRouter()
 router.register("signup", SignupViewSet, basename="signup")
@@ -21,6 +22,7 @@ router.register("orders", OrderViewSet, basename="orders")
 router.register("journeys", JourneyViewSet, basename="journeys")
 router.register("locations", LocationViewSet, basename="locations")
 router.register("reviews", ReviewViewSet, basename="reviews")
+router.register("payments", PaymentViewSet, basename="payments")
 
 
 urlpatterns = [

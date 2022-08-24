@@ -139,6 +139,9 @@ class Order(UUIDModel):
         blank=True,
         null=True
     )
+    admin_paid = models.BooleanField(
+        default=False
+    )
 
     @property
     def can_transit(self):

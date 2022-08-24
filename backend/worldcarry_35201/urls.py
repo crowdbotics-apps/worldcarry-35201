@@ -34,6 +34,7 @@ urlpatterns = [
     # Override email confirm to use allauth's HTML view instead of rest_auth's API view
     path("rest-auth/registration/account-confirm-email/<str:key>/", confirm_email),
     path("rest-auth/registration/", include("rest_auth.registration.urls")),
+    path("stripe/", include("djstripe.urls", namespace="djstripe"))
 ]
 
 admin.site.site_header = "WorldCarry"

@@ -79,7 +79,8 @@ LOCAL_APPS = [
     'admin_panel.apps.support',
     'admin_panel.apps.user',
     'admin_panel.apps.push_notification',
-    'fcm_django'
+    'fcm_django',
+    'payments'
 
 ]
 THIRD_PARTY_APPS = [
@@ -101,6 +102,7 @@ THIRD_PARTY_APPS = [
     'django_filters',
     'corsheaders',
     'phonenumber_field',
+    'djstripe',
     # 'notifications_rest'
 ]
 MODULES_APPS = get_modules()
@@ -336,3 +338,11 @@ FCM_DJANGO_SETTINGS = {
 PASSPORT_VERIFICATION_KEY = env.str("PASSPORT_VERIFICATION_KEY", "")
 
 USE_TZ = True
+
+STRIPE_TEST_PUBLIC_KEY = env.str("STRIPE_TEST_PUBLIC_KEY", "")
+STRIPE_TEST_SECRET_KEY = env.str("STRIPE_TEST_SECRET_KEY", "")
+STRIPE_LIVE_SECRET_KEY = os.environ.get("STRIPE_LIVE_SECRET_KEY", "")
+STRIPE_LIVE_PUBLIC_KEY = os.environ.get("STRIPE_LIVE_PUBLIC_KEY", "")
+STRIPE_LIVE_MODE = env.bool("STRIPE_LIVE_MODE", False)
+DJSTRIPE_WEBHOOK_SECRET = env.str("DJSTRIPE_WEBHOOK_SECRET", "")
+DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"

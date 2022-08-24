@@ -1,11 +1,23 @@
 from decimal import Decimal
 from rest_framework import serializers
 from django.core.files import File
+
+from payments.models import Payment
 from .models import Order, OrderImages
 from users.serializers import UserProfileSerializer
 from home.constants import ORDER_STATUS
 
 from datetime import timedelta
+
+import stripe
+import djstripe
+from worldcarry_35201.settings import STRIPE_LIVE_MODE, STRIPE_LIVE_SECRET_KEY, STRIPE_TEST_SECRET_KEY
+
+
+if STRIPE_LIVE_MODE == True:
+    stripe.api_key = STRIPE_LIVE_SECRET_KEY
+else:
+    stripe.api_key = STRIPE_TEST_SECRET_KEY
 
 
 class OrderImagesSerializer(serializers.ModelSerializer):
@@ -35,20 +47,18 @@ class OrderSerializer(serializers.ModelSerializer):
     )
     can_transit = serializers.ReadOnlyField()
     journey = serializers.ReadOnlyField(allow_null=True, source='order_journey')
+    payment_method_id = serializers.CharField(write_only=True)
 
     class Meta:
         model = Order
         fields = '__all__'
 
     def create(self, validated_data):
+        user =  self.context['request'].user
         images_data = validated_data.pop('images', None)
+        payment_method = validated_data.pop('payment_method_id', None)
         order = super().create(validated_data)
-        if images_data:
-            for image_data in images_data:
-                OrderImages.objects.create(
-                    order=order,
-                    **image_data
-                )
+
         if "expected_wait_time" in validated_data:
             if validated_data["expected_wait_time"] == "Up to 2 weeks":
                 order.deliver_before_date = (order.created_at + timedelta(weeks=2)).date()
@@ -63,6 +73,53 @@ class OrderSerializer(serializers.ModelSerializer):
         order.subtotal = order.product_price + order.carrier_reward
         order.total = order.subtotal + Decimal(7.99) + Decimal(3.99)
 
+        amount = int(Decimal(order.total) * 100)
+
+        if user.account:
+            customer_id = user.account.id
+            customer = user.account
+        else:
+            customers_data = stripe.Customer.list().data
+            customer = None
+            for customer_data in customers_data:
+                if customer_data.email == user.email:
+                    customer = customer_data
+                    break
+            if customer is None:
+                customer = stripe.Customer.create(email=user.email)
+            djstripe_customer = djstripe.models.Customer.sync_from_stripe_data(customer)
+            customer_id = customer.id
+            user.account = djstripe_customer
+            user.save()
+
+        payment_method = stripe.PaymentMethod.attach(payment_method, customer=customer)
+        djstripe.models.PaymentMethod.sync_from_stripe_data(payment_method)
+        try:
+            payment_intent = stripe.PaymentIntent.create(
+                customer=customer_id, 
+                payment_method=payment_method,  
+                currency='usd',
+                amount=amount,
+                confirm=True)
+        except:
+            order.delete()
+            raise serializers.ValidationError('Card Declined')
+
+        djstripe_payment_intent = djstripe.models.PaymentIntent.sync_from_stripe_data(payment_intent)
+        Payment.objects.create(
+            order=order,
+            user=user,
+            amount=order.total,
+            payment_intent=djstripe_payment_intent
+        )
+        order.status = 'Requested'
+
+        if images_data:
+            for image_data in images_data:
+                OrderImages.objects.create(
+                    order=order,
+                    **image_data
+                )
         data = str(order.id)
         
         import qrcode

@@ -43,7 +43,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         user = User.objects.create(**validated_data)
         user.set_password(password)
         user.save()
-        Profile.objects.create(user=user)
+        # Profile.objects.create(user=user)
         email_address, created = EmailAddress.objects.get_or_create(user=user, email=user.email, verified=True, primary=True)
         return user
 
