@@ -55,10 +55,12 @@ class Profile(UUIDModel):
     is_email_verified = models.BooleanField(
         default=False
     )
+    is_passport_verified = models.BooleanField(default=False)
     verified_phone = PhoneNumberField(blank=True, null=True)
     verified_email = models.EmailField(max_length=255, null=True, blank=True)
     email_verification_otp = models.CharField(max_length=6, blank=True, null=True)
     phone_verification_otp = models.CharField(max_length=6, blank=True, null=True)
+    passport_status = models.CharField(default="Not Applied", max_length=20)
 
 
 class UserPassportImage(UUIDModel):
@@ -72,6 +74,12 @@ class UserPassportImage(UUIDModel):
     biometric_score = models.FloatField(default=0)
     biometric_error = models.CharField(null=True, blank=True, max_length=1000)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    # these fields entered by user
+    first_name = models.CharField(null=True, blank=True, max_length=50)
+    last_name = models.CharField(null=True, blank=True, max_length=50)
+    gender = models.CharField(null=True, blank=True,max_length=10)
+    passport_number = models.CharField(null=True, blank=True, max_length=20)
+    meeting_datetime = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.user.first_name

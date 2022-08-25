@@ -44,18 +44,20 @@ class ValidatePassport(APIView):
     serializer_class = PassportAuthenticationSerializer
     permission_classes = (IsAuthenticated,)
     authentication_classes = [ExpiringTokenAuthentication]
-    # permission_classes = []
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
+        user = request.user
+        data['user'] = user
+        data['current_photo'] = data['selfie_photo']
+        data.pop('selfie_photo')
         user_passport_old = UserPassportImage.objects.filter(user=request.user)
         if user_passport_old:
             user_passport_old.delete()
 
-        user_passport_new = UserPassportImage.objects.create(user=request.user, passport_photo=data['passport_photo'],
-                                                             current_photo=data['selfie_photo'])
+        user_passport_new = UserPassportImage.objects.create(**data)
 
         passport = request.build_absolute_uri(user_passport_new.passport_photo.url)
         photo = request.build_absolute_uri(user_passport_new.passport_photo.url)
@@ -75,6 +77,8 @@ class ValidatePassport(APIView):
                              "photos_url": [passport, photo]})
 
         if result.get('passport_valid', False) and result.get('biometric_verified', False):
+            user.passport_status = "Pending"
+            user.save()
             return Response({'success': True, 'message': 'Passport is verified Successfully', 'api_response': result,
                              "photos_url": [passport, photo]})
 

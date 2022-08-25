@@ -139,3 +139,8 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 class PassportAuthenticationSerializer(serializers.Serializer):
     passport_photo = serializers.ImageField(required=True)
     selfie_photo = serializers.ImageField(required=True)
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
+    passport_number = serializers.CharField(required=True)
+    gender = serializers.CharField(required=True)
+    meeting_datetime = serializers.DateTimeField(required=True, format="%Y-%m-%d %H:%M:%S")
