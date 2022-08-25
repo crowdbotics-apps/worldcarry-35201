@@ -11,7 +11,7 @@ from django_filters import rest_framework as filters
 
 
 class FeedbackViewSet(ModelViewSet):
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated]
     serializer_class = FeedbackSerializer
     queryset = Feedback.objects.filter()
 
@@ -30,7 +30,7 @@ class FeedbackAPIView(CreateAPIView):
 
 
 class FAQViewSet(ModelViewSet):
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated]
     serializer_class = FaqSerializer
     queryset = FAQ.objects.filter(is_visible=True)
     filter_backends = (filters.DjangoFilterBackend,)
@@ -56,7 +56,7 @@ class FAQListAPIView(ListAPIView):
         return Response(serializer.data)
 
 class SupportRequestViewSet(ModelViewSet):
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated]
     serializer_class = SupportRequestSerializer
     queryset = SupportRequest.objects.filter()
 
