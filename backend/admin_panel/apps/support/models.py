@@ -14,7 +14,7 @@ class Feedback(models.Model):
     is_visible = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    file = models.FileField(upload_to='media/feedback/')
+    file = models.FileField(upload_to='media/feedback/', null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
@@ -42,7 +42,7 @@ class SupportRequest(models.Model):
     message = models.TextField()
     is_visible = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    file = models.FileField(upload_to='media/support_request/')
+    file = models.FileField(upload_to='media/support_request/',null=True, blank=True)
 
     class Meta:
         verbose_name = "SupportRequest"
