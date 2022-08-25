@@ -19,16 +19,6 @@ class Migration(migrations.Migration):
             model_name='supportrequest',
             name='file',
         ),
-        migrations.AddField(
-            model_name='feedback',
-            name='name',
-            field=models.CharField(blank=True, max_length=30, null=True),
-        ),
-        migrations.AddField(
-            model_name='supportrequest',
-            name='name',
-            field=models.CharField(blank=True, max_length=30, null=True),
-        ),
         migrations.CreateModel(
             name='SupportRequestMedia',
             fields=[
