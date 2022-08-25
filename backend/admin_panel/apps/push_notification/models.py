@@ -65,7 +65,7 @@ class Notification(models.Model):
     is_send_now = models.BooleanField(default=False)
     send_date = models.DateTimeField(null=True, blank=True)
     group = models.ForeignKey(PushNotificationGroup, on_delete=models.CASCADE, null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     is_sent = models.BooleanField(default=False)
     is_read = models.BooleanField(default=False)
     is_paused = models.BooleanField(default=False)
