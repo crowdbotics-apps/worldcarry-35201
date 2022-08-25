@@ -8,6 +8,7 @@ User = get_user_model()
 
 class Feedback(models.Model):
     id = models.BigAutoField(primary_key=True, editable=False)
+    name = models.CharField(max_length=30, null=True, blank=True)
     email = models.EmailField(max_length=255)
     message = models.TextField()
     is_visible = models.BooleanField(default=False)
@@ -36,6 +37,7 @@ class FAQ(models.Model):
 
 class SupportRequest(models.Model):
     id = models.BigAutoField(primary_key=True, editable=False)
+    name = models.CharField(max_length=30, null=True, blank=True)
     email = models.EmailField(max_length=255)
     message = models.TextField()
     is_visible = models.BooleanField(default=True)
