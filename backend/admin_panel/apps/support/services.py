@@ -2,7 +2,6 @@ import base64
 from django.core.files.base import ContentFile
 from admin_panel.apps.support.models import Feedback, FeedbackMedia, SupportRequest, SupportRequestMedia
 
-
 def convert_file_from_bse64_to_blob(file, file_name):
     data = ContentFile(base64.b64decode(file), name='{}.jpg'.format(file_name))
     return data
