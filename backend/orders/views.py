@@ -15,6 +15,7 @@ from journeys.models import Journey, JourneyOrder
 from .models import Order
 from users.authentication import ExpiringTokenAuthentication
 from modules.scraper import get_product_details
+from admin_panel.apps.push_notification.services import create_notification
 
 
 class OrderViewSet(ModelViewSet):
@@ -133,12 +134,28 @@ class UpdateOrderStatus(APIView):
             if JourneyOrder.objects.filter(order=order, allowed_by_carrier=True, allowed_by_sender=True).exists():
                 order.status = new_status
                 order.save()
+                create_notification(
+                    {
+                        "name":"Order Status Updated",
+                        "description":"Order has been moved to transit",
+                        "user":order.user
+                    }
+                )
+
                 #  TODO notification send to the order owner
+
                 return Response({"message": "Order has been moved to transit"}, status=status.HTTP_200_OK)
             else:
                 return Response({"message": "Order not approved by the Sender"}, status=status.HTTP_400_BAD_REQUEST)
         elif new_status == "Received":
             order.status = new_status
             order.save()
+            create_notification(
+                {
+                    "name": "Order Status Updated",
+                    "description": "Order has been received",
+                    "user": order.user
+                }
+            )
             #  TODO notification send to the order owner
             return Response({"message": "Order has been received"}, status=status.HTTP_200_OK)
