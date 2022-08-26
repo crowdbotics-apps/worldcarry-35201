@@ -6,7 +6,7 @@ def create_notification(data:dict) -> Notification:
     notification = Notification.objects.create(
         name=data.get("name", ""),
         description=data.get("name", ""),
-        images=data.get("images", ""),
+        image=data.get("images", ""),
         user=data.get("user", ""),
     )
     send_notification(
@@ -14,7 +14,7 @@ def create_notification(data:dict) -> Notification:
         title=notification.name,
         message=notification.description,
         data={
-            "images":notification.image
+            "image":notification.image
         }
     )
     return notification
