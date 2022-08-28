@@ -136,7 +136,6 @@ class PaymentViewSet(ModelViewSet):
     @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
     def add_payment_method(self, request):
         profile = request.user
-        billing_details = request.data.get('billing_details')
         if profile.account:
             customer_id = profile.account.id
         else:
@@ -158,15 +157,6 @@ class PaymentViewSet(ModelViewSet):
         if payment_method_id is None:
             return Response({'detail': 'Missing Payment Method ID'}, status=status.HTTP_400_BAD_REQUEST)
         payment_method = stripe.PaymentMethod.attach(payment_method_id, customer=customer_id)
-        payment_method = stripe.PaymentMethod.modify(
-            payment_method['id'],
-            billing_details={
-                "address": {
-                    "country": billing_details["address"]["country"],
-                    "postal_code": billing_details["address"]["postal_code"],
-                }
-            }
-        )
         djstripe.models.PaymentMethod.sync_from_stripe_data(payment_method)
         payment_methods = stripe.PaymentMethod.list(customer=customer_id, type='card')
         return Response(payment_methods)

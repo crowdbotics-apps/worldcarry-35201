@@ -3,9 +3,10 @@ from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
 
 from home.utility import verifyOTP
-
 from users.models import Profile, User
+
 from allauth.account.models import EmailAddress
+from djstripe.models import PaymentMethod
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -24,11 +25,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
     """
     profile = ProfileSerializer(required=False)
     is_admin = serializers.SerializerMethodField()
+    has_payment_method = serializers.SerializerMethodField()
 
     class Meta:
         model = get_user_model()
         fields = ('id', 'name', 'email', 'password', 'is_admin',
-                  'phone', 'profile')
+                  'phone', 'profile', 'has_payment_method')
         extra_kwargs = {'password': {'write_only': True, 'min_length': 5},
                         'email': {'required': True},
                         'name': {'required': True},
@@ -43,7 +45,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
         user = User.objects.create(**validated_data)
         user.set_password(password)
         user.save()
-        # Profile.objects.create(user=user)
         email_address, created = EmailAddress.objects.get_or_create(user=user, email=user.email, verified=True, primary=True)
         return user
 
@@ -62,6 +63,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def get_is_admin(self, obj):
         return obj.is_superuser
 
+    def get_has_payment_method(self, obj):
+        if not obj.account:
+            return False
+        return PaymentMethod.objects.filter(customer=obj.account).exists()
 
 
 class OTPSerializer(serializers.Serializer):
