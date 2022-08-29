@@ -8,7 +8,6 @@ from admin_panel.apps.support.serializers import FaqSerializer, FeedbackSerializ
 from home.permissions import IsAdmin
 from rest_framework.generics import CreateAPIView, ListAPIView
 from django_filters import rest_framework as filters
-from admin_panel.apps.support.services import remove_duplicates_dict
 
 class FeedbackViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
