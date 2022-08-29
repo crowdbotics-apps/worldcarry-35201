@@ -13,7 +13,7 @@ def generateOTP(email=None, user=None):
         totp = pyotp.TOTP(secret)
         otp = totp.now()
         user.activation_key = secret
-        user.otp = otp
+        user.otp = str(otp)[:4]
         user.save()
         sliced_otp = str(otp)[:4]
         email = EmailMessage('World Carry - OTP Verification', 'Your OTP is {}'.format(sliced_otp), from_email='admin@worldcarry.com', to=[email])
@@ -86,7 +86,7 @@ def send_invitation_email(email):
 
 def send_verification_email(user:User, email:str):
     # user = User.objects.filter(email=email)
-    otp = get_otp()
+    otp = get_otp()[:4]
     user.profile.email_verification_otp = otp
     user.profile.verified_email = email
     user.profile.save()
@@ -98,7 +98,7 @@ def send_verification_email(user:User, email:str):
     return response
 
 def send_verification_phone(user:User, phone:str):
-    otp = get_otp()
+    otp = get_otp()[:4]
     user.profile.phone_verification_otp = otp
     user.profile.verified_phone = phone
     user.profile.save()

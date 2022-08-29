@@ -2,13 +2,13 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-
+import itertools
 from admin_panel.apps.support.models import FAQ, SupportRequest, Feedback
 from admin_panel.apps.support.serializers import FaqSerializer, FeedbackSerializer, SupportRequestSerializer
 from home.permissions import IsAdmin
 from rest_framework.generics import CreateAPIView, ListAPIView
 from django_filters import rest_framework as filters
-
+from admin_panel.apps.support.services import remove_duplicates_dict
 
 class FeedbackViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -35,6 +35,10 @@ class FAQViewSet(ModelViewSet):
     queryset = FAQ.objects.filter(is_visible=True)
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_fields = ['categories']
+
+    def get_queryset(self):
+        queryset = self.queryset.distinct("categories")
+        return queryset
 
 
 class FAQListAPIView(ListAPIView):

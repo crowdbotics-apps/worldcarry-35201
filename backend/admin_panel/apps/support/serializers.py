@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+import itertools
 from admin_panel.apps.support.models import Feedback, FAQ, SupportRequest, FeedbackMedia, SupportRequestMedia
 from home.api.v1.serializers import UserSerializer
 from admin_panel.apps.support.services import create_feedback,create_support_request
@@ -41,11 +41,17 @@ class FeedbackMediaSerializer(serializers.ModelSerializer):
 
 
 class FaqSerializer(serializers.ModelSerializer):
+    title = serializers.CharField(read_only=True)
+    QAlist = serializers.ListField(read_only=True)
     class Meta:
         model = FAQ
-        exclude = [
-            'id', 'created_at'
-        ]
+        fields = ('title','QAlist')
+
+    def to_representation(self, instance):
+        data = super(FaqSerializer, self).to_representation(instance)
+        data['title'] = instance.categories
+        data['QAlist'] = FAQ.objects.filter(categories=instance.categories).values('question','answer')
+        return data
 
 
 class SupportRequestMediaSerializer(serializers.ModelSerializer):
