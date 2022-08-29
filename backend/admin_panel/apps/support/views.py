@@ -47,6 +47,10 @@ class FAQListAPIView(ListAPIView):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_fields = ['categories']
 
+    def get_queryset(self):
+        queryset = self.queryset.distinct('categories')
+        return queryset
+
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
