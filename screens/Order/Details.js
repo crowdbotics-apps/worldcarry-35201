@@ -299,7 +299,7 @@ function OrderDetails ({ navigation, route }) {
             <AppButton
               title={'Create Order'}
               onPress={() => navigation.navigate('CreateOrder')}
-              width={150}
+              width={180}
               color={COLORS.primary}
               backgroundColor={COLORS.lightblue}
             />

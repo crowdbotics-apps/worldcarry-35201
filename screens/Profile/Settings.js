@@ -124,7 +124,7 @@ function Settings ({ navigation }) {
       title: 'Edit Username',
       right: user?.name,
       icon: profileSetting,
-      route: 'Account'
+      // route: 'Account'
     },
     {
       title: 'Edit Number',

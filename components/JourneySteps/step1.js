@@ -12,9 +12,11 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { SvgXml } from 'react-native-svg'
 import { COLORS, FONT1LIGHT, FONT1MEDIUM, FONT1REGULAR } from '../../constants'
 import pinBlack from '../../assets/svg/pinBlack.svg'
+import pinBlue from '../../assets/svg/pinBlue.svg'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import pickupPlan from '../../assets/svg/pickupPlan.svg'
 import arrivalPlan from '../../assets/svg/arrivalPlan.svg'
+import calendarLight from '../../assets/svg/calendarLight.svg'
 import { Calendar } from 'react-native-calendars'
 import moment from 'moment'
 import AppButton from '../AppButton'
@@ -31,7 +33,8 @@ export default function JourneyStep1 ({
   date_of_journey,
   isFocus,
   isFocus1,
-  handleOpen
+  handleOpen,
+  getCurrentLocation
 }) {
   const [modalVisible, setModalVisible] = useState(false)
   const [showReturnCalendar, setShowReturnCalendar] = useState(false)
@@ -98,6 +101,8 @@ export default function JourneyStep1 ({
           <GooglePlacesAutocomplete
             placeholder={'Departure City'}
             fetchDetails={true}
+            currentLocation={true}
+            currentLocationLabel='Current location'
             onPress={(data, details) => {
               // 'details' is provided when fetchDetails = true
               console.log(data, details)
@@ -118,7 +123,7 @@ export default function JourneyStep1 ({
                 backgroundColor: 'transparent',
                 // width: '85%',
                 height: '100%',
-                color: COLORS.darkGrey,
+                color: COLORS.darkBlack,
                 fontFamily: FONT1REGULAR
               },
               poweredContainer: { backgroundColor: COLORS.white },
@@ -135,33 +140,87 @@ export default function JourneyStep1 ({
             keyboardShouldPersistTaps={'handled'}
             listViewDisplayed={false}
             enablePoweredByContainer={false}
-            renderRow={data => {
-              return (
-                <View style={{ width: '100%', flexDirection: 'row' }}>
-                  <View
-                    style={{
-                      width: 30,
-                      height: 30,
-                      borderRadius: 30,
-                      backgroundColor: COLORS.grey,
-                      marginRight: 10,
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <SvgXml xml={pinBlack} />
+            renderRow={(data, index) => {
+              if (index === 0) {
+                return (
+                  <>
+                    <TouchableOpacity
+                      onPress={() => getCurrentLocation()}
+                      style={{ width: '100%', flexDirection: 'row' }}
+                    >
+                      <View
+                        style={{
+                          width: 30,
+                          height: 30,
+                          borderRadius: 30,
+                          backgroundColor: COLORS.grey,
+                          marginRight: 10,
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        <SvgXml xml={pinBlue} />
+                      </View>
+                      <Text
+                        style={{
+                          color: COLORS.black,
+                          fontFamily: FONT1REGULAR
+                        }}
+                      >
+                        Use my current location
+                      </Text>
+                    </TouchableOpacity>
+                    <View style={{ width: '100%', flexDirection: 'row' }}>
+                      <View
+                        style={{
+                          width: 30,
+                          height: 30,
+                          borderRadius: 30,
+                          backgroundColor: COLORS.grey,
+                          marginRight: 10,
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        <SvgXml xml={pinBlack} />
+                      </View>
+                      <Text
+                        style={{
+                          color: COLORS.black,
+                          fontFamily: FONT1REGULAR
+                        }}
+                      >
+                        {data.description}
+                      </Text>
+                    </View>
+                  </>
+                )
+              } else {
+                return (
+                  <View style={{ width: '100%', flexDirection: 'row' }}>
+                    <View
+                      style={{
+                        width: 30,
+                        height: 30,
+                        borderRadius: 30,
+                        backgroundColor: COLORS.grey,
+                        marginRight: 10,
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      <SvgXml xml={pinBlack} />
+                    </View>
+                    <Text
+                      style={{ color: COLORS.black, fontFamily: FONT1REGULAR }}
+                    >
+                      {data.description}
+                    </Text>
                   </View>
-                  <Text
-                    style={{ color: COLORS.black, fontFamily: FONT1REGULAR }}
-                  >
-                    {data.description}
-                  </Text>
-                </View>
-              )
+                )
+              }
             }}
             debounce={200}
-            currentLocation={false}
-            currentLocationLabel='Current location'
             nearbyPlacesAPI='GooglePlacesSearch'
           />
           {isFocus && (
@@ -217,7 +276,7 @@ export default function JourneyStep1 ({
                 backgroundColor: 'transparent',
                 // width: '85%',
                 height: '100%',
-                color: COLORS.darkGrey,
+                color: COLORS.darkBlack,
                 fontFamily: FONT1REGULAR
               },
               poweredContainer: { backgroundColor: COLORS.white },
@@ -286,8 +345,8 @@ export default function JourneyStep1 ({
         }}
       >
         <SvgXml
-          xml={arrivalPlan}
-          fillOpacity={0.6}
+          xml={calendarLight}
+          // fillOpacity={0.6}
           style={{ marginLeft: 10 }}
         />
         <Text

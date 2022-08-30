@@ -1,23 +1,27 @@
 import React from 'react'
-import {
-  ScrollView,
-  TouchableOpacity,
-  Text,
-  View,
-  StyleSheet,
-  Image,
-  FlatList
-} from 'react-native'
+import { ScrollView, Text, View, StyleSheet, FlatList } from 'react-native'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { SvgXml } from 'react-native-svg'
 import { COLORS, FONT1LIGHT, FONT1MEDIUM, FONT1REGULAR } from '../../constants'
-import location from '../../assets/svg/location.svg'
 import planIcon from '../../assets/svg/plan.svg'
-import OngoingIcon from '../../assets/svg/Ongoing.svg'
 import moment from 'moment'
+import UpcomingIcon from '../../assets/svg/Upcoming.svg'
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger
+} from 'react-native-popup-menu'
+import menuJourney from '../../assets/svg/menuJourney.svg'
+import AppButton from '../AppButton'
+import { Image } from 'react-native'
+import usersIcon from '../../assets/images/users.png'
 
-export default function JourneyStep3 ({ createdJourney }) {
-  console.warn(createdJourney)
+export default function JourneyStep3 ({
+  createdJourney,
+  handleDelete,
+  navigation
+}) {
   return (
     <ScrollView
       style={styles.container}
@@ -52,14 +56,39 @@ export default function JourneyStep3 ({ createdJourney }) {
         <View style={styles.paper}>
           <View style={[styles.rowBetween, { width: '100%' }]}>
             <View
-              style={[styles.ongoingBox, { backgroundColor: COLORS.ongoing }]}
+              style={[styles.ongoingBox, { backgroundColor: COLORS.upcoming }]}
             >
               <SvgXml
-                xml={OngoingIcon}
+                xml={UpcomingIcon}
                 style={{ marginLeft: -10, marginTop: 8 }}
               />
-              <Text style={styles.nameText}>Ongoing</Text>
+              <Text style={styles.nameText}>Upcoming</Text>
             </View>
+            {createdJourney?.status === 'upcoming' && (
+              <Menu
+                rendererProps={{
+                  placement: 'bottom'
+                }}
+              >
+                <MenuTrigger>
+                  <SvgXml xml={menuJourney} />
+                </MenuTrigger>
+                <MenuOptions
+                  optionsContainerStyle={{
+                    width: '30%'
+                  }}
+                >
+                  {['Delete'].map(el => (
+                    <MenuOption
+                      key={el}
+                      onSelect={() => handleDelete(createdJourney?.id)}
+                    >
+                      <Text style={{ fontFamily: FONT1LIGHT }}>{el}</Text>
+                    </MenuOption>
+                  ))}
+                </MenuOptions>
+              </Menu>
+            )}
           </View>
           <View style={[styles.row, { width: '90%' }]}>
             <Text
@@ -93,7 +122,7 @@ export default function JourneyStep3 ({ createdJourney }) {
                   height: 30,
                   borderRadius: 50,
                   borderWidth: 1,
-                  marginBottom:5,
+                  marginBottom: 5,
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderColor: COLORS.grey
@@ -120,17 +149,28 @@ export default function JourneyStep3 ({ createdJourney }) {
           </View>
           <View style={[styles.rowBetween, { marginTop: 10 }]}>
             <Text style={[styles.postedText]}>Weight</Text>
-            <Text style={styles.nameText}>{createdJourney?.total_weight}</Text>
+            <Text style={styles.nameText}>
+              {createdJourney?.total_weight}Kg
+            </Text>
           </View>
           <View style={styles.hline} />
           <View style={styles.rowBetween}>
             <Text style={[styles.postedText]}>To Deliver</Text>
             <Text style={styles.nameText}>1</Text>
           </View>
-          <View style={[styles.rowBetween, { marginTop: 10 }]}>
+          {/* <View style={[styles.rowBetween, { marginTop: 10 }]}>
             <Text style={[styles.postedText]}>Reward</Text>
             <Text style={styles.nameText}>{createdJourney?.total_weight}</Text>
-          </View>
+          </View> */}
+          <AppButton
+            title={`View all ${createdJourney?.offers} offers`}
+            backgroundColor={COLORS.upcoming}
+            color={COLORS.upcomingDark}
+            onPress={() =>
+              navigation.navigate('JourneyDetails', { createdJourney })
+            }
+            prefix={<Image source={usersIcon} style={{ marginRight: 10 }} />}
+          />
         </View>
       </View>
       {createdJourney?.type === 'Round Trip' && (
@@ -145,14 +185,42 @@ export default function JourneyStep3 ({ createdJourney }) {
           <View style={styles.paper}>
             <View style={[styles.rowBetween, { width: '100%' }]}>
               <View
-                style={[styles.ongoingBox, { backgroundColor: COLORS.ongoing }]}
+                style={[
+                  styles.ongoingBox,
+                  { backgroundColor: COLORS.upcoming }
+                ]}
               >
                 <SvgXml
-                  xml={OngoingIcon}
+                  xml={UpcomingIcon}
                   style={{ marginLeft: -10, marginTop: 8 }}
                 />
-                <Text style={styles.nameText}>Ongoing</Text>
+                <Text style={styles.nameText}>Upcoming</Text>
               </View>
+              {createdJourney?.status === 'upcoming' && (
+                <Menu
+                  rendererProps={{
+                    placement: 'bottom'
+                  }}
+                >
+                  <MenuTrigger>
+                    <SvgXml xml={menuJourney} />
+                  </MenuTrigger>
+                  <MenuOptions
+                    optionsContainerStyle={{
+                      width: '30%'
+                    }}
+                  >
+                    {['Delete'].map(el => (
+                      <MenuOption
+                        key={el}
+                        onSelect={() => handleDelete(createdJourney?.id)}
+                      >
+                        <Text style={{ fontFamily: FONT1LIGHT }}>{el}</Text>
+                      </MenuOption>
+                    ))}
+                  </MenuOptions>
+                </Menu>
+              )}
             </View>
             <View style={[styles.row, { width: '90%' }]}>
               <Text
@@ -215,7 +283,7 @@ export default function JourneyStep3 ({ createdJourney }) {
             <View style={[styles.rowBetween, { marginTop: 10 }]}>
               <Text style={[styles.postedText]}>Weight</Text>
               <Text style={styles.nameText}>
-                {createdJourney?.total_weight}
+                {createdJourney?.total_weight}Kg
               </Text>
             </View>
             <View style={styles.hline} />
@@ -223,12 +291,21 @@ export default function JourneyStep3 ({ createdJourney }) {
               <Text style={[styles.postedText]}>To Deliver</Text>
               <Text style={styles.nameText}>1</Text>
             </View>
-            <View style={[styles.rowBetween, { marginTop: 10 }]}>
+            {/* <View style={[styles.rowBetween, { marginTop: 10 }]}>
               <Text style={[styles.postedText]}>Reward</Text>
               <Text style={styles.nameText}>
                 {createdJourney?.total_weight}
               </Text>
-            </View>
+            </View> */}
+            <AppButton
+              title={`View all ${createdJourney?.offers} offers`}
+              backgroundColor={COLORS.upcoming}
+              color={COLORS.upcomingDark}
+              onPress={() =>
+                navigation.navigate('JourneyDetails', { createdJourney })
+              }
+              prefix={<Image source={usersIcon} style={{ marginRight: 10 }} />}
+            />
           </View>
         </View>
       )}

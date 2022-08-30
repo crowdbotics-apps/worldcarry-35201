@@ -26,8 +26,14 @@ import { COLORS, FONT1MEDIUM, FONT1REGULAR } from '../../constants'
 import AppContext from '../../store/Context'
 import Toast from 'react-native-simple-toast'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { createJourney, createMyAddresses } from '../../api/journey'
+import {
+  createJourney,
+  createMyAddresses,
+  deleteJourney
+} from '../../api/journey'
 import Geocoder from 'react-native-geocoding'
+import Geolocation from '@react-native-community/geolocation'
+
 Geocoder.init('AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU')
 
 function CreateJourney ({ navigation, route }) {
@@ -236,6 +242,23 @@ function CreateJourney ({ navigation, route }) {
         .catch(error => alert(error?.origin?.error_message))
     }
   }
+  const handleDelete = async id => {
+    try {
+      handleChange('loading', true)
+      const token = await AsyncStorage.getItem('token')
+      await deleteJourney(id, token)
+      _getJourneys('')
+      handleChange('loading', false)
+      navigation.navigate('Journey')
+      Toast.show('Journey Deleted Successfully!')
+    } catch (error) {
+      console.warn('error', error)
+      handleChange('loading', false)
+      console.warn('error?.response?.data', error?.response?.data)
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText[0]}`)
+    }
+  }
   const handleSearch1 = (data, details) => {
     if (details?.geometry?.location) {
       Geocoder.from(
@@ -270,6 +293,62 @@ function CreateJourney ({ navigation, route }) {
         .catch(error => console.warn('Geocodererror', error))
     }
   }
+
+  const getCurrentLocation = async () => {
+    // geolocation.requestAuthorization();
+    Geolocation.getCurrentPosition(
+      position => {
+        var lat = parseFloat(position.coords.latitude)
+        var long = parseFloat(position.coords.longitude)
+        Geocoder.from(lat, long)
+          .then(async json => {
+            var address_components = json.results[0].address_components
+            let dState = ''
+            let country = ''
+            let city = ''
+            if (address_components !== undefined) {
+              const addrComp = address_components
+              for (let i = 0; i < addrComp.length; ++i) {
+                var typ = addrComp[i].types[0]
+                if (typ === 'administrative_area_level_1') {
+                  dState = addrComp[i].long_name
+                } else if (typ === 'locality') {
+                  city = addrComp[i].long_name
+                } else if (typ === 'country') {
+                  country = addrComp[i].long_name
+                } //store the country
+              }
+            }
+            const departure_coords = `Point(${lat} ${long})`
+            handleChange('departure_coords', departure_coords)
+            handleChange('departure_city_state', city + ', ' + dState)
+            handleChange('departure_city', city)
+            handleChange('departure_country', country)
+            handleChange('departure_state', dState)
+          })
+          .catch(error => console.warn('Geocodererror', error))
+      },
+      error => console.log('Error', JSON.stringify(error)),
+      {
+        enableHighAccuracy: Platform.OS === 'ios' ? false : true,
+        timeout: 20000,
+        maximumAge: 1000
+      }
+    )
+    Geolocation.watchPosition(position => {
+      var lat = parseFloat(position.coords.latitude)
+      var long = parseFloat(position.coords.longitude)
+      const region = {
+        latitude: lat,
+        longitude: long,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA
+      }
+      setState(pre => ({ ...pre, initialRegion: region }))
+      mapRef && mapRef?.current?.animateToRegion(region)
+    })
+  }
+
   const clearForm = () => {
     if (step === 0) {
       handleChange('departure_city', '')
@@ -299,8 +378,9 @@ function CreateJourney ({ navigation, route }) {
   return (
     <View style={{ height: '100%', width: '100%' }}>
       <Header
-        title={'Add Journey'}
+        title={step === 2 ? 'Journey Added' : 'Add Journey'}
         back
+        color={COLORS.darkBlack}
         rightItem={
           <TouchableOpacity
             onPress={() =>
@@ -323,7 +403,11 @@ function CreateJourney ({ navigation, route }) {
         }}
       >
         {step === 2 ? (
-          <JourneyStep3 createdJourney={createdJourney} />
+          <JourneyStep3
+            createdJourney={createdJourney}
+            navigation={navigation}
+            handleDelete={handleDelete}
+          />
         ) : (
           <>
             <View style={styles.tabs}>
@@ -396,6 +480,7 @@ function CreateJourney ({ navigation, route }) {
                 isFocus={isFocus}
                 isFocus1={isFocus1}
                 handleChange={handleChange}
+                getCurrentLocation={getCurrentLocation}
                 handleSearch={handleSearch}
                 handleSearch1={handleSearch1}
               />

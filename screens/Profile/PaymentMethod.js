@@ -4,7 +4,8 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
-  TouchableOpacity
+  TouchableOpacity,
+  FlatList
 } from 'react-native'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { COLORS, FONT1BOLD, FONT1MEDIUM, FONT2REGULAR } from '../../constants'
@@ -16,6 +17,7 @@ import Toast from 'react-native-simple-toast'
 import BackAccount from '../../assets/svg/BackAccount.svg'
 import addcard from '../../assets/svg/addcard.svg'
 import MasterIcon from '../../assets/svg/masterCard.svg'
+import VisaIcon from '../../assets/svg/Visa.svg'
 import { SvgXml } from 'react-native-svg'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 
@@ -52,6 +54,7 @@ function PaymentMethod ({ navigation }) {
       Toast.show(`Error: ${errorText}`)
     }
   }
+  console.warn('paymethods', paymethods)
 
   if (loading) {
     return (
@@ -75,37 +78,56 @@ function PaymentMethod ({ navigation }) {
             Add a payment method to continue secure transactions in worldcarry.
           </Text>
         </View>
-        <TouchableOpacity
-          style={[
-            styles.rowBetween,
-            {
-              width: '90%',
-              height: 50,
-              borderRadius: 10,
-              paddingHorizontal: 10,
-              marginTop: 20,
-              borderWidth: 1,
-              borderColor:
-                paymethods === 'bank' ? COLORS.primary : COLORS.borderColor
-            }
-          ]}
-          onPress={() => handleChange('paymethods', 'bank')}
-        >
-          <View style={styles.row}>
-            <BouncyCheckbox
-              size={18}
-              fillColor={COLORS.primary}
-              disableBuiltInState={true}
-              unfillColor={COLORS.white}
-              disableText={true}
-              isChecked={paymethods === 'bank' ? true : false}
-              iconStyle={{ borderColor: COLORS.primary, borderRadius: 20 }}
-            />
-            <Text style={[styles.text]}>Bank Account</Text>
-          </View>
-          <SvgXml xml={BackAccount} width={30} height={30} />
-        </TouchableOpacity>
-        <TouchableOpacity
+        <FlatList
+          data={paymethods}
+          style={{ width: '90%' }}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.rowBetween,
+                {
+                  width: '100%',
+                  height: 50,
+                  borderRadius: 10,
+                  paddingHorizontal: 10,
+                  marginTop: 20,
+                  borderWidth: 1,
+                  borderColor: COLORS.borderColor
+                  // paymethods === 'bank' ? COLORS.primary : COLORS.borderColor
+                }
+              ]}
+              onPress={() =>
+                navigation.navigate('MyPaymentMethod', { card: item })
+              }
+            >
+              <View style={styles.row}>
+                <BouncyCheckbox
+                  size={18}
+                  fillColor={COLORS.primary}
+                  disableBuiltInState={true}
+                  unfillColor={COLORS.white}
+                  disableText={true}
+                  isChecked={paymethods === 'bank' ? true : false}
+                  iconStyle={{ borderColor: COLORS.primary, borderRadius: 20 }}
+                />
+                <Text style={[styles.text]}>
+                  **** **** **** {item?.card?.last4}
+                </Text>
+              </View>
+              <SvgXml
+                xml={
+                  item?.card?.brand?.toLowerCase() === 'visa'
+                    ? VisaIcon
+                    : MasterIcon
+                }
+                width={30}
+                height={30}
+              />
+            </TouchableOpacity>
+          )}
+        />
+        {/* <TouchableOpacity
           style={[
             styles.rowBetween,
             {
@@ -114,7 +136,7 @@ function PaymentMethod ({ navigation }) {
               borderRadius: 10,
               marginTop: 10,
               paddingHorizontal: 10,
-              borderWidth: 1,
+              borderWidth: 1
               // borderColor:
               //   paymethods === 'credit' ? COLORS.primary : COLORS.borderColor
             }
@@ -134,7 +156,7 @@ function PaymentMethod ({ navigation }) {
             <Text style={[styles.text]}>Debit / Credit Card</Text>
           </View>
           <SvgXml xml={MasterIcon} width={30} height={30} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <View style={{ width: '90%', marginBottom: 20 }}>
         <AppButton

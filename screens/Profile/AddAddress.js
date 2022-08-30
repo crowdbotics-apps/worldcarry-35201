@@ -38,6 +38,7 @@ import { SvgXml } from 'react-native-svg'
 import { Icon } from 'react-native-elements'
 import Geocoder from 'react-native-geocoding'
 import { createMyAddresses } from '../../api/journey'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 Geocoder.init('AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU')
 
@@ -102,6 +103,7 @@ function AddAddress ({ navigation }) {
           country: country,
           coordinates: coords
         }
+        const token = await AsyncStorage.getItem('token')
         await createMyAddresses(payload, token)
         _getMyAddresses()
         navigation.goBack()

@@ -16,7 +16,8 @@ import Toast from 'react-native-simple-toast'
 import mastercardWhite from '../../assets/svg/mastercardWhite.svg'
 import { SvgXml } from 'react-native-svg'
 
-function MyPaymentMethod ({ navigation }) {
+function MyPaymentMethod ({ navigation, route }) {
+  const card = route?.params?.card
   // State
   const [state, setState] = useState({
     loading: false,
@@ -91,16 +92,20 @@ function MyPaymentMethod ({ navigation }) {
         >
           <SvgXml xml={mastercardWhite} />
           <View style={styles.rowBetween}>
-            <Text style={styles.leftText}>**** **** **** 6578</Text>
+            <Text style={styles.leftText}>
+              **** **** **** {card?.card?.last4}
+            </Text>
           </View>
           <View style={[styles.row, { marginTop: 20 }]}>
             <View style={{ marginRight: 20 }}>
               <Text style={styles.cardText}>Card Holder</Text>
-              <Text style={styles.holder}>Rachel Green</Text>
+              <Text style={styles.holder}>{card?.billing_details?.name}</Text>
             </View>
             <View>
-              <Text style={styles.cardText}>Card Holder</Text>
-              <Text style={styles.holder}>Rachel Green</Text>
+              <Text style={styles.cardText}>Expiry Date</Text>
+              <Text style={styles.holder}>
+                {card?.card?.exp_month + '/' + card?.card?.exp_year}
+              </Text>
             </View>
           </View>
         </View>

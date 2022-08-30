@@ -249,7 +249,7 @@ function MessagesList ({ data, navigation, user }) {
                   fontSize: hp(1.8)
                 }}
               >
-                {item?.itemtitle}
+                {item?.itemtitle?.toString()}
               </Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>

@@ -31,7 +31,7 @@ export default function PassportStep2 ({
       style={styles.container}
       showsVerticalScrollIndicator={false}
     >
-      <Text style={styles.head}>UPLOAD PASSPORT COVER</Text>
+      <Text style={styles.head}>UPLOAD SELFIE</Text>
       <View style={styles.box}>
         <Image source={avatarSourceURL ? { uri: avatarSourceURL } : coverpass} style={styles.image} />
         <AppButton

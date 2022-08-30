@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -10,15 +10,14 @@ import {
   Image,
   BackHandler,
   Platform,
-  ActivityIndicator
+  ActivityIndicator,
+  Modal
 } from 'react-native'
 import { Icon, Input } from 'react-native-elements'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-// import {Header} from '../../components'
-// import {connect} from 'react-redux'
 import database from '@react-native-firebase/database'
-// import {getMessages} from '../../actions'
+import EmojiBoard from 'react-native-emoji-board'
 import Toast from 'react-native-simple-toast'
 import AppContext from '../../store/Context'
 import { COLORS, FONT1REGULAR } from '../../constants'
@@ -32,16 +31,19 @@ import smileIcon from '../../assets/svg/smileIcon.svg'
 import ImagePicker from 'react-native-image-crop-picker'
 import storage from '@react-native-firebase/storage'
 import { getOrderDetails } from '../../api/order'
+import EmojiPicker from 'react-native-emoji-picker-staltz'
 
 function Chat ({ navigation, route }) {
   const orderID = route?.params?.orderID
   // Context
   const context = useContext(AppContext)
+  const inputRef = useRef()
   const { user } = context
   const messageuid = orderID
   let scrollView
   const [state, setState] = useState({
     listHeight: 0,
+    show: false,
     scrollViewHeight: 0,
     messages: [],
     messageText: '',
@@ -50,7 +52,7 @@ function Chat ({ navigation, route }) {
     orderData: null
   })
 
-  const { orderData } = state
+  const { orderData, show } = state
 
   const downButtonHandler = () => {
     if (scrollView !== null) {
@@ -101,7 +103,7 @@ function Chat ({ navigation, route }) {
                     // getMessages()
                     setState(prevState => ({
                       ...prevState,
-                      messages: snapshot.val().messages,
+                      messages: snapshot.val().messages || [],
                       messageData: snapshot.val()
                     }))
                   }
@@ -117,6 +119,12 @@ function Chat ({ navigation, route }) {
     setState(pre => ({ ...pre, [key]: value }))
   }
 
+  const onClickEmoji = emoji => {
+    setState(prevState => ({
+      ...prevState,
+      messageText: prevState.messageText + emoji
+    }))
+  }
   useEffect(() => {
     if (scrollView !== null) {
       downButtonHandler()
@@ -239,6 +247,8 @@ function Chat ({ navigation, route }) {
     //     Alert.alert('Error!', error)
     //   })
   }
+
+  console.warn('state.messages', state.messages)
 
   return (
     <View
@@ -553,6 +563,8 @@ function Chat ({ navigation, route }) {
               <ActivityIndicator size={'small'} color={COLORS.primary} />
             </View>
           )}
+          {/* <EmojiBoard showBoard={show} onClick={onClickEmoji} /> */}
+
           <View
             style={{
               width: '100%',
@@ -580,15 +592,16 @@ function Chat ({ navigation, route }) {
               }}
             >
               <TouchableOpacity
-              // onPress={() => {
-              //   state.messageText && orderData?.status !== 'Completed'
-              //     ? onSend()
-              //     : console.log('')
-              // }}
+                onPress={() => {
+                  inputRef.current?.blur()
+                  handleChange('show', !show)
+                }}
               >
                 <SvgXml xml={smileIcon} />
               </TouchableOpacity>
               <Input
+                ref={inputRef}
+                // keyboardType=''
                 placeholderTextColor='rgba(36, 36, 36, 0.4)'
                 inputStyle={{
                   fontSize: hp(2),
@@ -607,6 +620,7 @@ function Chat ({ navigation, route }) {
                     messageText: message
                   }))
                 }
+                onFocus={() => handleChange('show', false)}
                 value={state.messageText}
                 onSubmitEditing={() =>
                   state.messageText ? onSend() : console.log('')
@@ -637,6 +651,28 @@ function Chat ({ navigation, route }) {
               </TouchableOpacity>
             </View>
           </View>
+          {show && (
+            <EmojiPicker
+              onEmojiSelected={onClickEmoji}
+              rows={6}
+              hideClearButton
+              modalStyle={{ height: '50%' }}
+              backgroundStyle={{ backgroundColor: '#fff', height: '50%' }}
+              onPressOutside={() => handleChange('show', false)}
+              containerStyle={{ height: '100%' }}
+              localizedCategories={[
+                // Always in this order:
+                'Smileys and emotion',
+                'People and body',
+                'Animals and nature',
+                'Food and drink',
+                'Activities',
+                'Travel and places',
+                'Objects',
+                'Symbols'
+              ]}
+            />
+          )}
         </KeyboardAwareScrollView>
       </View>
     </View>

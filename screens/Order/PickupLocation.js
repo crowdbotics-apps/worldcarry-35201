@@ -32,7 +32,6 @@ import pinBlack from '../../assets/svg/pinBlack.svg'
 import currentLcoation from '../../assets/svg/currentLcoation.svg'
 import compass from '../../assets/svg/compass.svg'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
-
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { AppButton } from '../../components'
 import { SvgXml } from 'react-native-svg'

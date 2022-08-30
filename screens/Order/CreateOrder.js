@@ -30,6 +30,7 @@ import ImagePicker from 'react-native-image-crop-picker'
 import Toast from 'react-native-simple-toast'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createOrder, getProductDetails } from '../../api/order'
+import { getPayMethod } from '../../api/business'
 
 function CreateOrder ({ navigation }) {
   const [state, setState] = useState({
@@ -54,7 +55,8 @@ function CreateOrder ({ navigation }) {
     linkVerified: false,
     active: 0,
     stepLink: 0,
-    createdOrder: null
+    createdOrder: null,
+    paymethods: []
   })
 
   // Context
@@ -82,7 +84,8 @@ function CreateOrder ({ navigation }) {
     loadingLink,
     falseLink,
     linkVerified,
-    createdOrder
+    createdOrder,
+    paymethods
   } = state
   const {
     user,
@@ -94,6 +97,7 @@ function CreateOrder ({ navigation }) {
   } = context
 
   useEffect(() => {
+    _getPayMethod()
     if (mapLocationForPickup) {
       handleChange('pickup_address', mapLocationForPickup)
       setMapLocationForPickup(null)
@@ -174,6 +178,20 @@ function CreateOrder ({ navigation }) {
     }
   }
 
+  const _getPayMethod = async () => {
+    try {
+      handleChange('loading', true)
+      const token = await AsyncStorage.getItem('token')
+      const res = await getPayMethod(token)
+      handleChange('loading', false)
+      handleChange('paymethods', res?.data?.data)
+    } catch (error) {
+      handleChange('loading', false)
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
+console.warn('paymethods?.length > 0 && paymethods[0]?.id',paymethods?.length > 0 && paymethods[0]?.id);
   const handleCreate = async () => {
     try {
       handleChange('loading', true)
@@ -186,6 +204,10 @@ function CreateOrder ({ navigation }) {
       formData.append('pickup_address_country', pickup_address_country)
       formData.append('expected_wait_time', expected_wait_time)
       formData.append('product_type', product_type)
+      formData.append(
+        'payment_method_id',
+        paymethods?.length > 0 && paymethods[0]?.id
+      )
       // formData.append('pickup_address', pickup_address)
       // formData.append('pickup_address_coordinates', pickup_address_coordinates)
       formData.append(

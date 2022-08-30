@@ -90,6 +90,7 @@ function AddPaymentMethod ({ navigation }) {
           card: cardDetails,
           billing_details: {
             name: name,
+            email: email,
             addressPostalCode: zip,
             addressCountry: country
           }

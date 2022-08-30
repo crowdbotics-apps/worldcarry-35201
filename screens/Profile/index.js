@@ -42,6 +42,10 @@ import insta from '../../assets/svg/insta.svg'
 import orderIcon from '../../assets/svg/tabs/Work.svg'
 import { Icon } from 'react-native-elements'
 import { Rating } from 'react-native-ratings'
+import { getPayMethod } from '../../api/business'
+import { useFocusEffect } from '@react-navigation/native'
+import { useCallback } from 'react'
+import Toast from 'react-native-simple-toast'
 
 function Profile ({ navigation }) {
   // Context
@@ -58,13 +62,33 @@ function Profile ({ navigation }) {
 
   const [state, setState] = useState({
     isActive: 'Overview',
+    paymethods: [],
     isMyReview: false
   })
 
-  const { isActive, isMyReview } = state
+  const { isActive, isMyReview, paymethods } = state
 
   const handleChange = (key, value) => {
     setState(pre => ({ ...pre, [key]: value }))
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      _getPayMethod()
+    }, [])
+  )
+  const _getPayMethod = async () => {
+    try {
+      handleChange('loading', true)
+      const token = await AsyncStorage.getItem('token')
+      const res = await getPayMethod(token)
+      handleChange('loading', false)
+      handleChange('paymethods', res?.data?.data)
+    } catch (error) {
+      handleChange('loading', false)
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
   }
 
   const list = [
@@ -134,12 +158,18 @@ function Profile ({ navigation }) {
     {
       title: 'Passport',
       right: 'Verify',
+      isVerified: user?.profile?.is_passport_verified ? 'verified' : '',
+      verified: user?.profile?.is_passport_verified
+        ? user?.profile?.is_passport_verified
+        : '',
       icon: passport,
       route: 'PassportVerification'
     },
     {
       title: 'Payment method',
       right: 'Verify',
+      isVerified: user?.has_payment_method ? 'verified' : '',
+      verified: paymethods?.length > 0 && paymethods[0]?.card?.brand + ' card',
       icon: dollar,
       route: '$4500'
     }
@@ -174,6 +204,7 @@ function Profile ({ navigation }) {
     }
   ]
 
+  console.warn('user', paymethods)
   return (
     <View style={styles.container}>
       <Header title={'Profile'} profile color={COLORS.darkBlack} />

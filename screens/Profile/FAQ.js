@@ -178,11 +178,12 @@ function FAQ ({ navigation, route }) {
   // Context
   const [state, setState] = useState({
     questions: [],
+    FAQs: [],
     activeSections: [],
     filteredList: list2 || [],
     searchText: ''
   })
-  const { questions, activeSections, searchText, filteredList } = state
+  const { questions, activeSections, searchText, filteredList, FAQs } = state
   const handleChange = (key, value) => {
     setState(pre => ({ ...pre, [key]: value }))
   }
@@ -199,6 +200,7 @@ function FAQ ({ navigation, route }) {
       const res = await getFAQ(token)
       handleChange('loading', false)
       console.warn('getFAQ', res?.data)
+      handleChange('filteredList', res?.data)
     } catch (error) {
       handleChange('loading', false)
       const errorText = Object.values(error?.response?.data)
@@ -209,7 +211,7 @@ function FAQ ({ navigation, route }) {
   const _renderHeader = section => {
     return (
       <View style={styles.header}>
-        <Text style={styles.headerText}>{section.title}</Text>
+        <Text style={styles.headerText}>{section?.question}</Text>
         <Icon name={'down'} type={'antdesign'} color={COLORS.grey} size={18} />
       </View>
     )
@@ -218,7 +220,7 @@ function FAQ ({ navigation, route }) {
   const _renderContent = section => {
     return (
       <View style={styles.content}>
-        <Text>{section.content}</Text>
+        <Text>{section.answer}</Text>
       </View>
     )
   }
@@ -230,7 +232,7 @@ function FAQ ({ navigation, route }) {
   const filtered = (key, value) => {
     handleChange(key, value)
     if (value) {
-      const newData = list2.filter(function (item) {
+      const newData = FAQs?.filter(function (item) {
         const itemData = item.title
           ? item?.title?.toUpperCase()
           : ''.toUpperCase()
@@ -291,7 +293,7 @@ function FAQ ({ navigation, route }) {
         <>
           {filteredList.map((item, index) => (
             <TouchableOpacity
-              onPress={() => handleChange('questions', item.questions)}
+              onPress={() => handleChange('questions', item?.QAlist)}
               key={index}
               style={styles.listView}
             >
@@ -302,7 +304,7 @@ function FAQ ({ navigation, route }) {
                   width: '80%'
                 }}
               >
-                <SvgXml xml={item.image} />
+                <SvgXml xml={faq1} />
                 <Text
                   style={[
                     styles.name,

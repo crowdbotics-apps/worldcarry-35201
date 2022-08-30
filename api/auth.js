@@ -95,5 +95,5 @@ export const postFeedback = (body, token) => {
 }
 
 export const getFAQ = token => {
-  return API.get(`api/v1/faq?categories=BASIC`, token)
+  return API.get(`api/v1/faq?categories=ORDER`, token)
 }

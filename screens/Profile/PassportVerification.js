@@ -97,8 +97,9 @@ function PassportVerification ({ navigation }) {
       payload.append('passport_photo', passport_photo)
       payload.append(
         'meeting_datetime',
-        moment(schedule_video_date).format('YYYY-MM-DD') + schedule_video_time
+        moment(schedule_video_date).format('YYYY-MM-DD ') + schedule_video_time
       )
+      console.warn('payload',payload);
       const res = await validatePassort(payload, token)
       console.warn('res', res?.data?.success)
       handleChange('loading', false)
@@ -111,6 +112,7 @@ function PassportVerification ({ navigation }) {
     } catch (error) {
       handleChange('loading', false)
       const errorText = Object.values(error?.response?.data)
+      console.warn('errorText',errorText);
       Toast.show(`Error: ${errorText}`)
     }
   }

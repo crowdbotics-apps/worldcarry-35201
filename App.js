@@ -136,7 +136,7 @@ function App () {
       }}
     >
       <StripeProvider
-        publishableKey='pk_test_51KZK9jLztvigKU7K5CptuvUpCXeDccpRZ14y9cR5wWl7neG8aj84s6IUl1hRzhOjKrpLit46ZEczBzZnSWqOyJGB00hdoLxDvv'
+        publishableKey='pk_test_51LaIRSLRdM0d7A3Koho53E3XIgxxlEY9YARYPa1fQHH08d9JWRTMaQ28NbBnKGKav470rhSuqegPyUg1kDIDl6AC00x4JQSwzv'
         merchantIdentifier='merchant.com.worldcarry_35201'
       >
         <NavigationContainer>
