@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from django.db.models import Q
 from users.serializers import UserProfileSerializer
 
 from .models import Journey, JourneyOrder
@@ -25,11 +25,20 @@ class JourneySerializer(serializers.ModelSerializer):
         }
 
     def get_offers(self, journey):
-        journey_orders = Order.objects.filter(pickup_address_city=journey.departure_city,
-                                              arrival_address_city=journey.arrival_city,
-                                              deliver_before_date__lte=journey.date_of_journey,
-                                              status__in=['Unpaid', 'Requested']).count()
-        return journey_orders
+        order_statuses = ['Unpaid', 'Requested', "Accepted"]
+        if journey.type == 'Round Trip':
+            orders = Order.objects.filter((Q(status__in=order_statuses) &
+                                       (Q(pickup_address_country=journey.departure_country) &
+                                        Q(arrival_address_country=journey.arrival_country))
+                                       |
+                                       Q(Q(pickup_address_country=journey.arrival_country) &
+                                         Q(arrival_address_country=journey.departure_country)))).count()
+        else:
+            orders = Order.objects.filter(status__in=order_statuses,
+                                          pickup_address_country=journey.departure_country,
+                                          arrival_address_country=journey.arrival_country).count()
+
+        return orders
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)
