@@ -14,6 +14,7 @@ import { getPayMethod } from '../../api/business'
 import { useFocusEffect } from '@react-navigation/native'
 import Toast from 'react-native-simple-toast'
 import mastercardWhite from '../../assets/svg/mastercardWhite.svg'
+import shieldDoneBLue from '../../assets/svg/shieldDoneBLue.svg'
 import { SvgXml } from 'react-native-svg'
 
 function MyPaymentMethod ({ navigation, route }) {
@@ -110,10 +111,8 @@ function MyPaymentMethod ({ navigation, route }) {
           </View>
         </View>
         <View style={styles.detailsBox}>
-          <Text style={styles.detailsText}>
-            Your card is being verified. will notify you of the status within
-            the next few business days
-          </Text>
+          <Text style={styles.detailsText}>Your card has been verified.</Text>
+          <SvgXml xml={shieldDoneBLue} />
         </View>
       </View>
     </View>
@@ -174,6 +173,9 @@ const styles = StyleSheet.create({
   detailsBox: {
     borderRadius: 10,
     padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     backgroundColor: COLORS.primaryLight,
     width: '90%'
   },

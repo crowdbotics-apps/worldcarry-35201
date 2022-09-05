@@ -24,6 +24,10 @@ export const AddPayMethod = (body, token) => {
   return API.post(`api/v1/payments/add_payment_method/`, body, token)
 }
 
+export const removePayMethod = (body, token) => {
+  return API.post(`api/v1/payments/revoke_payment_method/`, body, token)
+}
+
 export const userSubscribe = (body, token) => {
   return API.post(`api/v1/payments/subscribe/`, body, token)
 }

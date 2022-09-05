@@ -5,19 +5,32 @@ import Modal from 'react-native-modal'
 import { COLORS } from '../../../constants'
 import styles from './styles'
 
-const CustomModel = ({ visible, onClose, height, children }) => {
+const CustomModel = ({ visible, isNotBar, width, height, children }) => {
   const content = () => {
     return (
       <View style={styles.screen}>
-        <View style={[styles.screenContainer, { height: height || '50%' }]}>
-          <View
-            style={{
-              height: 5,
-              width: '20%',
-              borderRadius: 8,
-              backgroundColor: COLORS.grey
-            }}
-          />
+        <View
+          style={[
+            styles.screenContainer,
+            {
+              borderTopRightRadius: isNotBar ? 0 : 24,
+              borderTopLeftRadius: isNotBar ? 0 : 24,
+              paddingTop: isNotBar ? 0 : 5,
+              width: width || '95%',
+              height: height || '50%'
+            }
+          ]}
+        >
+          {!isNotBar && (
+            <View
+              style={{
+                height: 5,
+                width: '20%',
+                borderRadius: 8,
+                backgroundColor: COLORS.grey
+              }}
+            />
+          )}
           <View style={{ flex: 1, width: '100%' }}>{children}</View>
         </View>
       </View>

@@ -30,7 +30,7 @@ import ImagePicker from 'react-native-image-crop-picker'
 import Toast from 'react-native-simple-toast'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createOrder, getProductDetails } from '../../api/order'
-import { getPayMethod } from '../../api/business'
+import { getPayMethod, removePayMethod } from '../../api/business'
 
 function CreateOrder ({ navigation }) {
   const [state, setState] = useState({
@@ -56,7 +56,8 @@ function CreateOrder ({ navigation }) {
     active: 0,
     stepLink: 0,
     createdOrder: null,
-    paymethods: []
+    paymethods: [],
+    payment_method_id: ''
   })
 
   // Context
@@ -85,7 +86,8 @@ function CreateOrder ({ navigation }) {
     falseLink,
     linkVerified,
     createdOrder,
-    paymethods
+    paymethods,
+    payment_method_id
   } = state
   const {
     user,
@@ -191,7 +193,25 @@ function CreateOrder ({ navigation }) {
       Toast.show(`Error: ${errorText}`)
     }
   }
-console.warn('paymethods?.length > 0 && paymethods[0]?.id',paymethods?.length > 0 && paymethods[0]?.id);
+
+  const _removePayMethod = async payment_method => {
+    try {
+      handleChange('loading', true)
+      const payload = {
+        payment_method
+      }
+      const token = await AsyncStorage.getItem('token')
+      const res = await removePayMethod(payload, token)
+      handleChange('loading', false)
+      handleChange('payment_method_id', '')
+      _getPayMethod()
+    } catch (error) {
+      handleChange('loading', false)
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
+
   const handleCreate = async () => {
     try {
       handleChange('loading', true)
@@ -204,10 +224,7 @@ console.warn('paymethods?.length > 0 && paymethods[0]?.id',paymethods?.length > 
       formData.append('pickup_address_country', pickup_address_country)
       formData.append('expected_wait_time', expected_wait_time)
       formData.append('product_type', product_type)
-      formData.append(
-        'payment_method_id',
-        paymethods?.length > 0 && paymethods[0]?.id
-      )
+      formData.append('payment_method_id', payment_method_id)
       // formData.append('pickup_address', pickup_address)
       // formData.append('pickup_address_coordinates', pickup_address_coordinates)
       formData.append(
@@ -367,7 +384,7 @@ console.warn('paymethods?.length > 0 && paymethods[0]?.id',paymethods?.length > 
       ? !pickup_address_country || !pickup_address
       : step === 2
       ? !arrival_address || !arrival_address_country
-      : !isChecked
+      : !isChecked || !payment_method_id
   const disabled1 =
     stepLink === 0
       ? !product_name ||
@@ -384,7 +401,7 @@ console.warn('paymethods?.length > 0 && paymethods[0]?.id',paymethods?.length > 
         !carrier_reward ||
         !expected_wait_time ||
         !arrival_address_country
-      : !isChecked
+      : !isChecked || !payment_method_id
 
   return (
     <View style={{ height: '100%', width: '100%' }}>
@@ -537,10 +554,14 @@ console.warn('paymethods?.length > 0 && paymethods[0]?.id',paymethods?.length > 
                     expected_wait_time={expected_wait_time}
                     product_type={product_type}
                     avatarSourceURL={avatarSourceURL}
+                    navigation={navigation}
+                    paymethods={paymethods}
+                    payment_method_id={payment_method_id}
                     product_name={product_name}
                     product_price={product_price}
                     carrier_reward={carrier_reward}
                     isChecked={isChecked}
+                    _removePayMethod={_removePayMethod}
                     handleChange={handleChange}
                   />
                 )}

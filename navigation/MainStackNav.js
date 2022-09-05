@@ -36,6 +36,10 @@ import AddAddress from '../screens/Profile/AddAddress'
 import ScanQR from '../screens/Journey/ScanQR'
 import JourneyOrderDetails from '../screens/Journey/JourneyOrderDetails'
 import Chat from '../screens/Chat'
+import EditUsername from '../screens/Profile/EditUsername'
+import EditNumber from '../screens/Profile/EditNumber'
+import EditMail from '../screens/Profile/EditMail'
+import ChangeCurrentPassword from '../screens/Profile/ChangeCurrentPassword'
 
 const Stack = createStackNavigator()
 function MainStackNav () {
@@ -82,6 +86,10 @@ function MainStackNav () {
       <Stack.Screen name='ScanQR' component={ScanQR} />
       <Stack.Screen name='JourneyOrderDetails' component={JourneyOrderDetails} />
       <Stack.Screen name='Chat' component={Chat} />
+      <Stack.Screen name='EditUsername' component={EditUsername} />
+      <Stack.Screen name='EditNumber' component={EditNumber} />
+      <Stack.Screen name='EditMail' component={EditMail} />
+      <Stack.Screen name='ChangeCurrentPassword' component={ChangeCurrentPassword} />
     </Stack.Navigator>
   )
 }

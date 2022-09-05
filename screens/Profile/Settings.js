@@ -124,23 +124,25 @@ function Settings ({ navigation }) {
       title: 'Edit Username',
       right: user?.name,
       icon: profileSetting,
-      // route: 'Account'
+      route: 'EditUsername'
     },
     {
       title: 'Edit Number',
       icon: editSetting,
-      right: user?.phone
+      right: user?.phone,
+      route: 'EditNumber'
     },
     {
       title: 'Change Mail ID',
       icon: mailSetting,
-      right: user?.email
+      right: user?.email,
+      route: 'EditMail'
     },
     {
       title: 'Change Password',
       icon: passwordSetting,
       right: '',
-      route: 'ChangePassword'
+      route: 'ChangeCurrentPassword'
     },
     {
       title: 'Edit Payment Method',
@@ -156,11 +158,11 @@ function Settings ({ navigation }) {
       switch: true,
       icon: notiSetting
     },
-    {
-      title: 'Language',
-      icon: languageSetting,
-      right: 'English'
-    },
+    // {
+    //   title: 'Language',
+    //   icon: languageSetting,
+    //   right: 'English'
+    // },
     {
       title: 'Logout',
       logout: true,
