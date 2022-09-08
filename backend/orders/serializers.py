@@ -4,6 +4,7 @@ from django.core.files import File
 
 from payments.models import Payment
 from .models import Order, OrderImages
+from journeys.utils import get_on_rout_journeys
 from users.serializers import UserProfileSerializer
 from home.constants import ORDER_STATUS
 
@@ -145,6 +146,13 @@ class OrderSerializer(serializers.ModelSerializer):
         path = settings.MEDIA_ROOT + filename
         os.remove(path)
         order.save()
+
+        journeys = get_on_rout_journeys(order=order)
+        for journey in journeys:
+            # TODO add notification to each journey user
+            user = journey.user
+            message = "A new order created that you can take along with you"
+            # data = order.id  # this need to send in notification
         return order
 
     def update(self, instance, validated_data):

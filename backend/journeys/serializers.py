@@ -4,6 +4,7 @@ from users.serializers import UserProfileSerializer
 
 from .models import Journey, JourneyOrder
 from orders.models import Order
+from orders.utils import get_onround_orders
 
 
 class JourneySerializer(serializers.ModelSerializer):
@@ -46,6 +47,16 @@ class JourneySerializer(serializers.ModelSerializer):
             instance.user
         ).data
         return rep
+
+    def create(self, validated_data):
+        journey = super().create(validated_data)
+        orders = get_onround_orders(journey=journey)
+        for order in orders:
+            # TODO add notification to each journey user
+            user = order.user
+            message = "A new journey created that you can take along with you"
+            # data = journey.id  # this need to send in notification
+        return journey
 
 
 class JourneyOrderSerializer(serializers.Serializer):

@@ -13,6 +13,7 @@ from .serializers import (OrderSerializer, ProductScraperSerializer, OrderQrSeri
 
 from journeys.models import Journey, JourneyOrder
 from .models import Order
+from orders.utils import get_onround_orders
 from users.authentication import ExpiringTokenAuthentication
 from modules.scraper import get_product_details
 from admin_panel.apps.push_notification.services import create_notification
@@ -44,19 +45,7 @@ class OrderViewSet(ModelViewSet):
             return Response({"detail": "This Journey has already passed its departure date"},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        order_statuses = ['Unpaid', 'Requested', "Accepted"]
-        
-        if journey.type == 'Round Trip':
-            orders = Order.objects.filter((Q(status__in=order_statuses) &
-                                           (Q(pickup_address_country=journey.departure_country) &
-                                            Q(arrival_address_country=journey.arrival_country))
-                                           |
-                                           Q(Q(pickup_address_country=journey.arrival_country) &
-                                             Q(arrival_address_country=journey.departure_country))))
-        else:
-            orders = Order.objects.filter(status__in=order_statuses,
-                                          pickup_address_country=journey.departure_country,
-                                          arrival_address_country=journey.arrival_country)
+        orders = get_onround_orders(journey=journey)
 
         orders = orders.order_by(ordering)
         # accepted:

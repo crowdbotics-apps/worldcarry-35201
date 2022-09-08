@@ -13,6 +13,7 @@ from .serializers import JourneySerializer, JourneyOrderSerializer
 from rest_framework.views import APIView
 
 from .models import Journey, JourneyOrder
+from .utils import get_on_rout_journeys
 from users.authentication import ExpiringTokenAuthentication
 
 from rest_framework.filters import OrderingFilter
@@ -36,31 +37,7 @@ class JourneyViewSet(ModelViewSet):
             order = Order.objects.get(id=order_id)
         except Order.DoesNotExist:
             return Response({"detail": "Invalid Journey ID"}, status=status.HTTP_400_BAD_REQUEST)
-        today = timezone.now()
-
-        journeys = Journey.objects.filter(
-            Q(
-                Q(date_of_journey__lt=order.deliver_before_date) &
-                Q(date_of_journey__gt=today)
-            ) &
-            (
-                Q(type="Round Trip") &
-                (
-                    Q(departure_country=order.pickup_address_country) &
-                    Q(arrival_country=order.arrival_address_country)
-                ) |
-                (
-                    Q(departure_country=order.arrival_address_country) &
-                    Q(arrival_country=order.pickup_address_country)
-                )
-            ) |
-            (
-                Q(type="One Way") &
-                Q(departure_country=order.pickup_address_country) &
-                Q(arrival_country=order.arrival_address_country)
-            )
-        )
-        journeys = self.filter_queryset(journeys)
+        journeys = self.filter_queryset(get_on_rout_journeys(order))
         journeys = journeys.exclude(id__in=list(JourneyOrder.objects.filter(
             order=order, allowed_by_sender=True).values_list('journey_id', flat=True)))
         serializer = JourneySerializer(journeys, many=True)
@@ -100,6 +77,7 @@ class JourneyOrderRequest(APIView):
 
         # in case sender and carrier
         if jo_instance.allowed_by_sender and jo_instance.allowed_by_carrier:
+            # TODO add notification here
             order.status = "Accepted"
             order.carrier = jo_instance.journey.user
             order.save(update_fields=['status', 'carrier'])
