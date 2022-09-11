@@ -83,7 +83,8 @@ function PickupLocation ({ navigation }) {
             pickup_address_coordinates: truckLocation
           }
           setMapLocationForPickup(payload)
-          navigation.goBack()
+          // navigation.goBack()
+          navigation.navigate('CreateOrder')
         })
         .catch(error => console.warn('Geocodererror', error))
     } else {
@@ -92,7 +93,7 @@ function PickupLocation ({ navigation }) {
         pickup_address_coordinates: truckLocation
       }
       setMapLocationForPickup(payload)
-      navigation.goBack()
+      navigation.navigate('CreateOrder')
     }
   }
 
@@ -177,6 +178,13 @@ function PickupLocation ({ navigation }) {
       longitudeDelta: LONGITUDE_DELTA
     }
     handleChange('truckLocation', location)
+  }
+
+  const onZoomInPress = () => {
+    mapRef?.current?.getCamera().then(cam => {
+      cam.heading = 0
+      mapRef?.current?.animateCamera(cam)
+    })
   }
 
   return (
@@ -355,8 +363,13 @@ function PickupLocation ({ navigation }) {
             showsCompass={true}
             showsMyLocationButton={true}
             rotateEnabled={true}
+            onRegionChange={info => {
+              console.log('info', info)
+              // mapRef?.getCamera()
+              // .then((info) => {
+              // });
+            }}
             onPress={props => onMapPress(props.nativeEvent)}
-            onRegionChange={() => console.log('')}
             ref={mapRef}
           >
             {truckLocation && (
@@ -377,7 +390,10 @@ function PickupLocation ({ navigation }) {
       )}
       <View style={{ bottom: 20, position: 'absolute', width: '90%' }}>
         <View style={{ width: '100%', alignItems: 'flex-end' }}>
-          <TouchableOpacity style={[styles.pinButton, { marginBottom: 15 }]}>
+          <TouchableOpacity
+            style={[styles.pinButton, { marginBottom: 15 }]}
+            onPress={onZoomInPress}
+          >
             <SvgXml xml={compass} />
           </TouchableOpacity>
           <TouchableOpacity

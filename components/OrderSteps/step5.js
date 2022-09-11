@@ -20,7 +20,6 @@ import userProfile from '../../assets/images/userProfile.png'
 import { Icon } from 'react-native-elements'
 
 export default function Step5 ({ createdOrder, navigation }) {
-  console.warn('createdOrder', createdOrder)
   function convertLocalDateToUTCDate (time, toLocal) {
     const todayDate = moment(new Date()).format('YYYY-MM-DD')
     if (toLocal) {
@@ -88,7 +87,7 @@ export default function Step5 ({ createdOrder, navigation }) {
       <View style={{ width: '100%', alignItems: 'center', marginVertical: 20 }}>
         <View style={styles.paper}>
           <View style={[styles.rowBetween, { width: '100%' }]}>
-            <View style={styles.row}>
+            <View style={[styles.row, { width: '70%' }]}>
               <Image
                 style={{
                   width: 50,
@@ -102,7 +101,7 @@ export default function Step5 ({ createdOrder, navigation }) {
                     : userProfile
                 }
               />
-              <View>
+              <View style={{ width: '100%' }}>
                 <Text style={styles.nameText}>{createdOrder?.user?.name}</Text>
                 <Text style={styles.postedText}>
                   Posted{' '}
@@ -110,7 +109,7 @@ export default function Step5 ({ createdOrder, navigation }) {
                 </Text>
               </View>
             </View>
-            <View style={{ alignItems: 'flex-end' }}>
+            <View style={{ alignItems: 'flex-end', width: '20%' }}>
               <Text style={[styles.nameText, { fontSize: hp(2.4) }]}>
                 ${createdOrder?.carrier_reward}
               </Text>
@@ -155,7 +154,7 @@ export default function Step5 ({ createdOrder, navigation }) {
                 height: 50,
                 backgroundColor: COLORS.successBG,
                 borderRadius: 30,
-                marginVertical:10
+                marginVertical: 10
               }}
             >
               <View style={{ alignItems: 'flex-start' }}>

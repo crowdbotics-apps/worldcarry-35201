@@ -9,7 +9,13 @@ import {
 } from 'react-native'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { SvgXml } from 'react-native-svg'
-import { COLORS, FONT1LIGHT, FONT1MEDIUM, FONT1REGULAR, times } from '../../constants'
+import {
+  COLORS,
+  FONT1LIGHT,
+  FONT1MEDIUM,
+  FONT1REGULAR,
+  times
+} from '../../constants'
 import location from '../../assets/svg/location.svg'
 import globe from '../../assets/svg/globe.svg'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
@@ -77,8 +83,8 @@ export default function StepLink2 ({
               backgroundColor: 'transparent',
               // width: '85%',
               height: '100%',
-              color: COLORS.darkGrey,
-              fontFamily: FONT1REGULAR
+              color: COLORS.darkBlack,
+              fontFamily: FONT1MEDIUM
             },
             poweredContainer: { backgroundColor: COLORS.white },
             row: { backgroundColor: COLORS.white }
@@ -144,8 +150,8 @@ export default function StepLink2 ({
               backgroundColor: 'transparent',
               // width: '85%',
               height: '100%',
-              color: COLORS.darkGrey,
-              fontFamily: FONT1REGULAR
+              color: COLORS.darkBlack,
+              fontFamily: FONT1MEDIUM
             },
             poweredContainer: { backgroundColor: COLORS.white },
             row: { backgroundColor: COLORS.white }
@@ -389,7 +395,7 @@ const styles = StyleSheet.create({
     fontFamily: FONT1MEDIUM
   },
   expectedTime: {
-    marginTop:20,
+    marginTop: 20,
     color: COLORS.darkGrey,
     fontSize: hp(2),
     fontFamily: FONT1MEDIUM
@@ -467,5 +473,5 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 10
-  },
+  }
 })

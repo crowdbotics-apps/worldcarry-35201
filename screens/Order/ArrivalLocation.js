@@ -84,7 +84,7 @@ function ArrivalLocation ({ navigation }) {
             arrival_address_coordinates: truckLocation
           }
           setMapLocationForArrival(payload)
-          navigation.goBack()
+          navigation.navigate('CreateOrder')
         })
         .catch(error => console.warn('Geocodererror', error))
     } else {
@@ -93,7 +93,7 @@ function ArrivalLocation ({ navigation }) {
         arrival_address_coordinates: truckLocation
       }
       setMapLocationForArrival(payload)
-      navigation.goBack()
+      navigation.navigate('CreateOrder')
     }
   }
 
@@ -131,6 +131,12 @@ function ArrivalLocation ({ navigation }) {
     } catch (err) {
       console.warn(err)
     }
+  }
+  const onZoomInPress = () => {
+    mapRef?.current?.getCamera().then(cam => {
+      cam.heading = 0
+      mapRef?.current?.animateCamera(cam)
+    })
   }
 
   const getCurrentLocation = async () => {
@@ -375,7 +381,7 @@ function ArrivalLocation ({ navigation }) {
       )}
       <View style={{ bottom: 20, position: 'absolute', width: '90%' }}>
         <View style={{ width: '100%', alignItems: 'flex-end' }}>
-          <TouchableOpacity style={[styles.pinButton, { marginBottom: 15 }]}>
+          <TouchableOpacity onPress={onZoomInPress} style={[styles.pinButton, { marginBottom: 15 }]}>
             <SvgXml xml={compass} />
           </TouchableOpacity>
           <TouchableOpacity

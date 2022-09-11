@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { View, Text, StyleSheet, ActivityIndicator, Modal } from 'react-native'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import {
@@ -19,9 +19,12 @@ import verified from '../../assets/svg/verified.svg'
 import { SvgXml } from 'react-native-svg'
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 import { sendOTPForVerification, veriPhoneOTP } from '../../api/auth'
+import AppContext from '../../store/Context'
 
 function PhoneVerificationOTP ({ navigation, route }) {
   const phone = route?.params?.phone
+  const { _getProfile } = useContext(AppContext)
+
   // State
   const [state, setState] = useState({
     loading: false,
@@ -31,7 +34,6 @@ function PhoneVerificationOTP ({ navigation, route }) {
   })
 
   const { loading, modalVisible, otp, loadingAgain } = state
-
 
   const handleChange = (name, value) => {
     setState(pre => ({ ...pre, [name]: value }))
@@ -45,6 +47,7 @@ function PhoneVerificationOTP ({ navigation, route }) {
       await veriPhoneOTP(body, token)
       handleChange('loading', false)
       handleChange('modalVisible', true)
+      _getProfile()
       // Toast.show(`Email has been verified`)
     } catch (error) {
       handleChange('loading', false)

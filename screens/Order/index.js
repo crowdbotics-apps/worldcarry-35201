@@ -80,6 +80,8 @@ function Order ({ navigation }) {
     showQRImage,
     OrderID,
     product_name,
+    arrival_address_country,
+    pickup_address_country,
     writeReview,
     rating,
     content,
@@ -322,7 +324,8 @@ function Order ({ navigation }) {
               <Text
                 style={[styles.nameText, { fontSize: hp(2.5), width: '90%' }]}
               >
-                {item?.product_name}
+                Take My {item?.product_name} from {item?.pickup_address_country}{' '}
+                to {item?.arrival_address_country}
               </Text>
               <Text style={styles.postedText}>
                 Deliver Before :{' '}
@@ -365,6 +368,14 @@ function Order ({ navigation }) {
                       handleChange('showQR', true)
                       handleChange('showQRImage', item?.qr_code)
                       handleChange('product_name', item?.product_name)
+                      handleChange(
+                        'pickup_address_country',
+                        item?.pickup_address_country
+                      )
+                      handleChange(
+                        'arrival_address_country',
+                        item?.arrival_address_country
+                      )
                     }}
                   />
                   <View
@@ -500,7 +511,8 @@ function Order ({ navigation }) {
           <View style={styles.modalView}>
             <View style={styles.textView}>
               <Text style={[styles.pricetext, { width: '100%' }]}>
-                {product_name}
+                Take My {product_name} from {pickup_address_country} to{' '}
+                {arrival_address_country}
               </Text>
               <View
                 style={[styles.rowBetween, { width: '100%', marginBottom: 20 }]}
@@ -522,6 +534,9 @@ function Order ({ navigation }) {
                 onPress={() => {
                   handleChange('showQR', false)
                   handleChange('showQRImage', '')
+                  handleChange('product_name', '')
+                  handleChange('arrival_address_country', '')
+                  handleChange('pickup_address_country', '')
                 }}
               />
             </View>
@@ -776,6 +791,7 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 20,
     paddingLeft: 15,
+    paddingRight: 15,
     height: hp(7),
     marginBottom: 20
   },

@@ -5,13 +5,20 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  FlatList
 } from 'react-native'
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen'
-import { COLORS, FONT1MEDIUM, FONT1REGULAR, PROFILEICON } from '../../constants'
+import {
+  COLORS,
+  FONT1LIGHT,
+  FONT1MEDIUM,
+  FONT1REGULAR,
+  PROFILEICON
+} from '../../constants'
 import { AppButton, Header } from '../../components'
 import AppContext from '../../store/Context'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -46,12 +53,22 @@ import { getPayMethod } from '../../api/business'
 import { useFocusEffect } from '@react-navigation/native'
 import { useCallback } from 'react'
 import Toast from 'react-native-simple-toast'
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger
+} from 'react-native-popup-menu'
+import { deleteMyAddresses } from '../../api/journey'
 
 function Profile ({ navigation }) {
   // Context
   const context = useContext(AppContext)
   const setUser = context?.setUser
   const myAddresses = context?.myAddresses
+  const _getMyAddresses = context?._getMyAddresses
+  const forMeReviews = context?.forMeReviews
+  const byMeReviews = context?.byMeReviews
   const user = context?.user
   const logout = async () => {
     setUser(null)
@@ -84,6 +101,21 @@ function Profile ({ navigation }) {
       const res = await getPayMethod(token)
       handleChange('loading', false)
       handleChange('paymethods', res?.data?.data)
+    } catch (error) {
+      handleChange('loading', false)
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
+
+  const handleDeleteAddress = async id => {
+    try {
+      handleChange('loading', true)
+      const token = await AsyncStorage.getItem('token')
+      await deleteMyAddresses(id, token)
+      _getMyAddresses()
+      handleChange('loading', false)
+      Toast.show(`Address has been deleted`)
     } catch (error) {
       handleChange('loading', false)
       const errorText = Object.values(error?.response?.data)
@@ -171,7 +203,7 @@ function Profile ({ navigation }) {
       isVerified: user?.has_payment_method ? 'verified' : '',
       verified: paymethods?.length > 0 && paymethods[0]?.card?.brand + ' card',
       icon: dollar,
-      route: '$4500'
+      route: 'PaymentMethod'
     }
   ]
   const list4 = [
@@ -293,7 +325,7 @@ function Profile ({ navigation }) {
                   fontFamily: FONT1REGULAR,
                   color:
                     isActive === item.title ? COLORS.white : COLORS.darkBlack,
-                  fontSize: hp(1.8),
+                  fontSize: hp(1.6),
                   marginTop: 5
                 }}
               >
@@ -675,14 +707,42 @@ function Profile ({ navigation }) {
                     {item?.city}, {item?.country}
                   </Text>
                 </View>
-                <TouchableOpacity>
-                  <Icon
-                    name='dots-three-vertical'
-                    type='entypo'
-                    color={COLORS.darkBlack}
-                    size={14}
-                  />
-                </TouchableOpacity>
+                <Menu
+                  // style={{ width: '100%' }}
+                  rendererProps={{
+                    placement: 'bottom'
+                  }}
+                >
+                  <MenuTrigger>
+                    <Icon
+                      name='dots-three-vertical'
+                      type='entypo'
+                      color={COLORS.darkBlack}
+                      size={14}
+                    />
+                  </MenuTrigger>
+                  <MenuOptions
+                    optionsContainerStyle={{
+                      width: 100
+                    }}
+                  >
+                    {['Delete'].map(el => (
+                      <MenuOption
+                        key={el}
+                        onSelect={() => handleDeleteAddress(item?.id)}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: FONT1LIGHT,
+                            color: COLORS.darkRed
+                          }}
+                        >
+                          {el}
+                        </Text>
+                      </MenuOption>
+                    ))}
+                  </MenuOptions>
+                </Menu>
               </View>
             ))}
             <View>
@@ -727,7 +787,7 @@ function Profile ({ navigation }) {
                     { color: isMyReview ? COLORS.primary : COLORS.grey }
                   ]}
                 >
-                  (12) Reviews for me
+                  ({forMeReviews?.length}) Reviews for me
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -746,89 +806,98 @@ function Profile ({ navigation }) {
                     { color: !isMyReview ? COLORS.primary : COLORS.grey }
                   ]}
                 >
-                  (12) Reviews by me
+                  ({byMeReviews?.length}) Reviews by me
                 </Text>
               </TouchableOpacity>
             </View>
-            <View
-              style={{
-                borderWidth: 1,
-                borderColor: COLORS.borderColor1,
-                width: '100%',
-                alignItems: 'center',
-                padding: 5,
-                marginTop: 10,
-                borderRadius: 10
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  backgroundColor: COLORS.primaryLight,
-                  width: '95%',
-                  marginBottom: 20,
-                  marginTop: 10,
-                  justifyContent: 'center',
-                  borderRadius: 30,
-                  paddingVertical: 3
-                }}
-              >
-                <SvgXml xml={orderIcon} width={15} />
-                <Text
+            <FlatList
+            style={{width:'100%'}}
+              data={isMyReview ? byMeReviews : forMeReviews}
+              renderItem={({ item, index }) => {
+                console.warn('item',item);
+                return(
+                <View
                   style={{
-                    fontFamily: FONT1REGULAR,
-                    marginLeft: 10,
-                    fontSize: hp(1.8),
-                    color: COLORS.primary
+                    borderWidth: 1,
+                    borderColor: COLORS.borderColor1,
+                    width: '100%',
+                    alignItems: 'center',
+                    padding: 5,
+                    marginTop: 10,
+                    borderRadius: 10
                   }}
                 >
-                  Buy me an iPhone 13 Pro max
-                </Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                  width: '95%',
-                  marginBottom: 10
-                }}
-              >
-                <Image
-                  source={{ uri: PROFILEICON }}
-                  style={{ width: 30, height: 30, borderRadius: 30 }}
-                />
-                <View style={{ alignItems: 'flex-start', marginLeft: 10 }}>
                   <View
                     style={{
                       flexDirection: 'row',
-                      alignItems: 'center'
+                      alignItems: 'center',
+                      backgroundColor: COLORS.primaryLight,
+                      width: '95%',
+                      marginBottom: 20,
+                      marginTop: 10,
+                      justifyContent: 'center',
+                      borderRadius: 30,
+                      paddingVertical: 3
                     }}
                   >
-                    <Text>Anna Joseph</Text>
-                    <Text style={[styles.address, { marginLeft: 10 }]}>
-                      3 months ago
+                    <SvgXml xml={orderIcon} width={15} />
+                    <Text
+                      style={{
+                        fontFamily: FONT1REGULAR,
+                        marginLeft: 10,
+                        fontSize: hp(1.8),
+                        color: COLORS.primary
+                      }}
+                    >
+                      Buy me an iPhone 13 Pro max
                     </Text>
                   </View>
-                  <Rating
-                    type='custom'
-                    readonly
-                    ratingColor={COLORS.ratingColor}
-                    ratingBackgroundColor={COLORS.tripBoxBorder}
-                    imageSize={15}
-                  />
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'flex-start',
+                      width: '95%',
+                      marginBottom: 10
+                    }}
+                  >
+                    <Image
+                      source={{ uri: PROFILEICON }}
+                      style={{ width: 30, height: 30, borderRadius: 30 }}
+                    />
+                    <View style={{ alignItems: 'flex-start', marginLeft: 10 }}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center'
+                        }}
+                      >
+                        <Text>Anna Joseph</Text>
+                        <Text style={[styles.address, { marginLeft: 10 }]}>
+                          3 months ago
+                        </Text>
+                      </View>
+                      <Rating
+                        type='custom'
+                        readonly
+                        startingValue={item?.rating}
+                        ratingColor={COLORS.ratingColor}
+                        ratingBackgroundColor={COLORS.tripBoxBorder}
+                        imageSize={15}
+                      />
+                    </View>
+                  </View>
+                  <Text
+                    style={[
+                      styles.name,
+                      { fontFamily: FONT1REGULAR, width: '95%' }
+                    ]}
+                  >
+                    {item?.content}
+                  </Text>
                 </View>
-              </View>
-              <Text
-                style={[
-                  styles.name,
-                  { fontFamily: FONT1REGULAR, width: '95%' }
-                ]}
-              >
-                Thank you Rachel, I won’t forget this help you have done for me.
-              </Text>
-            </View>
+              )}}
+            />
           </View>
         )}
       </ScrollView>

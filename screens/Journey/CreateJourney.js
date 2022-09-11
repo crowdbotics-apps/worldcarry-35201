@@ -373,7 +373,10 @@ function CreateJourney ({ navigation, route }) {
         !arrival_state ||
         !arrival_country ||
         !date_of_journey
-      : willing_to_carry.length === 0 || !total_weight || isNotValidWeight
+      : willing_to_carry.length === 0 ||
+        !total_weight ||
+        Number(total_weight) === 0 ||
+        isNotValidWeight
 
   return (
     <View style={{ height: '100%', width: '100%' }}>

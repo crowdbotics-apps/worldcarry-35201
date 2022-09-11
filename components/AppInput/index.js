@@ -1,13 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import {
   View,
   StyleSheet,
-  Picker,
   TextInput,
   Text,
   TouchableOpacity
 } from 'react-native'
-import { COLORS, FONT1BOLD, FONT1LIGHT, FONT1REGULAR } from '../../constants'
+import { COLORS, FONT1REGULAR } from '../../constants'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { Icon } from 'react-native-elements'
 export default function AppInput ({
@@ -35,8 +34,7 @@ export default function AppInput ({
   ref,
   returnKeyType,
   marginBottom,
-  alignItems,
-  ...rest
+  alignItems
 }) {
   const [focused, setFocused] = useState(false)
   const [open, setOpen] = useState(false)

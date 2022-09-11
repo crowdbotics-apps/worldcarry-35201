@@ -125,11 +125,9 @@ function JourneyDetails ({ navigation, route }) {
       handleChange('onRouteOrders', res?.data)
     } catch (error) {
       const errorText = Object.values(error?.response?.data)
-      Toast.show(`Error: ${errorText}`)
+      // Toast.show(`Error: ${errorText}`)
     }
   }
-
-  console.warn('onRouteOrders', onRouteOrders?.requested_by_sender)
 
   const _getJourneyDetails = async () => {
     try {
@@ -207,7 +205,6 @@ function JourneyDetails ({ navigation, route }) {
         added_by: user?.id,
         target_user: order?.carrier?.id
       }
-      console.warn('payload', payload)
       await addReview(payload, token)
       Toast.show(`You have successfully reviewed to the sender`)
       handleChange('loadingReview', false)
@@ -315,8 +312,6 @@ function JourneyDetails ({ navigation, route }) {
       </View>
     )
   }
-
-  console.warn('getOrderFromStatus()', getOrderFromStatus())
 
   return (
     <ScrollView

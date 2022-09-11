@@ -56,7 +56,7 @@ export default function AppButton ({
           style={[
             styles.title,
             {
-              fontSize: fontSize || hp(2),
+              fontSize: fontSize || hp(1.8),
               fontFamily: titleLight ? FONT1REGULAR : FONT1SEMIBOLD,
               color: color ? color : outlined ? COLORS.primary : COLORS.white
             }

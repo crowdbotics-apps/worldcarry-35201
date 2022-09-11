@@ -49,8 +49,8 @@ function Journey ({ navigation }) {
   }
 
   const tabs = [
-    { title: 'Ongoing' },
-    { title: 'Upcoming' },
+    { title: 'Ongoing',value:'' },
+    { title: 'Upcoming',value:'upcoming' },
     { title: 'Completed' }
   ]
 
@@ -97,7 +97,14 @@ function Journey ({ navigation }) {
     }
   }
 
-  console.warn('_getJourneys', journeys)
+  
+  const getOrderType1 = status => {
+    if (status) {
+      const filtered = journeys?.filter(e => e?.status !== status)
+      return filtered || []
+    } else return []
+  }
+  console.warn('_getJourneys', getOrderType1('upcoming'))
 
   const getOrderType = status => {
     if (status) {

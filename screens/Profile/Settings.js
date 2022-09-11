@@ -121,7 +121,7 @@ function Settings ({ navigation }) {
 
   const list1 = [
     {
-      title: 'Edit Username',
+      title: 'Edit Name',
       right: user?.name,
       icon: profileSetting,
       route: 'EditUsername'

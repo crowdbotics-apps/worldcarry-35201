@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  ActivityIndicator,
   Modal,
   TouchableOpacity
 } from 'react-native'
@@ -20,14 +19,11 @@ import {
 import { AppButton, AppInput, Header } from '../../components'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Icon } from 'react-native-elements'
-import { AddPayMethod, getPayMethod } from '../../api/business'
+import { AddPayMethod } from '../../api/business'
 import { useFocusEffect } from '@react-navigation/native'
 import Toast from 'react-native-simple-toast'
 import stripeIcon from '../../assets/svg/stripe.svg'
-import addcard from '../../assets/svg/addcard.svg'
-import cardOrange from '../../assets/svg/cardOrange.svg'
-import Svg, { SvgXml } from 'react-native-svg'
-import BouncyCheckbox from 'react-native-bouncy-checkbox'
+import { SvgXml } from 'react-native-svg'
 import { useStripe, CardField } from '@stripe/stripe-react-native'
 import {
   Menu,
@@ -35,13 +31,9 @@ import {
   MenuOption,
   MenuTrigger
 } from 'react-native-popup-menu'
-import AppContext from '../../store/Context'
 
 function AddPaymentMethod ({ navigation }) {
-  // Context
-  const context = useContext(AppContext)
   const stripe = useStripe()
-  const { user } = context
   // State
   const [state, setState] = useState({
     loading: false,

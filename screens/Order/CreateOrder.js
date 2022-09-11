@@ -145,7 +145,7 @@ function CreateOrder ({ navigation }) {
       console.warn('getProductDetails', res?.data?.data)
       handleChange('loadingLink', false)
       handleChange('product_name', res?.data?.data?.title)
-      handleChange('product_price', res?.data?.data?.price)
+      handleChange('product_price', res?.data?.data?.price?.replace(/\$/g, ''))
       handleChange('product_type', res?.data?.data?.category)
       handleChange('avatarSourceURL', [res?.data?.data?.image_url])
       handleChange('photos', [res?.data?.data?.image_url])
@@ -223,7 +223,7 @@ function CreateOrder ({ navigation }) {
       console.warn('pickup_address', pickup_address_coordinates)
       formData.append('pickup_address_country', pickup_address_country)
       formData.append('expected_wait_time', expected_wait_time)
-      formData.append('product_type', product_type)
+      active === 0 && formData.append('product_type', product_type)
       formData.append('payment_method_id', payment_method_id)
       // formData.append('pickup_address', pickup_address)
       // formData.append('pickup_address_coordinates', pickup_address_coordinates)
@@ -384,7 +384,8 @@ function CreateOrder ({ navigation }) {
       ? !pickup_address_country || !pickup_address
       : step === 2
       ? !arrival_address || !arrival_address_country
-      : !isChecked || !payment_method_id
+      : // !isChecked ||
+        !payment_method_id
   const disabled1 =
     stepLink === 0
       ? !product_name ||
@@ -401,7 +402,8 @@ function CreateOrder ({ navigation }) {
         !carrier_reward ||
         !expected_wait_time ||
         !arrival_address_country
-      : !isChecked || !payment_method_id
+      : // !isChecked ||
+        !payment_method_id
 
   return (
     <View style={{ height: '100%', width: '100%' }}>
@@ -654,9 +656,13 @@ function CreateOrder ({ navigation }) {
                     product_type={product_type}
                     avatarSourceURL={avatarSourceURL}
                     product_name={product_name}
+                    paymethods={paymethods}
+                    payment_method_id={payment_method_id}
+                    navigation={navigation}
                     product_price={product_price}
                     carrier_reward={carrier_reward}
                     isChecked={isChecked}
+                    _removePayMethod={_removePayMethod}
                     handleChange={handleChange}
                   />
                 )}

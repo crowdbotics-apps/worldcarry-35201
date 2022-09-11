@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import 'react-native-gesture-handler'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Toast from 'react-native-simple-toast'
-import { getProfile } from './api/auth'
+import { getMyReviews, getProfile } from './api/auth'
 import RootStackNav from './navigation/RootStackNav'
 import AppContext from './store/Context'
 import { NavigationContainer } from '@react-navigation/native'
@@ -21,6 +21,8 @@ function App () {
   const [orders, setOrders] = useState([])
   const [journeys, setJourneys] = useState([])
   const [myAddresses, setMyAddresses] = useState([])
+  const [forMeReviews, setForMeReviews] = useState([])
+  const [byMeReviews, setByMeReviews] = useState([])
   const [notifications, setNotifications] = useState([])
 
   const _getProfile = async () => {
@@ -84,6 +86,31 @@ function App () {
     }
   }
 
+  const _getForMeReviews = async (id) => {
+    try {
+      const token = await AsyncStorage.getItem('token')
+      const payload = `?target_user=${id}&order&journey`
+      const res = await getMyReviews(payload, token)
+      console.warn('_getForMeReviews', res?.data)
+      setForMeReviews(res?.data)
+    } catch (error) {
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
+
+  const _getByMeReviews = async (id) => {
+    try {
+      const token = await AsyncStorage.getItem('token')
+      const payload = `?added_by=${id}&order&journey`
+      const res = await getMyReviews(payload, token)
+      setByMeReviews(res?.data)
+    } catch (error) {
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
+
   useEffect(() => {
     requestUserPermission()
     const unsubscribe = messaging().onMessage(async remoteMessage => {
@@ -132,7 +159,11 @@ function App () {
         myAddresses,
         _getMyAddresses,
         notifications,
-        _getNotification
+        _getNotification,
+        _getByMeReviews,
+        _getForMeReviews,
+        forMeReviews,
+        byMeReviews
       }}
     >
       <StripeProvider

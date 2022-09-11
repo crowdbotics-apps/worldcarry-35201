@@ -1,10 +1,11 @@
-import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import React, { useContext } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, Share } from 'react-native'
 import { COLORS, FONT1BOLD, FONT1LIGHT, FONT1SEMIBOLD } from '../../constants'
 import { useNavigation } from '@react-navigation/native'
 import { Icon } from 'react-native-elements'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
-import profileIcon from '../../assets/svg/help.svg'
+import shareIcon from '../../assets/svg/share.svg'
+import logoutIcon from '../../assets/svg/logout.svg'
 import notificationIcon from '../../assets/svg/notification.svg'
 import menuIcon from '../../assets/svg/menuJourney.svg'
 import help from '../../assets/svg/profileIcon.svg'
@@ -17,6 +18,8 @@ import {
   MenuOption,
   MenuTrigger
 } from 'react-native-popup-menu'
+import AppContext from '../../store/Context'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 export default function Header ({
   title,
   back,
@@ -32,12 +35,42 @@ export default function Header ({
   cross
 }) {
   const navigation = useNavigation()
+  // Context
+  const context = useContext(AppContext)
+  const setUser = context?.setUser
+  const logout = async () => {
+    setUser(null)
+    await AsyncStorage.removeItem('token')
+    await AsyncStorage.removeItem('user')
+    navigation.navigate('AuthLoading')
+  }
+
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message:
+          'React Native | A framework for building native apps using React'
+      })
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message)
+    }
+  }
 
   const menuSetting = [
     { title: 'Settings', image: settingsIcon, route: 'Settings' },
-    { title: 'Edit Profile', image: profileIcon },
+    { title: 'Share With Friends', image: shareIcon },
     { title: 'Help & Support', image: help, route: 'FAQ' },
-    { title: 'Feedback', image: feedback, route: 'FeedBack' }
+    { title: 'Feedback', image: feedback, route: 'FeedBack' },
+    { title: 'Logout', image: logoutIcon, route: '' }
   ]
 
   return (
@@ -115,20 +148,32 @@ export default function Header ({
             </MenuTrigger>
             <MenuOptions
               optionsContainerStyle={{
-                width: '40%',
+                width: '50%',
                 backgroundColor: COLORS.menuBG
               }}
             >
               {menuSetting.map(el => (
                 <MenuOption
                   key={el}
-                  style={{ flexDirection: 'row', alignItems: 'center' }}
-                  onSelect={() =>el.route? navigation.navigate(el.route):alert('Coming Soon')}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginBottom: 2
+                  }}
+                  onSelect={() =>
+                    el.title === 'Share With Friends'
+                      ? onShare()
+                      : el.title === 'Logout'
+                      ? logout()
+                      : el.route
+                      ? navigation.navigate(el.route)
+                      : alert('Coming Soon')
+                  }
                 >
                   <SvgXml xml={el.image} />
                   <Text
                     style={{
-                      fontFamily: FONT1LIGHT,
+                      fontFamily: FONT1SEMIBOLD,
                       color: COLORS.white,
                       marginLeft: 10
                     }}

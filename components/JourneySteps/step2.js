@@ -20,6 +20,7 @@ import Medication from '../../assets/svg/Medication.svg'
 import AppInput from '../AppInput'
 import { Icon } from 'react-native-elements'
 import { validateWeight } from '../../utils/ValidateEmail'
+import BouncyCheckbox from 'react-native-bouncy-checkbox'
 
 export default function JourneyStep2 ({
   handleChange,
@@ -31,7 +32,7 @@ export default function JourneyStep2 ({
   const checkWeight = () => {
     if (!validateWeight(total_weight)) {
       handleChange('isNotValidWeight', true)
-    }else{
+    } else {
       handleChange('isNotValidWeight', false)
     }
   }
@@ -63,9 +64,7 @@ export default function JourneyStep2 ({
           style={[
             styles.productBox,
             {
-              backgroundColor: willing_to_carry?.includes(product.text)
-                ? COLORS.primary
-                : COLORS.white
+              backgroundColor:  COLORS.white
             }
           ]}
           onPress={() => {
@@ -85,14 +84,40 @@ export default function JourneyStep2 ({
             style={[
               styles.productText,
               {
-                color: willing_to_carry?.includes(product.text)
-                  ? COLORS.white
-                  : COLORS.grey
+                color: COLORS.grey
               }
             ]}
           >
             {product.text}
           </Text>
+          <BouncyCheckbox
+            size={20}
+            fillColor={COLORS.primary}
+            unfillColor={COLORS.white}
+            text=''
+            iconStyle={{ borderColor: COLORS.primary, borderRadius: 8 }}
+            textStyle={{
+              fontFamily: FONT1REGULAR,
+              fontSize: hp(2),
+              color: COLORS.darkBlack
+            }}
+            style={{ right: 0, position: 'absolute' }}
+            disableBuiltInState={true}
+            isChecked={willing_to_carry?.includes(product.text)}
+            onPress={() => {
+              if (willing_to_carry?.includes(product.text)) {
+                const filtered = willing_to_carry?.filter(
+                  e => e !== product.text
+                )
+                handleChange('willing_to_carry', filtered)
+              } else {
+                handleChange('willing_to_carry', [
+                  ...willing_to_carry,
+                  product.text
+                ])
+              }
+            }}
+          />
         </TouchableOpacity>
       ))}
       <View style={{ width: '100%', marginTop: 10 }}>

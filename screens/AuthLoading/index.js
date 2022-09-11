@@ -13,7 +13,9 @@ function AuthLoading ({ navigation }) {
     _getOrders,
     _getJourneys,
     _getMyAddresses,
-    _getNotification
+    _getNotification,
+    _getByMeReviews,
+    _getForMeReviews
   } = context
 
   useEffect(() => {
@@ -33,6 +35,8 @@ function AuthLoading ({ navigation }) {
       _getOrders(`?user=${userData?.id}`)
       _getJourneys('')
       _getMyAddresses()
+      _getByMeReviews(userData?.id)
+      _getForMeReviews(userData?.id)
       // if(userData?.)
       navigation.navigate('MainTabNav')
     } else {

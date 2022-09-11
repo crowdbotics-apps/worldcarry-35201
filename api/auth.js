@@ -50,8 +50,9 @@ export const getProfile = (id, token) => {
   return API.get(`api/v1/users/${id}/`, token)
 }
 
-export const getMyReviews = token => {
-  return API.get('api/v1/my-reviews/', token)
+export const getMyReviews = (payload, token) => {
+  console.warn('payload',payload);
+  return API.get(`api/v1/reviews/${payload}`, token)
 }
 
 export const getCategories = token => {

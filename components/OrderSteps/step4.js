@@ -72,7 +72,7 @@ export default function Step4 ({
         color={COLORS.primary}
         onPress={() => handleChangeLocal('openPayMethod', true)}
       />
-      <View
+      {/* <View
         style={{
           width: '90%',
           flexDirection: 'row',
@@ -101,7 +101,7 @@ export default function Step4 ({
             Terms of use.
           </Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
       <CustomModel
         height={'100%'}
         width={'100%'}

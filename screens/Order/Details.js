@@ -7,7 +7,8 @@ import {
   FlatList,
   Image,
   ActivityIndicator,
-  Modal
+  Modal,
+  TouchableOpacity
 } from 'react-native'
 import {
   widthPercentageToDP as wp,
@@ -15,6 +16,7 @@ import {
 } from 'react-native-responsive-screen'
 import { SvgXml } from 'react-native-svg'
 import NoOrder from '../../assets/svg/NoOrder.svg'
+import Filter from '../../assets/svg/Filter.svg'
 import planIcon from '../../assets/svg/plan.svg'
 import calendarIcon from '../../assets/svg/calendar.svg'
 import offerIcon from '../../assets/svg/offerIcon.svg'
@@ -29,6 +31,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import Toast from 'react-native-simple-toast'
 import { getOnrouteJourneys, makeOffer } from '../../api/journey'
 import { getOrderDetails } from '../../api/order'
+import { Icon } from 'react-native-elements'
 
 function OrderDetails ({ navigation, route }) {
   const item = route?.params?.item
@@ -38,7 +41,8 @@ function OrderDetails ({ navigation, route }) {
     onRouteJourneys: [],
     orderData: null,
     selectedItem: null,
-    loadingAccept: false
+    loadingAccept: false,
+    filterSelected: 'Most Recent'
   })
   const [modalVisible, setModalVisible] = useState(false)
 
@@ -49,7 +53,8 @@ function OrderDetails ({ navigation, route }) {
     loading,
     orderData,
     selectedItem,
-    loadingAccept
+    loadingAccept,
+    filterSelected
   } = state
   const { journeys, user, _getOrders } = context
 
@@ -176,6 +181,68 @@ function OrderDetails ({ navigation, route }) {
         backgroundColor={COLORS.primary}
         color={COLORS.white}
       />
+      <View style={[styles.row, { marginTop: 20 }]}>
+        <TouchableOpacity
+          onPress={() => handleChange('filterSelected', 'Most Recent')}
+          style={
+            filterSelected == 'Most Recent' ? styles.activeTab : styles.inavtive
+          }
+        >
+          <Text
+            style={
+              filterSelected === 'Most Recent'
+                ? styles.activeTabText
+                : styles.tabText
+            }
+          >
+            Most Recent
+          </Text>
+          {filterSelected == 'Most Recent' && (
+            <Icon
+              name='check'
+              type='feather'
+              size={16}
+              containerStyle={{ marginLeft: 5 }}
+              color={COLORS.successBGBorder}
+            />
+          )}
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => handleChange('filterSelected', 'Fastest Arrival')}
+          style={
+            filterSelected === 'Fastest Arrival'
+              ? styles.activeTab
+              : styles.inavtive
+          }
+        >
+          <Text
+            style={
+              filterSelected === 'Fastest Arrival'
+                ? styles.activeTabText
+                : styles.tabText
+            }
+          >
+            Fastest Arrival
+          </Text>
+          {filterSelected == 'Fastest Arrival' && (
+            <Icon
+              name='check'
+              type='feather'
+              size={16}
+              containerStyle={{ marginLeft: 5 }}
+              color={COLORS.successBGBorder}
+            />
+          )}
+        </TouchableOpacity>
+        <TouchableOpacity
+          // onPress={() => handleChange('filterSelected', 'Fastest Arrival')}
+          style={styles.inavtive}
+        >
+          <Text style={styles.tabText}>Filters</Text>
+          <SvgXml xml={Filter} style={{ marginLeft: 5 }} />
+        </TouchableOpacity>
+        <Text style={styles.tabText}></Text>
+      </View>
       <FlatList
         data={onRouteJourneys}
         scrollEnabled={false}
@@ -525,6 +592,17 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5
   },
+  inavtive: {
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginRight: 10,
+    height: hp(5),
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.darkGrey,
+    borderRadius: 50
+  },
   bgImage: {
     width: '100%',
     alignItems: 'center',
@@ -615,7 +693,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   activeTab: {
-    backgroundColor: COLORS.lightblue,
+    backgroundColor: 'transparent',
+    flexDirection: 'row',
     borderRadius: 20,
     marginRight: 20,
     paddingHorizontal: 15,
@@ -623,16 +702,16 @@ const styles = StyleSheet.create({
     height: hp(5),
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.primary
+    borderColor: COLORS.successBGBorder
   },
   tabText: {
-    color: COLORS.darkGrey,
+    color: COLORS.darkBlack,
     fontSize: hp(2),
     fontFamily: FONT1MEDIUM
   },
 
   activeTabText: {
-    color: COLORS.primary,
+    color: COLORS.successBGBorder,
     fontSize: hp(2),
     fontFamily: FONT1MEDIUM
   },

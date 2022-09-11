@@ -91,7 +91,7 @@ export const COLORS = {
   black06: 'rgba(0,0,0,0.6)',
   greyButton: '#474951',
   inputPrefixBG: '#E4F4EE',
-  inputText: '#242424',
+  inputText: '#000',
   inputBorder: 'rgba(221, 193, 135, 1)',
   completed: '#458D00',
   imageBGBorder: '#30313A',

@@ -159,7 +159,7 @@ function Home ({ navigation }) {
     loading,
     activeSections,
     entries1,
-    products,
+    journeys,
     entries,
     activeSlide,
     active
@@ -240,7 +240,13 @@ function Home ({ navigation }) {
     )
   }
 
-  console.warn('user', user?.profile?.photo)
+
+  const getJourneyType = status => {
+    if (status) {
+      const filtered = journeys?.filter(e => e?.status !== status)
+      return filtered || []
+    } else return []
+  }
 
   return (
     <ScrollView
@@ -354,67 +360,73 @@ function Home ({ navigation }) {
               <Text style={styles.viewAll}>View All</Text>
             </TouchableOpacity>
           </View>
-          <ScrollView
-            style={{ height: 400, marginBottom: 50 }}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          >
-            {[0, 0, 0].map((item, index) => (
-              <View key={index} style={styles.itemBox}>
-                <Text style={styles.titleItem}>
-                  Carry my camera from Los Angeles, CA, US to Rio De Janero
-                </Text>
-                <View style={styles.hline} />
-                <View style={[styles.rowBetween, { width: '90%' }]}>
-                  <TouchableOpacity style={styles.userBox}>
+          {getJourneyType('completed')?.length > 0 && (
+            <ScrollView
+              style={{ height: 400, marginBottom: 50 }}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            >
+              {getJourneyType('completed')?.map((item, index) => (
+                <View key={index} style={styles.itemBox}>
+                  <Text style={styles.titleItem}>
+                    Carry my camera from Los Angeles, CA, US to Rio De Janero
+                  </Text>
+                  <View style={styles.hline} />
+                  <View style={[styles.rowBetween, { width: '90%' }]}>
+                    <TouchableOpacity style={styles.userBox}>
+                      <Image
+                        source={userProfile}
+                        style={{ width: 50, height: 50, borderRadius: 50 }}
+                      />
+                      <Text style={styles.nameText}>Jacob</Text>
+                      <Text style={styles.locationText}>
+                        Los Angeles, CA, US
+                      </Text>
+                    </TouchableOpacity>
                     <Image
-                      source={userProfile}
-                      style={{ width: 50, height: 50, borderRadius: 50 }}
+                      source={userBetween}
+                      style={{
+                        width: 60,
+                        height: 60,
+                        marginHorizontal: -25,
+                        zIndex: 2
+                      }}
                     />
-                    <Text style={styles.nameText}>Jacob</Text>
-                    <Text style={styles.locationText}>Los Angeles, CA, US</Text>
-                  </TouchableOpacity>
-                  <Image
-                    source={userBetween}
-                    style={{
-                      width: 60,
-                      height: 60,
-                      marginHorizontal: -25,
-                      zIndex: 2
-                    }}
-                  />
-                  <TouchableOpacity style={styles.userBox}>
-                    <Image
-                      source={userProfile}
-                      style={{ width: 50, height: 50, borderRadius: 50 }}
-                    />
-                    <Text style={styles.nameText}>Jacob</Text>
-                    <Text style={styles.locationText}>Los Angeles, CA, US</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.hline} />
-                <View style={[styles.rowBetween, { width: '90%' }]}>
-                  <View style={{ width: '50%' }}>
-                    <Text style={styles.earntext}>Earned</Text>
-                    <Text style={styles.pricetext}>$245</Text>
-                    <Text style={styles.completetext}>Completed on</Text>
-                    <View style={styles.timeBox}>
-                      <Text style={styles.timetext}>24/04/2022</Text>
-                    </View>
+                    <TouchableOpacity style={styles.userBox}>
+                      <Image
+                        source={userProfile}
+                        style={{ width: 50, height: 50, borderRadius: 50 }}
+                      />
+                      <Text style={styles.nameText}>Jacob</Text>
+                      <Text style={styles.locationText}>
+                        Los Angeles, CA, US
+                      </Text>
+                    </TouchableOpacity>
                   </View>
-                  <Image
-                    source={camera}
-                    style={{
-                      width: '48%',
-                      height: 120,
-                      marginTop: 15,
-                      resizeMode: 'contain'
-                    }}
-                  />
+                  <View style={styles.hline} />
+                  <View style={[styles.rowBetween, { width: '90%' }]}>
+                    <View style={{ width: '50%' }}>
+                      <Text style={styles.earntext}>Earned</Text>
+                      <Text style={styles.pricetext}>$245</Text>
+                      <Text style={styles.completetext}>Completed on</Text>
+                      <View style={styles.timeBox}>
+                        <Text style={styles.timetext}>24/04/2022</Text>
+                      </View>
+                    </View>
+                    <Image
+                      source={camera}
+                      style={{
+                        width: '48%',
+                        height: 120,
+                        marginTop: 15,
+                        resizeMode: 'contain'
+                      }}
+                    />
+                  </View>
                 </View>
-              </View>
-            ))}
-          </ScrollView>
+              ))}
+            </ScrollView>
+          )}
         </>
       )}
       {active === 1 && (
@@ -446,7 +458,7 @@ function Home ({ navigation }) {
             onChange={_updateSections}
           />
           <TouchableOpacity
-          onPress={() => navigation.navigate('Support')}
+            onPress={() => navigation.navigate('Support')}
             style={{
               flexDirection: 'row',
               alignItems: 'center',

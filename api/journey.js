@@ -16,6 +16,10 @@ export const createMyAddresses = (body, token) => {
   return API.post(`api/v1/locations/`, body, token)
 }
 
+export const deleteMyAddresses = (id, token) => {
+  return API.delete(`api/v1/locations/${id}/`, {}, token)
+}
+
 export const makeOffer = (body, token) => {
   return API.post(`api/v1/journey/order/request`, body, token)
 }
