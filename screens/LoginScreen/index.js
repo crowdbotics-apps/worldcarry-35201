@@ -231,8 +231,8 @@ function LoginScreen ({ navigation, route }) {
     GoogleSignin.configure({
       webClientId:
         '487069185100-qsifiakpmm7s8rltmmodipk8klifbbql.apps.googleusercontent.com',
-      // iosClientId:
-      //   '1000910722709-brqkdolabrn3h53svr7u10dq4684n1ee.apps.googleusercontent.com',
+      iosClientId:
+        '487069185100-4311thbhtrlpcbi5ukenhhnhikff0a5l.apps.googleusercontent.com',
       offlineAccess: false
     })
   }

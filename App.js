@@ -10,10 +10,10 @@ import { MenuProvider } from 'react-native-popup-menu'
 import { getNotification, getOrders } from './api/order'
 import { getJourneys, getMyAddresses } from './api/journey'
 import messaging from '@react-native-firebase/messaging'
-import { Alert } from 'react-native'
+import { Alert, SafeAreaView } from 'react-native'
 import { StripeProvider } from '@stripe/stripe-react-native'
 
-function App () {
+function App() {
   const [user, setUser] = useState(null)
   const [userType, setUserType] = useState('')
   const [mapLocationForPickup, setMapLocationForPickup] = useState(null)
@@ -124,11 +124,11 @@ function App () {
     return unsubscribe
   }, [])
 
-  async function registerAppWithFCM () {
+  async function registerAppWithFCM() {
     const registered = await messaging().registerDeviceForRemoteMessages()
   }
 
-  async function requestUserPermission () {
+  async function requestUserPermission() {
     const authStatus = await messaging().requestPermission()
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
@@ -172,7 +172,9 @@ function App () {
       >
         <NavigationContainer>
           <MenuProvider>
-            <RootStackNav />
+            <SafeAreaView style={{ flex: 1 }}>
+              <RootStackNav />
+            </SafeAreaView>
           </MenuProvider>
         </NavigationContainer>
       </StripeProvider>
