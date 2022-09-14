@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from reviews.models import Review
+from home.api.v1.serializers import UserSerializer
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -25,4 +26,9 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         exclude = ['id', 'created_at']
+
+
+class ReviewListSerializer(ReviewSerializer):
+    target_user = UserSerializer()
+    added_by = UserSerializer()
 
