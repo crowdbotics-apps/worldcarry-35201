@@ -41,6 +41,12 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>FacebookAppID</key>
+	<string>572398804453912</string>
+	<key>FacebookClientToken</key>
+	<string>bc394f6b6733831f3d78f7487c5b2e45</string>
+	<key>FacebookDisplayName</key>
+	<string>$(PRODUCT_NAME)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -60,9 +66,9 @@
 	<string>$(PRODUCT_NAME) Need camera access to take pictures</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>$(PRODUCT_NAME) Need location access</string>
-  <key>NSLocationWhenInUseUsageDescription</key>
-  <string>$(PRODUCT_NAME) Need location access</string>
 	<key>NSLocationAlwaysUsageDescription</key>
+	<string>$(PRODUCT_NAME) Need location access</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>$(PRODUCT_NAME) Need location access</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>$(PRODUCT_NAME) Need microphone access for uploading videos</string>
