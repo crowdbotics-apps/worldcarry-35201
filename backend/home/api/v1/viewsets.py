@@ -4,7 +4,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from users.authentication import ExpiringTokenAuthentication
-from users.serializers import PassportAuthenticationSerializer
+from users.serializers import PassportAuthenticationSerializer, UserNotificationSerializer
 from modules.passport_analyzer import analyze_passport
 from rest_framework.views import APIView
 from users.models import UserPassportImage
@@ -12,6 +12,7 @@ from home.api.v1.serializers import (
     SignupSerializer,
     UserSerializer,
 )
+from admin_panel.apps.push_notification.services import create_notification
 
 from django.conf import settings
 from django.core.files import File
@@ -85,3 +86,19 @@ class ValidatePassport(APIView):
         if result.get('passport_valid', False) and not result.get('biometric_verified', False):
             return Response({'success': False, 'message': result.get('biometric_error'), 'api_response': result,
                              "photos_url": [passport, photo]})
+
+
+class NotificationView(APIView):
+    serializer_class = UserNotificationSerializer
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = [ExpiringTokenAuthentication]
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        target = data['target_user']
+        title = data['title']
+        description = data['description']
+        create_notification({"name": title, "description": description, "user": target})
+        return Response({'success': True, 'message': "Notification Sent"})

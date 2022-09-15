@@ -149,3 +149,9 @@ class PassportAuthenticationSerializer(serializers.Serializer):
     passport_number = serializers.CharField(required=True)
     gender = serializers.CharField(required=True)
     meeting_datetime = serializers.DateTimeField(required=True, format="%Y-%m-%d %H:%M:%S")
+
+
+class UserNotificationSerializer(serializers.Serializer):
+    target_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=True)
+    title = serializers.CharField(required=True, allow_blank=True, allow_null=False)
+    description = serializers.CharField(required=True, allow_blank=True, allow_null=False)

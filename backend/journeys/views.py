@@ -15,6 +15,7 @@ from rest_framework.views import APIView
 from .models import Journey, JourneyOrder
 from .utils import get_on_rout_journeys
 from users.authentication import ExpiringTokenAuthentication
+from admin_panel.apps.push_notification.services import create_notification
 
 from rest_framework.filters import OrderingFilter
 
@@ -67,11 +68,15 @@ class JourneyOrderRequest(APIView):
 
         jo_instance, _ = JourneyOrder.objects.update_or_create(order=order, journey=journey)
         if user == 'sender':
+            create_notification({"name": "Order Request", "description": "A Shipper requested you an an order",
+                                 "user": journey.user})
             jo_instance.allowed_by_sender = True
             jo_instance.save(update_fields=['allowed_by_sender'])
             order.status = "Requested"
             order.save(update_fields=['status'])
         elif user == 'carrier':
+            create_notification({"name": "Order Request", "description": "A Carrier requested you for journey",
+                                 "user": order.user})
             jo_instance.allowed_by_carrier = True
             jo_instance.save(update_fields=['allowed_by_carrier'])
 

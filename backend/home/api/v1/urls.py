@@ -5,7 +5,8 @@ from admin_panel.apps.support.views import FeedbackAPIView, FAQListAPIView, Supp
 from home.api.v1.viewsets import (
     SignupViewSet,
     LoginViewSet,
-    ValidatePassport
+    ValidatePassport,
+    NotificationView
 )
 from journeys.views import JourneyViewSet, JourneyOrderRequest
 from locations.views import LocationViewSet
@@ -28,6 +29,7 @@ router.register("payments", PaymentViewSet, basename="payments")
 urlpatterns = [
     path("", include(router.urls)),
     path("validate/passport",  ValidatePassport.as_view(), name='validate_passport'),
+    path("send/notfication",  NotificationView.as_view(), name='validate_passport'),
     path("orders/status/update",  UpdateOrderStatus.as_view(), name='order_status_update'),
     path("orders/qr_scan",  QRScanOrder.as_view(), name='qr_scan_order'),
     path("journey/order/request",  JourneyOrderRequest.as_view(), name='journey_order_view'),

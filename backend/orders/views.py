@@ -123,15 +123,8 @@ class UpdateOrderStatus(APIView):
             if JourneyOrder.objects.filter(order=order, allowed_by_carrier=True, allowed_by_sender=True).exists():
                 order.status = new_status
                 order.save()
-                create_notification(
-                    {
-                        "name":"Order Status Updated",
-                        "description":"Order has been moved to transit",
-                        "user":order.user
-                    }
-                )
-
-                #  TODO notification send to the order owner
+                create_notification({"name": "Order Status Updated", "description": "Order has been moved to transit",
+                                     "user": order.user})
 
                 return Response({"message": "Order has been moved to transit"}, status=status.HTTP_200_OK)
             else:
@@ -139,12 +132,10 @@ class UpdateOrderStatus(APIView):
         elif new_status == "Received":
             order.status = new_status
             order.save()
-            create_notification(
-                {
+            create_notification({
                     "name": "Order Status Updated",
                     "description": "Order has been received",
                     "user": order.user
                 }
             )
-            #  TODO notification send to the order owner
             return Response({"message": "Order has been received"}, status=status.HTTP_200_OK)
