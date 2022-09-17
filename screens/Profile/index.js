@@ -60,6 +60,7 @@ import {
   MenuTrigger
 } from 'react-native-popup-menu'
 import { deleteMyAddresses } from '../../api/journey'
+import moment from 'moment'
 
 function Profile ({ navigation }) {
   // Context
@@ -811,92 +812,99 @@ function Profile ({ navigation }) {
               </TouchableOpacity>
             </View>
             <FlatList
-            style={{width:'100%'}}
+              style={{ width: '100%' }}
               data={isMyReview ? byMeReviews : forMeReviews}
               renderItem={({ item, index }) => {
-                console.warn('item',item);
-                return(
-                <View
-                  style={{
-                    borderWidth: 1,
-                    borderColor: COLORS.borderColor1,
-                    width: '100%',
-                    alignItems: 'center',
-                    padding: 5,
-                    marginTop: 10,
-                    borderRadius: 10
-                  }}
-                >
+                console.warn('item', item)
+                return (
                   <View
                     style={{
-                      flexDirection: 'row',
+                      borderWidth: 1,
+                      borderColor: COLORS.borderColor1,
+                      width: '100%',
                       alignItems: 'center',
-                      backgroundColor: COLORS.primaryLight,
-                      width: '95%',
-                      marginBottom: 20,
+                      padding: 5,
                       marginTop: 10,
-                      justifyContent: 'center',
-                      borderRadius: 30,
-                      paddingVertical: 3
+                      borderRadius: 10
                     }}
                   >
-                    <SvgXml xml={orderIcon} width={15} />
-                    <Text
+                    <View
                       style={{
-                        fontFamily: FONT1REGULAR,
-                        marginLeft: 10,
-                        fontSize: hp(1.8),
-                        color: COLORS.primary
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        backgroundColor: COLORS.primaryLight,
+                        width: '95%',
+                        marginBottom: 20,
+                        marginTop: 10,
+                        justifyContent: 'center',
+                        borderRadius: 30,
+                        paddingVertical: 3
                       }}
                     >
-                      Buy me an iPhone 13 Pro max
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'flex-start',
-                      width: '95%',
-                      marginBottom: 10
-                    }}
-                  >
-                    <Image
-                      source={{ uri: PROFILEICON }}
-                      style={{ width: 30, height: 30, borderRadius: 30 }}
-                    />
-                    <View style={{ alignItems: 'flex-start', marginLeft: 10 }}>
-                      <View
+                      <SvgXml xml={orderIcon} width={15} />
+                      <Text
                         style={{
-                          flexDirection: 'row',
-                          alignItems: 'center'
+                          fontFamily: FONT1REGULAR,
+                          marginLeft: 10,
+                          fontSize: hp(1.8),
+                          color: COLORS.primary
                         }}
                       >
-                        <Text>Anna Joseph</Text>
-                        <Text style={[styles.address, { marginLeft: 10 }]}>
-                          3 months ago
-                        </Text>
-                      </View>
-                      <Rating
-                        type='custom'
-                        readonly
-                        startingValue={item?.rating}
-                        ratingColor={COLORS.ratingColor}
-                        ratingBackgroundColor={COLORS.tripBoxBorder}
-                        imageSize={15}
-                      />
+                        Buy me an iPhone 13 Pro max
+                      </Text>
                     </View>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'flex-start',
+                        width: '95%',
+                        marginBottom: 10
+                      }}
+                    >
+                      <Image
+                        source={{ uri: PROFILEICON }}
+                        style={{ width: 30, height: 30, borderRadius: 30 }}
+                      />
+                      <View
+                        style={{ alignItems: 'flex-start', marginLeft: 10 }}
+                      >
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center'
+                          }}
+                        >
+                          <Text>
+                            {isMyReview
+                              ? item?.added_by?.name
+                              : item?.target_user?.name}
+                          </Text>
+                          <Text style={[styles.address, { marginLeft: 10 }]}>
+                            {moment(item?.created_by).fromNow()}
+                          </Text>
+                        </View>
+                        <Rating
+                          type='custom'
+                          readonly
+                          startingValue={item?.rating}
+                          ratingColor={COLORS.ratingColor}
+                          ratingBackgroundColor={COLORS.tripBoxBorder}
+                          imageSize={15}
+                        />
+                      </View>
+                    </View>
+                    <Text
+                      style={[
+                        styles.name,
+                        { fontFamily: FONT1REGULAR, width: '95%' }
+                      ]}
+                    >
+                      {item?.content}
+                    </Text>
                   </View>
-                  <Text
-                    style={[
-                      styles.name,
-                      { fontFamily: FONT1REGULAR, width: '95%' }
-                    ]}
-                  >
-                    {item?.content}
-                  </Text>
-                </View>
-              )}}
+                )
+              }}
             />
           </View>
         )}

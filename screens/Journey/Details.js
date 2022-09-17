@@ -274,6 +274,7 @@ function JourneyDetails ({ navigation, route }) {
     if (active === 'Offers') {
       return onRouteOrders?.offers
     } else if (active === 'Accepted') {
+      console.warn('onRouteOrders?.accepted',onRouteOrders?.accepted);
       return onRouteOrders?.accepted?.concat(onRouteOrders?.requested_by_sender)
     } else if (active === 'In Transit') {
       return onRouteOrders?.in_transit
@@ -312,6 +313,8 @@ function JourneyDetails ({ navigation, route }) {
       </View>
     )
   }
+
+  console.warn('onRouteOrders',onRouteOrders);
 
   return (
     <ScrollView

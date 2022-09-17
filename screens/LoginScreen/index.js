@@ -47,7 +47,7 @@ function LoginScreen ({ navigation, route }) {
   let password2Ref = useRef()
   // Context
   const context = useContext(AppContext)
-  const { setUser } = context
+  const { setUser, requestUserPermission } = context
 
   const [state, setState] = useState({
     email: '',
@@ -97,6 +97,7 @@ function LoginScreen ({ navigation, route }) {
       console.warn('loginUser', res?.data)
       await AsyncStorage.setItem('token', res?.data?.token)
       await AsyncStorage.setItem('user', JSON.stringify(res?.data?.user))
+      requestUserPermission(true)
       navigation.navigate('AuthLoading')
       Toast.show('Logged in Successfully!')
     } catch (error) {
@@ -145,6 +146,7 @@ function LoginScreen ({ navigation, route }) {
       await AsyncStorage.setItem('token', res?.data?.token)
       await AsyncStorage.setItem('user', JSON.stringify(res?.data?.user))
       navigation.navigate('AuthLoading')
+      requestUserPermission(true)
       Toast.show('Signed up Successfully!')
     } catch (error) {
       handleChange('loading', false)
@@ -204,6 +206,7 @@ function LoginScreen ({ navigation, route }) {
         if (res?.user) {
           console.warn('res?.user', res?.user)
           handleChange('loading', false)
+          requestUserPermission(true)
           setUser(res?.user)
           await AsyncStorage.setItem('token', res?.token)
           await AsyncStorage.setItem('user', JSON.stringify(res?.user))
@@ -278,6 +281,7 @@ function LoginScreen ({ navigation, route }) {
           if (res?.user) {
             handleChange('loading', false)
             setUser(res?.user)
+            requestUserPermission(true)
             await AsyncStorage.setItem('token', res?.token)
             await AsyncStorage.setItem('user', JSON.stringify(res?.user))
             navigation.navigate('AuthLoading')
@@ -335,6 +339,7 @@ function LoginScreen ({ navigation, route }) {
         if (res?.user) {
           handleChange('loading', false)
           setUser(res?.user)
+          requestUserPermission(true)
           await AsyncStorage.setItem('token', res?.token)
           await AsyncStorage.setItem('user', JSON.stringify(res?.user))
           navigation.navigate('AuthLoading')
@@ -637,6 +642,7 @@ function LoginScreen ({ navigation, route }) {
                 loading={loading}
                 disabled={
                   !name ||
+                  invalidPass ||
                   // !last_name ||
                   !email ||
                   !password ||

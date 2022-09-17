@@ -7,13 +7,18 @@ import RootStackNav from './navigation/RootStackNav'
 import AppContext from './store/Context'
 import { NavigationContainer } from '@react-navigation/native'
 import { MenuProvider } from 'react-native-popup-menu'
-import { getNotification, getOrders } from './api/order'
+import {
+  createNotification,
+  getNotification,
+  getOrders,
+  registerDevice
+} from './api/order'
 import { getJourneys, getMyAddresses } from './api/journey'
 import messaging from '@react-native-firebase/messaging'
-import { Alert, SafeAreaView } from 'react-native'
+import { Alert, Platform, SafeAreaView } from 'react-native'
 import { StripeProvider } from '@stripe/stripe-react-native'
-
-function App() {
+import { getDeviceId } from 'react-native-device-info'
+function App () {
   const [user, setUser] = useState(null)
   const [userType, setUserType] = useState('')
   const [mapLocationForPickup, setMapLocationForPickup] = useState(null)
@@ -86,7 +91,7 @@ function App() {
     }
   }
 
-  const _getForMeReviews = async (id) => {
+  const _getForMeReviews = async id => {
     try {
       const token = await AsyncStorage.getItem('token')
       const payload = `?target_user=${id}&order&journey`
@@ -99,7 +104,7 @@ function App() {
     }
   }
 
-  const _getByMeReviews = async (id) => {
+  const _getByMeReviews = async id => {
     try {
       const token = await AsyncStorage.getItem('token')
       const payload = `?added_by=${id}&order&journey`
@@ -111,8 +116,18 @@ function App() {
     }
   }
 
+  const _createNotification = async payload => {
+    try {
+      const token = await AsyncStorage.getItem('token')
+      const res = await createNotification(payload, token)
+    } catch (error) {
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
+
   useEffect(() => {
-    requestUserPermission()
+    // requestUserPermission()
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage))
     })
@@ -124,11 +139,24 @@ function App() {
     return unsubscribe
   }, [])
 
-  async function registerAppWithFCM() {
+  async function registerAppWithFCM (active) {
+    const token = await messaging().getToken()
+    const tokenA = await AsyncStorage.getItem('token')
     const registered = await messaging().registerDeviceForRemoteMessages()
+    console.warn('token', token)
+    console.warn('registered', registered)
+    const payload = {
+      name: user?.name,
+      registration_id: token,
+      device_id: getDeviceId(),
+      active: active,
+      type: Platform.OS
+    }
+    const res = await registerDevice(payload, tokenA)
+    console.warn('registerAppWithFCM', res)
   }
 
-  async function requestUserPermission() {
+  async function requestUserPermission (active) {
     const authStatus = await messaging().requestPermission()
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
@@ -136,7 +164,7 @@ function App() {
 
     if (enabled) {
       console.warn('Authorization status:', authStatus)
-      registerAppWithFCM()
+      registerAppWithFCM(active)
     }
   }
 
@@ -163,7 +191,9 @@ function App() {
         _getByMeReviews,
         _getForMeReviews,
         forMeReviews,
-        byMeReviews
+        byMeReviews,
+        requestUserPermission,
+        _createNotification
       }}
     >
       <StripeProvider

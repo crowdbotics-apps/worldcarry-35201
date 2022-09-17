@@ -31,6 +31,7 @@ import Toast from 'react-native-simple-toast'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createOrder, getProductDetails } from '../../api/order'
 import { getPayMethod, removePayMethod } from '../../api/business'
+import RNFetchBlob from 'rn-fetch-blob'
 
 function CreateOrder ({ navigation }) {
   const [state, setState] = useState({
@@ -147,8 +148,9 @@ function CreateOrder ({ navigation }) {
       handleChange('product_name', res?.data?.data?.title)
       handleChange('product_price', res?.data?.data?.price?.replace(/\$/g, ''))
       handleChange('product_type', res?.data?.data?.category)
-      handleChange('avatarSourceURL', [res?.data?.data?.image_url])
-      handleChange('photos', [res?.data?.data?.image_url])
+      // handleChange('avatarSourceURL', [res?.data?.data?.image_url])
+      getFileFromUrl(res?.data?.data?.image_url)
+      // handleChange('photos', [res?.data?.data?.image_url])
       handleChange('falseLink', false)
       handleChange('linkVerified', true)
     } catch (error) {
@@ -159,6 +161,41 @@ function CreateOrder ({ navigation }) {
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText[0]}`)
     }
+  }
+
+  const getFileFromUrl = url => {
+    RNFetchBlob.config({
+      fileCache: true,
+      appendExt : 'png'
+    })
+      .fetch('GET', url, {})
+      .then(res => {
+        let status = res.info().status
+
+        if (status == 200) {
+          // the conversion is done in native code
+          let base64Str = res.base64()
+          let uri = res.path()
+          console.warn('ressss.path()', res)
+          console.warn('.path()', res.path())
+          const uploadUri =
+            Platform.OS === 'android' ? 'file://' + uri : '' + uri
+          const photo = {
+            uri: uploadUri,
+            name: `userimage.png`,
+            type: 'image/png'
+          }
+          handleChange('photos', [photo])
+          handleChange('avatarSourceURL', [uploadUri])
+          // the following conversions are done in js, it's SYNC
+        } else {
+          // handle other status codes
+        }
+      })
+      // Something went wrong:
+      .catch((errorMessage, statusCode) => {
+        // error handling
+      })
   }
 
   const handlePrevious = () => {
@@ -219,8 +256,6 @@ function CreateOrder ({ navigation }) {
       const formData = new FormData()
       const arrival_address_coordinates = `Point(${arrival_address?.arrival_address_coordinates?.latitude} ${arrival_address?.arrival_address_coordinates?.longitude})`
       const pickup_address_coordinates = `Point(${pickup_address?.pickup_address_coordinates?.latitude} ${pickup_address?.pickup_address_coordinates?.longitude})`
-      console.warn('arrival_address', arrival_address_coordinates)
-      console.warn('pickup_address', pickup_address_coordinates)
       formData.append('pickup_address_country', pickup_address_country)
       formData.append('expected_wait_time', expected_wait_time)
       active === 0 && formData.append('product_type', product_type)

@@ -118,6 +118,7 @@ function Settings ({ navigation }) {
       Toast.show(`Error: ${showWError[0]}`)
     }
   }
+  console.warn('user',user);
 
   const list1 = [
     {

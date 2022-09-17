@@ -38,7 +38,7 @@ function Chat ({ navigation, route }) {
   // Context
   const context = useContext(AppContext)
   const inputRef = useRef()
-  const { user } = context
+  const { user, _createNotification } = context
   const messageuid = orderID
   let scrollView
   const [state, setState] = useState({
@@ -60,7 +60,6 @@ function Chat ({ navigation, route }) {
         scrollView.scrollToEnd({ animated: true })
     }
   }
-  console.warn('orderData', orderData)
   useEffect(() => {
     const backAction = () => {
       navigation.goBack()
@@ -214,6 +213,18 @@ function Chat ({ navigation, route }) {
       .ref('Messages/' + messageuid)
       .update(values)
       .then(res => {
+        const payload = {
+          name: user?.name,
+          description: text || state.messageText,
+          is_send_now: true,
+          send_date: new Date(),
+          user:
+            state.messageData?.senderId === user?.id
+              ? user?.id
+              : state.messageData?.receiverId
+        }
+        console.warn('payload',payload);
+        _createNotification(payload)
         setState(prevState => ({
           ...prevState,
           loading: false,
@@ -248,7 +259,6 @@ function Chat ({ navigation, route }) {
     //   })
   }
 
-  console.warn('state.messages', state.messages)
 
   return (
     <View

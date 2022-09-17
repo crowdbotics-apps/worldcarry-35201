@@ -21,6 +21,8 @@ import NoNotification from '../../assets/svg/noNotification.svg'
 import noti from '../../assets/images/noti.png'
 import { SvgXml } from 'react-native-svg'
 import { useFocusEffect } from '@react-navigation/native'
+import moment from 'moment'
+import momenttimezone from 'moment-timezone'
 
 function Notifications ({ navigation }) {
   // Context
@@ -36,14 +38,12 @@ function Notifications ({ navigation }) {
       _getNotification(`?user=${user?.id}`)
     }, [])
   )
-  const handleRead = async notification => {
+  const handleRead = async id => {
     try {
       const token = await AsyncStorage.getItem('token')
       handleChange('loading', true)
 
-      const formData = {
-        notification
-      }
+      const formData = `?id=${id}`
       await notificationRead(formData, token)
       handleChange('loading', false)
       Toast.show('Notification Opened!')
@@ -85,6 +85,38 @@ function Notifications ({ navigation }) {
     setState(pre => ({ ...pre, [name]: value }))
   }
 
+  const getUnreadCount = () => {
+    const filtered = notifications?.filter(e => !e?.is_read)
+    return filtered || []
+  }
+
+  function convertLocalDateToUTCDate (time, toLocal) {
+    const todayDate = moment(new Date()).format('YYYY-MM-DD')
+    if (toLocal) {
+      const today = momenttimezone.tz.guess()
+      const timeUTC = momenttimezone.tz(time, today).format()
+      let date = new Date(timeUTC)
+      const milliseconds = Date.UTC(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        date.getHours(),
+        date.getMinutes(),
+        date.getSeconds()
+      )
+      const localTime = new Date(milliseconds)
+      const todayDate1 = momenttimezone.tz(localTime, today).fromNow()
+      return todayDate1
+    } else {
+      const today = momenttimezone.tz.guess()
+      const todayDate1 = momenttimezone
+        .tz(`${todayDate} ${time}`, today)
+        .format()
+      const utcTime = moment.utc(todayDate1).format('YYYY-MM-DDTHH:mm')
+      return utcTime
+    }
+  }
+
   console.warn('notifications', notifications)
   return (
     <View style={styles.container}>
@@ -115,22 +147,26 @@ function Notifications ({ navigation }) {
             style={active === 1 ? styles.activeTab : styles.inavtive}
           >
             <Text style={active === 1 ? styles.activeTabText : styles.tabText}>
-              Unread ({notifications?.length})
+              Unread ({getUnreadCount()?.length})
             </Text>
           </TouchableOpacity>
         </View>
         <FlatList
-          data={notifications}
-          style={{ width: '100%' }}
+          data={active === 1 ? getUnreadCount() : notifications}
+          style={{ width: '100%', height: '80%' }}
           renderItem={({ item, index }) => {
             return (
-              <View
+              <TouchableOpacity
                 key={index}
+                onPress={() =>
+                  !item?.is_read ? handleRead(item?.id) : console.log('')
+                }
                 style={[
                   styles.header,
                   {
-                    backgroundColor:
-                      index == 0 ? COLORS.primaryLight : COLORS.white
+                    backgroundColor: !item?.is_read
+                      ? COLORS.primaryLight
+                      : COLORS.white
                   }
                 ]}
               >
@@ -138,12 +174,12 @@ function Notifications ({ navigation }) {
                   <Image source={noti} style={styles.image} />
                 </View>
                 <View style={styles.rightView}>
-                  <Text style={styles.name}>
-                    {'Reward successfully delivered to Cody Fisher.'}
+                  <Text style={styles.name}>{item?.description}</Text>
+                  <Text style={styles.description}>
+                    {convertLocalDateToUTCDate(item?.created_at, true)}
                   </Text>
-                  <Text style={styles.description}>{'2 min ago'}</Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             )
           }}
           ListEmptyComponent={() => (

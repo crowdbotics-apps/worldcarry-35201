@@ -8,6 +8,8 @@ target 'worldcarry_35201' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => false
   pod 'react-native-google-maps', :path => rn_maps_path
   permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'rn-fetch-blob',
+    :path => '../node_modules/rn-fetch-blob'
   pod 'Permission-Camera', :path => "#{permissions_path}/Camera/Permission-Camera.podspec"
   pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways/Permission-LocationAlways.podspec"
   pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse/Permission-LocationWhenInUse.podspec"
