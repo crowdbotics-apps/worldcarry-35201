@@ -80,6 +80,7 @@ function AddPaymentMethod ({ navigation }) {
         .createPaymentMethod({
           type: 'Card',
           card: cardDetails,
+          paymentMethodType:'Card',
           billing_details: {
             name: name,
             email: email,
