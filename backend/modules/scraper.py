@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-
+import re
 
 class AMAZONScraper:
     MAX_RETRIES = 5
@@ -106,6 +106,9 @@ class EBAYScraper:
                 price = soup.find("span", {"id": "convbidPrice"}).get_text().split("(")[0].split(" ")[1]
             else:
                 price = "${}".format(price.split()[1])
+
+            p = re.findall("\d+\.\d+", price)
+            price = "$"+p[0]
             return price
         except Exception as ex:
             pass
