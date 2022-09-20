@@ -125,7 +125,7 @@ class Order(UUIDModel):
     status = models.CharField(
         choices=ORDER_STATUS,
         max_length=64,
-        default='Unpaid'
+        default='Requested'
     )
     created_at = models.DateTimeField(
         auto_now_add=True
