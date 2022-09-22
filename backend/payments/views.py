@@ -36,7 +36,7 @@ class PaymentViewSet(ModelViewSet):
         except Order.DoesNotExist:
             return Response({'detail': 'Invalid Order ID'}, status=status.HTTP_400_BAD_REQUEST)
         amount = int(Decimal(order.total) * 100)
-        if order.paid != False:
+        if order.status != 'Unpaid':
             return Response({'detail': 'Order already paid'}, status=status.HTTP_400_BAD_REQUEST)
         customers_data = stripe.Customer.list().data
         customer = None

@@ -1,8 +1,10 @@
 from django.contrib.auth import get_user_model, authenticate
+from django.db.models import Q, Sum, Count, When, Case
 
 from rest_framework import serializers
 
 from home.utility import verifyOTP
+from orders.models import Order
 from users.models import Profile, User
 
 from allauth.account.models import EmailAddress
@@ -26,11 +28,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(required=False)
     is_admin = serializers.SerializerMethodField()
     has_payment_method = serializers.SerializerMethodField()
+    transactions = serializers.SerializerMethodField()
 
     class Meta:
         model = get_user_model()
         fields = ('id', 'name', 'email', 'password', 'is_admin',
-                  'phone', 'profile', 'has_payment_method')
+                  'phone', 'profile', 'has_payment_method', 'transactions')
         extra_kwargs = {'password': {'write_only': True, 'min_length': 5},
                         'email': {'required': True},
                         'name': {'required': True},
@@ -67,6 +70,38 @@ class UserProfileSerializer(serializers.ModelSerializer):
         if not obj.account:
             return False
         return PaymentMethod.objects.filter(customer=obj.account).exists()
+
+    def get_transactions(self, obj):
+        totals = Order.objects.filter(
+            Q(
+                user=obj
+            ) | 
+            Q(
+                carrier=obj
+            )
+        ).aggregate(
+            orders_delivered =
+                Count(Case(
+                    When(carrier=obj, then=1)
+                )
+            ),
+            amount_rewarded = 
+                Sum(Case(
+                    When(carrier=obj, then='carrier_reward')
+                )
+            ),
+            orders_created =
+                Count(Case(
+                    When(user=obj, then=1)
+                )
+            ),
+            amount_paid =
+                Sum(Case(
+                    When(user=obj, then='total')
+                )
+            )
+        )
+        return totals
 
 
 class OTPSerializer(serializers.Serializer):
