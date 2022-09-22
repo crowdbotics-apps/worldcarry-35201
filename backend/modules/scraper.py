@@ -90,11 +90,17 @@ class EBAYScraper:
 
     @staticmethod
     def get_image_url(soup: BeautifulSoup) -> str:
+
         try:
-            image_url = soup.find("img", {"id": "icImg"})['src']
+            image_url = soup.find('div', {'class': 'ux-image-carousel-item active image'}).findChild('img')['src']
+            return image_url
         except Exception as ex:
-            image_url = "Image not available"
-        return image_url
+            pass
+
+        try:
+            return soup.find("img", {"id": "icImg"})['src']
+        except Exception as ex:
+            return "Image not available"
 
     @staticmethod
     def get_price(soup: BeautifulSoup) -> str:
