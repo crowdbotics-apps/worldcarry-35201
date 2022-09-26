@@ -542,7 +542,7 @@
 				CODE_SIGN_ENTITLEMENTS = worldcarry_35201/worldcarry_35201.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = TBR65HNY9A;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = worldcarry_35201/Info.plist;
@@ -667,7 +667,7 @@
 				CODE_SIGN_ENTITLEMENTS = worldcarry_35201/worldcarry_35201.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = TBR65HNY9A;
 				INFOPLIST_FILE = worldcarry_35201/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
