@@ -104,7 +104,6 @@ function Journey ({ navigation }) {
       return filtered || []
     } else return []
   }
-  console.warn('_getJourneys', getOrderType1('upcoming'))
 
   const getOrderType = status => {
     if (status) {
@@ -112,6 +111,7 @@ function Journey ({ navigation }) {
       return filtered || []
     } else return []
   }
+
 
   return (
     <View style={styles.container}>
@@ -285,10 +285,10 @@ function Journey ({ navigation }) {
                   )}
                 </Text>
               </View>
-              <View style={[styles.rowBetween, { marginTop: 10 }]}>
+              {/* <View style={[styles.rowBetween, { marginTop: 10 }]}>
                 <Text style={[styles.postedText]}>Reward</Text>
                 <Text style={styles.nameText}>{item?.total_weight}</Text>
-              </View>
+              </View> */}
               {item?.status === 'upcoming' && (
                 <AppButton
                   title={`View all ${item?.offers} offers`}

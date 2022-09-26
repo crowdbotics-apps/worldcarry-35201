@@ -83,6 +83,29 @@ function Message ({ navigation }) {
     handleChange('unread', unread)
   }
 
+  const sortByDate = data => {
+    return data?.sort(function (a, b) {
+      return (
+        new Date(
+          b?.messages && b?.messages?.length > 0
+            ? b?.messages[b?.messages?.length - 1]?.timeStamp
+            : b?.timeStamp
+        ) -
+        new Date(
+          a?.messages && a?.messages?.length > 0
+            ? a?.messages[a?.messages?.length - 1]?.timeStamp
+            : a?.timeStamp
+        )
+      )
+    })
+  }
+
+  const sortByUser = data => {
+    return data?.filter(
+      item => item?.senderId === user?.id || item?.receiverId === user?.id
+    )
+  }
+
   if (loading) {
     return (
       <View
@@ -121,7 +144,7 @@ function Message ({ navigation }) {
           style={active === 0 ? styles.activeTab : styles.inavtive}
         >
           <Text style={active === 0 ? styles.activeTabText : styles.tabText}>
-            All ({allList.length})
+            All ({sortByUser(sortByDate(allList))?.length})
           </Text>
         </TouchableOpacity>
         <TouchableOpacity

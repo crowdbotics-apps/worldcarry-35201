@@ -1,5 +1,6 @@
 import React, {
   createRef,
+  useCallback,
   useContext,
   useEffect,
   useRef,
@@ -53,7 +54,11 @@ import Carousel from 'react-native-snap-carousel'
 import { SvgXml } from 'react-native-svg'
 import { AppButton } from '../../components'
 import Accordion from 'react-native-collapsible/Accordion'
+import faq1 from '../../assets/svg/faq1.svg'
 import { Icon } from 'react-native-elements'
+import { getFAQ } from '../../api/auth'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useFocusEffect } from '@react-navigation/native'
 
 const SECTIONS = [
   {
@@ -91,6 +96,7 @@ function Home ({ navigation }) {
     active: 0,
     activeSlide: 0,
     activeSections: [],
+    filteredList: [],
     products: [
       { image: Jewellery, text: 'Jewellery' },
       { image: Electronics, text: 'Electronics' },
@@ -162,11 +168,18 @@ function Home ({ navigation }) {
     journeys,
     entries,
     activeSlide,
-    active
+    active,
+    filteredList
   } = state
-  const { user } = context
+  const { user, completedOrders } = context
 
   useEffect(() => {}, [])
+
+  useFocusEffect(
+    useCallback(() => {
+      _getFAQ()
+    }, [])
+  )
 
   const handleChange = (name, value) => {
     setState(pre => ({ ...pre, [name]: value }))
@@ -179,7 +192,7 @@ function Home ({ navigation }) {
   const _renderHeader = section => {
     return (
       <View style={styles.header}>
-        <Text style={styles.headerText}>{section.title}</Text>
+        <Text style={styles.headerText}>{section.question}</Text>
         <Icon name={'down'} type={'antdesign'} color={COLORS.grey} size={18} />
       </View>
     )
@@ -188,11 +201,12 @@ function Home ({ navigation }) {
   const _renderContent = section => {
     return (
       <View style={styles.content}>
-        <Text>{section.content}</Text>
+        <Text>{section.answer}</Text>
       </View>
     )
   }
 
+  console.warn('completedOrders', completedOrders)
   const _renderItem = ({ item, index }) => {
     return (
       <View key={index} style={[{ width: '100%', alignItems: 'center' }]}>
@@ -240,12 +254,26 @@ function Home ({ navigation }) {
     )
   }
 
-
   const getJourneyType = status => {
     if (status) {
       const filtered = journeys?.filter(e => e?.status !== status)
       return filtered || []
     } else return []
+  }
+
+  const _getFAQ = async () => {
+    try {
+      handleChange('loading', true)
+      const token = await AsyncStorage.getItem('token')
+      const res = await getFAQ(token)
+      handleChange('loading', false)
+      console.warn('getFAQ', res?.data)
+      handleChange('filteredList', res?.data)
+    } catch (error) {
+      handleChange('loading', false)
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
   }
 
   return (
@@ -360,27 +388,48 @@ function Home ({ navigation }) {
               <Text style={styles.viewAll}>View All</Text>
             </TouchableOpacity>
           </View>
-          {getJourneyType('completed')?.length > 0 && (
+          {completedOrders?.length > 0 && (
             <ScrollView
               style={{ height: 400, marginBottom: 50 }}
               horizontal
               showsHorizontalScrollIndicator={false}
             >
-              {getJourneyType('completed')?.map((item, index) => (
+              {completedOrders?.map((item, index) => (
                 <View key={index} style={styles.itemBox}>
                   <Text style={styles.titleItem}>
-                    Carry my camera from Los Angeles, CA, US to Rio De Janero
+                    “Carry my {item?.product_name} from{' '}
+                    {item?.pickup_address_city
+                      ? item?.pickup_address_city + ', '
+                      : '' + item?.pickup_address_state
+                      ? item?.pickup_address_state + ', '
+                      : '' + item?.pickup_address_country}{' '}
+                    to{' '}
+                    {item?.arrival_address_city
+                      ? item?.arrival_address_city + ', '
+                      : '' + item?.arrival_address_state
+                      ? item?.arrival_address_state + ', '
+                      : '' + item?.arrival_address_country}
+                    ”{' '}
+                    {/* Carry my camera from Los Angeles, CA, US to Rio De Janero */}
                   </Text>
                   <View style={styles.hline} />
                   <View style={[styles.rowBetween, { width: '90%' }]}>
                     <TouchableOpacity style={styles.userBox}>
                       <Image
-                        source={userProfile}
+                        source={
+                          user?.profile?.photo
+                            ? { uri: user?.profile?.photo }
+                            : userProfile
+                        }
                         style={{ width: 50, height: 50, borderRadius: 50 }}
                       />
-                      <Text style={styles.nameText}>Jacob</Text>
+                      <Text style={styles.nameText}>{user?.name}</Text>
                       <Text style={styles.locationText}>
-                        Los Angeles, CA, US
+                        {item?.pickup_address_city
+                          ? item?.pickup_address_city + ', '
+                          : '' + item?.pickup_address_state
+                          ? item?.pickup_address_state + ', '
+                          : '' + item?.pickup_address_country}
                       </Text>
                     </TouchableOpacity>
                     <Image
@@ -394,12 +443,20 @@ function Home ({ navigation }) {
                     />
                     <TouchableOpacity style={styles.userBox}>
                       <Image
-                        source={userProfile}
+                        source={
+                          item?.user?.profile?.photo
+                            ? { uri: item?.user?.profile?.photo }
+                            : userProfile
+                        }
                         style={{ width: 50, height: 50, borderRadius: 50 }}
                       />
-                      <Text style={styles.nameText}>Jacob</Text>
+                      <Text style={styles.nameText}>{item?.user?.name}</Text>
                       <Text style={styles.locationText}>
-                        Los Angeles, CA, US
+                        {item?.arrival_address_city
+                          ? item?.arrival_address_city + ', '
+                          : '' + item?.arrival_address_state
+                          ? item?.arrival_address_state + ', '
+                          : '' + item?.arrival_address_country}
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -407,21 +464,23 @@ function Home ({ navigation }) {
                   <View style={[styles.rowBetween, { width: '90%' }]}>
                     <View style={{ width: '50%' }}>
                       <Text style={styles.earntext}>Earned</Text>
-                      <Text style={styles.pricetext}>$245</Text>
+                      <Text style={styles.pricetext}>${item?.total}</Text>
                       <Text style={styles.completetext}>Completed on</Text>
                       <View style={styles.timeBox}>
                         <Text style={styles.timetext}>24/04/2022</Text>
                       </View>
                     </View>
-                    <Image
-                      source={camera}
-                      style={{
-                        width: '48%',
-                        height: 120,
-                        marginTop: 15,
-                        resizeMode: 'contain'
-                      }}
-                    />
+                    {item?.images?.length > 0 && (
+                      <Image
+                        source={{ uri: item?.images[0]?.image }}
+                        style={{
+                          width: '48%',
+                          height: 120,
+                          marginTop: 15,
+                          resizeMode: 'contain'
+                        }}
+                      />
+                    )}
                   </View>
                 </View>
               ))}
@@ -448,15 +507,58 @@ function Home ({ navigation }) {
               <Text style={styles.viewAll}>View All</Text>
             </TouchableOpacity>
           </View>
-          <Accordion
-            sections={SECTIONS}
-            containerStyle={{ width: '100%' }}
-            activeSections={activeSections}
-            // renderSectionTitle={_renderSectionTitle}
-            renderHeader={_renderHeader}
-            renderContent={_renderContent}
-            onChange={_updateSections}
-          />
+          {filteredList?.length > 0 && (
+            <Accordion
+              sections={filteredList[0]?.QAlist}
+              containerStyle={{ width: '100%' }}
+              activeSections={activeSections}
+              // renderSectionTitle={_renderSectionTitle}
+              renderHeader={_renderHeader}
+              renderContent={_renderContent}
+              onChange={_updateSections}
+            />
+          )}
+          {/* {filteredList.map((item, index) => (
+            <TouchableOpacity
+              onPress={() => handleChange('questions', item?.QAlist)}
+              key={index}
+              style={styles.listView}
+            >
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  width: '80%'
+                }}
+              >
+                <Text
+                  style={[
+                    styles.name,
+                    {
+                      marginLeft: 10,
+                      fontSize: hp(2),
+                      color: COLORS.darkBlack
+                    }
+                  ]}
+                >
+                  {item.title}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center'
+                }}
+              >
+                <Icon
+                  name='right'
+                  type='antdesign'
+                  color={COLORS.darkGrey}
+                  size={12}
+                />
+              </View>
+            </TouchableOpacity>
+          ))} */}
           <TouchableOpacity
             onPress={() => navigation.navigate('Support')}
             style={{
@@ -761,6 +863,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     backgroundColor: COLORS.card,
     borderRadius: 10
+  },
+  listView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: '5%',
+    justifyContent: 'space-between',
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.borderColor1,
+    height: 50,
+    backgroundColor: COLORS.white
   }
 })
 

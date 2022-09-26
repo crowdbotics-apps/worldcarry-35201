@@ -33,8 +33,13 @@ import {
 } from '../../api/journey'
 import Geocoder from 'react-native-geocoding'
 import Geolocation from '@react-native-community/geolocation'
+import { Dimensions } from 'react-native'
 
 Geocoder.init('AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU')
+const { width, height } = Dimensions.get('window')
+const ASPECT_RATIO = width / height
+let LATITUDE_DELTA = 0.0922
+let LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 function CreateJourney ({ navigation, route }) {
   const activeRoundParams = route?.params?.activeRoundParams

@@ -33,6 +33,7 @@ function AuthLoading ({ navigation }) {
       _getProfile()
       _getNotification(`?user=${userData?.id}`)
       _getOrders(`?user=${userData?.id}`)
+      _getOrders(`?user=${userData?.id}&status=Received`, true)
       _getJourneys('')
       _getMyAddresses()
       _getByMeReviews(userData?.id)

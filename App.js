@@ -29,6 +29,7 @@ function App () {
   const [forMeReviews, setForMeReviews] = useState([])
   const [byMeReviews, setByMeReviews] = useState([])
   const [notifications, setNotifications] = useState([])
+  const [completedOrders, setCompletedOrders] = useState([])
 
   const _getProfile = async () => {
     try {
@@ -57,12 +58,16 @@ function App () {
     }
   }
 
-  const _getOrders = async payload => {
+  const _getOrders = async (payload, completed) => {
     try {
       const token = await AsyncStorage.getItem('token')
       const qs = payload || ``
       const res = await getOrders(qs, token)
-      setOrders(res?.data)
+      if (completed) {
+        setCompletedOrders(res?.data)
+      } else {
+        setOrders(res?.data)
+      }
     } catch (error) {
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText}`)
@@ -193,7 +198,8 @@ function App () {
         forMeReviews,
         byMeReviews,
         requestUserPermission,
-        _createNotification
+        _createNotification,
+        completedOrders
       }}
     >
       <StripeProvider

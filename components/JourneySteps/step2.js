@@ -37,12 +37,16 @@ export default function JourneyStep2 ({
     }
   }
   const products = [
-    { image: Electronics, text: 'Electronics' },
-    { image: Jewellery, text: 'Jewelry' },
-    { image: DocumentsBooks, text: 'Documents and Books' },
-    { image: Fooditems, text: 'Food items' },
-    { image: Clothes, text: 'Clothing' },
-    { image: Medication, text: 'Medication' }
+    { image: Electronics, text: 'Electronics', value: 'Electronics' },
+    { image: Jewellery, text: 'Jwellery', value: 'Jewelry' },
+    {
+      image: DocumentsBooks,
+      text: 'Documents and Books',
+      value: 'Documents and Books'
+    },
+    { image: Fooditems, text: 'Food items', value: 'Food items' },
+    { image: Clothes, text: 'Clothing', value: 'Clothing' },
+    { image: Medication, text: 'Medication', value: 'Medication' }
   ]
   return (
     <ScrollView
@@ -64,17 +68,19 @@ export default function JourneyStep2 ({
           style={[
             styles.productBox,
             {
-              backgroundColor:  COLORS.white
+              backgroundColor: COLORS.white
             }
           ]}
           onPress={() => {
-            if (willing_to_carry?.includes(product.text)) {
-              const filtered = willing_to_carry?.filter(e => e !== product.text)
+            if (willing_to_carry?.includes(product.value)) {
+              const filtered = willing_to_carry?.filter(
+                e => e !== product.value
+              )
               handleChange('willing_to_carry', filtered)
             } else {
               handleChange('willing_to_carry', [
                 ...willing_to_carry,
-                product.text
+                product.value
               ])
             }
           }}
@@ -103,17 +109,17 @@ export default function JourneyStep2 ({
             }}
             style={{ right: 0, position: 'absolute' }}
             disableBuiltInState={true}
-            isChecked={willing_to_carry?.includes(product.text)}
+            isChecked={willing_to_carry?.includes(product.value)}
             onPress={() => {
-              if (willing_to_carry?.includes(product.text)) {
+              if (willing_to_carry?.includes(product.value)) {
                 const filtered = willing_to_carry?.filter(
-                  e => e !== product.text
+                  e => e !== product.value
                 )
                 handleChange('willing_to_carry', filtered)
               } else {
                 handleChange('willing_to_carry', [
                   ...willing_to_carry,
-                  product.text
+                  product.value
                 ])
               }
             }}

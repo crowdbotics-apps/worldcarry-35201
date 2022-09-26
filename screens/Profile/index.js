@@ -61,6 +61,12 @@ import {
 } from 'react-native-popup-menu'
 import { deleteMyAddresses } from '../../api/journey'
 import moment from 'moment'
+import { useEffect } from 'react'
+import { Platform } from 'react-native'
+import { PermissionsAndroid } from 'react-native'
+import Geolocation from '@react-native-community/geolocation'
+import Geocoder from 'react-native-geocoding'
+Geocoder.init('AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU')
 
 function Profile ({ navigation }) {
   // Context
@@ -81,10 +87,11 @@ function Profile ({ navigation }) {
   const [state, setState] = useState({
     isActive: 'Overview',
     paymethods: [],
-    isMyReview: false
+    isMyReview: false,
+    userLocation: ''
   })
 
-  const { isActive, isMyReview, paymethods } = state
+  const { isActive, isMyReview, paymethods, userLocation } = state
 
   const handleChange = (key, value) => {
     setState(pre => ({ ...pre, [key]: value }))
@@ -93,8 +100,96 @@ function Profile ({ navigation }) {
   useFocusEffect(
     useCallback(() => {
       _getPayMethod()
+      requestGeolocationPermission()
     }, [])
   )
+
+  useEffect(() => {
+    requestGeolocationPermission()
+  }, [])
+
+  async function requestGeolocationPermission () {
+    try {
+      if (Platform.OS === 'ios') {
+        getCurrentLocation()
+      }
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'World Carry Geolocation Permission',
+          message: 'World Carry needs access to your current location.'
+        }
+      )
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        getCurrentLocation()
+      } else {
+        console.log('Geolocation permission denied')
+      }
+    } catch (err) {
+      console.warn(err)
+    }
+  }
+
+  const getCurrentLocation = async () => {
+    // geolocation.requestAuthorization();
+    Geolocation.getCurrentPosition(
+      position => {
+        Geocoder.from(position.coords.latitude, position.coords.longitude)
+          .then(async json => {
+            var address_components = json.results[0].address_components
+            let dState = ''
+            let country = ''
+            let city = ''
+            if (address_components !== undefined) {
+              const addrComp = address_components
+              for (let i = 0; i < addrComp.length; ++i) {
+                var typ = addrComp[i].types[0]
+                if (typ === 'administrative_area_level_1') {
+                  dState = addrComp[i].long_name
+                } else if (typ === 'locality') {
+                  city = addrComp[i].long_name
+                } else if (typ === 'country') {
+                  country = addrComp[i].long_name
+                } //store the country
+              }
+              handleChange('userLocation', city + ' ' + country)
+            }
+          })
+          .catch(error => console.warn('Geocodererror', error))
+      },
+      error => console.log('Error', JSON.stringify(error)),
+      {
+        enableHighAccuracy: Platform.OS === 'ios' ? false : true,
+        timeout: 20000,
+        maximumAge: 1000
+      }
+    )
+    Geolocation.watchPosition(position => {
+      Geocoder.from(position.coords.latitude, position.coords.longitude)
+        .then(async json => {
+          var address_components = json.results[0].address_components
+          let dState = ''
+          let country = ''
+          let city = ''
+          if (address_components !== undefined) {
+            const addrComp = address_components
+            for (let i = 0; i < addrComp.length; ++i) {
+              var typ = addrComp[i].types[0]
+              if (typ === 'administrative_area_level_1') {
+                dState = addrComp[i].long_name
+              } else if (typ === 'locality') {
+                city = addrComp[i].long_name
+              } else if (typ === 'country') {
+                country = addrComp[i].long_name
+              } //store the country
+            }
+            handleChange('userLocation', city + ' ' + country)
+          }
+        })
+        .catch(error => console.warn('Geocodererror', error))
+    })
+  }
+
   const _getPayMethod = async () => {
     try {
       handleChange('loading', true)
@@ -153,27 +248,27 @@ function Profile ({ navigation }) {
   const list1 = [
     {
       title: 'Orders Created',
-      right: '32',
+      right: user?.transactions?.orders_created,
       icon: orderCreate,
       route: 'Account'
     },
     {
       title: 'Amount Paid',
       icon: orderAmout,
-      right: '$4500'
+      right: '$' + user?.transactions?.amount_paid
     }
   ]
   const list2 = [
     {
       title: 'Orders Delivered',
-      right: '32',
+      right: user?.transactions?.orders_delivered,
       icon: orderCreate,
       route: 'Account'
     },
     {
       title: 'Amount Rewarded',
       icon: orderAmout,
-      right: '$2050'
+      right: '$' + user?.transactions?.amount_rewarded
     }
   ]
 
@@ -237,7 +332,7 @@ function Profile ({ navigation }) {
     }
   ]
 
-  console.warn('user', paymethods)
+  console.warn('user', user)
   return (
     <View style={styles.container}>
       <Header title={'Profile'} profile color={COLORS.darkBlack} />
@@ -267,11 +362,11 @@ function Profile ({ navigation }) {
               }}
             >
               <SvgXml xml={pinGrey} />
-              <Text style={styles.address}>New York, United States</Text>
+              <Text style={styles.address}>{userLocation}</Text>
             </View>
           </View>
         </View>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={{
             backgroundColor: COLORS.balanceBG,
             height: 80,
@@ -294,7 +389,7 @@ function Profile ({ navigation }) {
             </View>
           </View>
           <SvgXml xml={rightIcon} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <View
           style={{
             flexDirection: 'row',
@@ -785,7 +880,12 @@ function Profile ({ navigation }) {
                 <Text
                   style={[
                     styles.name,
-                    { color: isMyReview ? COLORS.primary : COLORS.grey }
+                    {
+                      fontSize: hp(1.8),
+                      width: '100%',
+                      textAlign: 'center',
+                      color: isMyReview ? COLORS.primary : COLORS.grey
+                    }
                   ]}
                 >
                   ({forMeReviews?.length}) Reviews for me
@@ -804,7 +904,12 @@ function Profile ({ navigation }) {
                 <Text
                   style={[
                     styles.name,
-                    { color: !isMyReview ? COLORS.primary : COLORS.grey }
+                    {
+                      fontSize: hp(1.8),
+                      width: '100%',
+                      textAlign: 'center',
+                      color: !isMyReview ? COLORS.primary : COLORS.grey
+                    }
                   ]}
                 >
                   ({byMeReviews?.length}) Reviews by me
