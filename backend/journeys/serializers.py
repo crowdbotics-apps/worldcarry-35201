@@ -63,3 +63,9 @@ class JourneyOrderSerializer(serializers.Serializer):
     order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all(), required=True)
     journey = serializers.PrimaryKeyRelatedField(queryset=Journey.objects.all(), required=True)
     user = serializers.ChoiceField(choices=("sender", "carrier"), required=True)   # sender/carrier
+
+
+class MyJourneySerilaizer(serializers.Serializer):
+    completed = JourneySerializer(many=True)
+    ongoing = JourneySerializer(many=True)
+    upcoming = JourneySerializer(many=True)

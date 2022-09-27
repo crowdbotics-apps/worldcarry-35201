@@ -8,7 +8,7 @@ from home.api.v1.viewsets import (
     ValidatePassport,
     NotificationView
 )
-from journeys.views import JourneyViewSet, JourneyOrderRequest
+from journeys.views import JourneyViewSet, JourneyOrderRequest, MyJourneyView
 from locations.views import LocationViewSet
 from orders.views import OrderViewSet, GetProductDetailView, QRScanOrder, UpdateOrderStatus
 from reviews.views import ReviewViewSet
@@ -33,6 +33,7 @@ urlpatterns = [
     path("orders/status/update",  UpdateOrderStatus.as_view(), name='order_status_update'),
     path("orders/qr_scan",  QRScanOrder.as_view(), name='qr_scan_order'),
     path("journey/order/request",  JourneyOrderRequest.as_view(), name='journey_order_view'),
+    path("journey/my-journey",  MyJourneyView.as_view(), name='journey_order_view'),
     path("get_product_detail", GetProductDetailView.as_view(), name='product_scrape'),
     path("feedback", FeedbackAPIView.as_view(), name='feedback_create'),
     path("faq", FAQListAPIView.as_view(), name='faq_list'),

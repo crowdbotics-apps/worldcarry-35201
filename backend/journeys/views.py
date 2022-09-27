@@ -9,7 +9,7 @@ from django.utils import timezone
 from home.filters import JourneyFilter
 from home.constants import JourneyStatus
 from orders.models import Order
-from .serializers import JourneySerializer, JourneyOrderSerializer
+from .serializers import JourneySerializer, JourneyOrderSerializer, MyJourneySerilaizer
 from rest_framework.views import APIView
 
 from .models import Journey, JourneyOrder
@@ -88,3 +88,20 @@ class JourneyOrderRequest(APIView):
             order.save(update_fields=['status', 'carrier'])
 
         return Response({"message": "Request Added for order: {}".format(order.id)}, status=status.HTTP_200_OK)
+
+
+class MyJourneyView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        current_date = timezone.now().date()
+        journeys = Journey.objects.filter(user=request.user)
+
+        data = {
+            'completed': journeys.filter(date_of_journey__lt=current_date),
+            'ongoing': journeys.filter(date_of_journey=current_date),
+            'upcoming': journeys.filter(date_of_journey__gt=current_date)
+        }
+
+        serializer = MyJourneySerilaizer(data)
+        return Response(serializer.data)
