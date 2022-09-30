@@ -101,6 +101,14 @@ class UserProfileSerializer(serializers.ModelSerializer):
                 )
             )
         )
+        if totals['orders_delivered'] is None:
+            totals['orders_delivered'] = 0
+        if totals['amount_rewarded'] is None:
+            totals['amount_rewarded'] = 0
+        if totals['orders_created'] is None:
+            totals['orders_created'] = 0
+        if totals['amount_paid'] is None:
+            totals['amount_paid'] = 0
         return totals
 
 
