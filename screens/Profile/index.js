@@ -314,22 +314,22 @@ function Profile ({ navigation }) {
       right: 'Verify',
       route: 'EmailVerification'
     },
-    {
-      right: 'Verify',
-      title: 'Facebook',
-      iconActive: facebookIcon,
-      icon: facebookGrey
-    },
-    {
-      right: 'Verify',
-      title: 'Instagram',
-      icon: insta
-    },
-    {
-      right: 'Verify',
-      title: 'Linkedin',
-      icon: Linkedin
-    }
+    // {
+    //   right: 'Verify',
+    //   title: 'Facebook',
+    //   iconActive: facebookIcon,
+    //   icon: facebookGrey
+    // },
+    // {
+    //   right: 'Verify',
+    //   title: 'Instagram',
+    //   icon: insta
+    // },
+    // {
+    //   right: 'Verify',
+    //   title: 'Linkedin',
+    //   icon: Linkedin
+    // }
   ]
 
   console.warn('user', user)

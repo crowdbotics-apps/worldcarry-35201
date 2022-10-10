@@ -19,6 +19,7 @@ import chatIcon from '../../assets/svg/chatIcon.svg'
 import locateIcon from '../../assets/svg/locate.svg'
 import successImage from '../../assets/images/successImage.png'
 import cehcked from '../../assets/svg/cehcked.svg'
+import Filter from '../../assets/svg/Filter.svg'
 import starBlack from '../../assets/svg/starBlack.svg'
 import userProfile from '../../assets/images/userProfile.png'
 import { AppButton, AppInput, CustomModel, Header } from '../../components'
@@ -41,6 +42,7 @@ import { useFocusEffect } from '@react-navigation/native'
 import { Rating } from 'react-native-ratings'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import database from '@react-native-firebase/database'
+import { Icon } from 'react-native-elements'
 
 function JourneyDetails ({ navigation, route }) {
   const item = route?.params?.item
@@ -57,6 +59,7 @@ function JourneyDetails ({ navigation, route }) {
     journeyData: null,
     rating: 0,
     content: '',
+    filterSelected: '',
     respectful_attitude: false,
     no_additional_payment_asked: false,
     d2d_delivery: false,
@@ -70,6 +73,7 @@ function JourneyDetails ({ navigation, route }) {
     loading,
     journeyData,
     active,
+    filterSelected,
     loadingJourney,
     loadingStatus,
     successfullyDelivered,
@@ -269,12 +273,55 @@ function JourneyDetails ({ navigation, route }) {
       return utcTime
     }
   }
+  function convertLocalDateToUTCDate1 (time, toLocal) {
+    const todayDate = moment(new Date()).format('YYYY-MM-DD')
+    if (toLocal) {
+      const today = momenttimezone.tz.guess()
+      const timeUTC = momenttimezone.tz(time, today).format()
+      let date = new Date(timeUTC)
+      const milliseconds = Date.UTC(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        date.getHours(),
+        date.getMinutes(),
+        date.getSeconds()
+      )
+      const localTime = new Date(milliseconds)
+      const todayDate1 = momenttimezone.tz(localTime, today).format()
+      return todayDate1
+    } else {
+      const today = momenttimezone.tz.guess()
+      const todayDate1 = momenttimezone
+        .tz(`${todayDate} ${time}`, today)
+        .format()
+      const utcTime = moment.utc(todayDate1).format('YYYY-MM-DDTHH:mm')
+      return utcTime
+    }
+  }
+
+  const filterByRecent = offers => {
+    if (filterSelected === 'Most Recent') {
+      return offers.sort(function (a, b) {
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
+        return new Date(convertLocalDateToUTCDate1(b?.created_at, true)) - new Date(convertLocalDateToUTCDate1(a?.created_at, true))
+      })
+    } else if (filterSelected === 'High Reward') {
+      return offers.sort(function (a, b) {
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
+       return Number(b.carrier_reward) - Number(a.carrier_reward)
+      })
+    } else {
+      return offers
+    }
+  }
 
   const getOrderFromStatus = () => {
     if (active === 'Offers') {
-      return onRouteOrders?.offers
+      return filterByRecent(onRouteOrders?.offers)
     } else if (active === 'Accepted') {
-      console.warn('onRouteOrders?.accepted',onRouteOrders?.accepted);
       return onRouteOrders?.accepted?.concat(onRouteOrders?.requested_by_sender)
     } else if (active === 'In Transit') {
       return onRouteOrders?.in_transit
@@ -295,7 +342,7 @@ function JourneyDetails ({ navigation, route }) {
       receiver: item.user,
       order: item
     }
-      database()
+    database()
       .ref('Messages/' + item?.id)
       .update(value)
       .then(res => {
@@ -314,7 +361,7 @@ function JourneyDetails ({ navigation, route }) {
     )
   }
 
-  console.warn('onRouteOrders',onRouteOrders);
+  console.warn('onRouteOrders', onRouteOrders)
 
   return (
     <ScrollView
@@ -408,6 +455,72 @@ function JourneyDetails ({ navigation, route }) {
           </TouchableOpacity>
         ))}
       </ScrollView>
+      {active === 'Offers' && (
+        <View style={[styles.row, { marginTop: -50, marginBottom: 20 }]}>
+          <TouchableOpacity
+            onPress={() => handleChange('filterSelected', 'Most Recent')}
+            style={
+              filterSelected == 'Most Recent'
+                ? styles.activeTab1
+                : styles.inavtive1
+            }
+          >
+            <Text
+              style={
+                filterSelected === 'Most Recent'
+                  ? styles.activeTabText1
+                  : styles.tabText
+              }
+            >
+              Most Recent
+            </Text>
+            {filterSelected == 'Most Recent' && (
+              <Icon
+                name='check'
+                type='feather'
+                size={16}
+                containerStyle={{ marginLeft: 5 }}
+                color={COLORS.successBGBorder}
+              />
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handleChange('filterSelected', 'High Reward')}
+            style={
+              filterSelected === 'High Reward'
+                ? styles.activeTab1
+                : styles.inavtive1
+            }
+          >
+            <Text
+              style={
+                filterSelected === 'High Reward'
+                  ? styles.activeTabText1
+                  : styles.tabText
+              }
+            >
+              High Reward
+            </Text>
+            {filterSelected == 'High Reward' && (
+              <Icon
+                name='check'
+                type='feather'
+                size={16}
+                containerStyle={{ marginLeft: 5 }}
+                color={COLORS.successBGBorder}
+              />
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity
+            // onPress={() => handleChange('filterSelected', 'High Reward')}
+            style={styles.inavtive1}
+          >
+            <Text style={styles.tabText}>Filters</Text>
+            <SvgXml xml={Filter} style={{ marginLeft: 5 }} />
+          </TouchableOpacity>
+          <Text style={styles.tabText}></Text>
+        </View>
+      )}
       <FlatList
         data={getOrderFromStatus()}
         scrollEnabled={false}
@@ -1089,6 +1202,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.primary
   },
+  activeTab1: {
+    borderRadius: 20,
+    marginRight: 10,
+    flexDirection: 'row',
+    paddingHorizontal: 15,
+    justifyContent: 'center',
+    height: hp(5),
+    alignItems: 'center',
+    borderWidth: 1,
+    backgroundColor: COLORS.successBG,
+    borderColor: COLORS.successBGBorder
+  },
   tabText: {
     color: COLORS.darkGrey,
     fontSize: hp(2),
@@ -1097,6 +1222,11 @@ const styles = StyleSheet.create({
 
   activeTabText: {
     color: COLORS.primary,
+    fontSize: hp(2),
+    fontFamily: FONT1MEDIUM
+  },
+  activeTabText1: {
+    color: COLORS.successBGBorder,
     fontSize: hp(2),
     fontFamily: FONT1MEDIUM
   },
@@ -1116,6 +1246,18 @@ const styles = StyleSheet.create({
     marginRight: 10,
     height: hp(5),
     alignItems: 'center'
+  },
+  inavtive1: {
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginRight: 10,
+    height: hp(5),
+    alignItems: 'center',
+    borderWidth: 1,
+    backgroundColor: COLORS.white,
+    borderRadius: 20,
+    borderColor: COLORS.borderColor
   },
   active: {
     borderWidth: 0,

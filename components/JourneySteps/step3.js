@@ -155,8 +155,16 @@ export default function JourneyStep3 ({
           </View>
           <View style={styles.hline} />
           <View style={styles.rowBetween}>
+            <Text style={[styles.postedText]}>Offers</Text>
+            <Text style={styles.nameText}>{createdJourney?.offers}</Text>
+          </View>
+          <View style={styles.rowBetween}>
             <Text style={[styles.postedText]}>To Deliver</Text>
             <Text style={styles.nameText}>1</Text>
+          </View>
+          <View style={styles.rowBetween}>
+            <Text style={[styles.postedText]}>Earnings</Text>
+            <Text style={styles.nameText}>$0.00</Text>
           </View>
           {/* <View style={[styles.rowBetween, { marginTop: 10 }]}>
             <Text style={[styles.postedText]}>Reward</Text>
@@ -288,8 +296,16 @@ export default function JourneyStep3 ({
             </View>
             <View style={styles.hline} />
             <View style={styles.rowBetween}>
+              <Text style={[styles.postedText]}>Offers</Text>
+              <Text style={styles.nameText}>{createdJourney?.offers}</Text>
+            </View>
+            <View style={styles.rowBetween}>
               <Text style={[styles.postedText]}>To Deliver</Text>
               <Text style={styles.nameText}>1</Text>
+            </View>
+            <View style={styles.rowBetween}>
+              <Text style={[styles.postedText]}>Earnings</Text>
+              <Text style={styles.nameText}>$0.00</Text>
             </View>
             {/* <View style={[styles.rowBetween, { marginTop: 10 }]}>
               <Text style={[styles.postedText]}>Reward</Text>

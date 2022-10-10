@@ -42,7 +42,7 @@ function OrderDetails ({ navigation, route }) {
     orderData: null,
     selectedItem: null,
     loadingAccept: false,
-    filterSelected: 'Most Recent'
+    filterSelected: ''
   })
   const [modalVisible, setModalVisible] = useState(false)
 
@@ -153,6 +153,32 @@ function OrderDetails ({ navigation, route }) {
       return utcTime
     }
   }
+  function convertLocalDateToUTCDate1 (time, toLocal) {
+    const todayDate = moment(new Date()).format('YYYY-MM-DD')
+    if (toLocal) {
+      const today = momenttimezone.tz.guess()
+      const timeUTC = momenttimezone.tz(time, today).format()
+      let date = new Date(timeUTC)
+      const milliseconds = Date.UTC(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        date.getHours(),
+        date.getMinutes(),
+        date.getSeconds()
+      )
+      const localTime = new Date(milliseconds)
+      const todayDate1 = momenttimezone.tz(localTime, today).format()
+      return todayDate1
+    } else {
+      const today = momenttimezone.tz.guess()
+      const todayDate1 = momenttimezone
+        .tz(`${todayDate} ${time}`, today)
+        .format()
+      const utcTime = moment.utc(todayDate1).format('YYYY-MM-DDTHH:mm')
+      return utcTime
+    }
+  }
 
   if (loading) {
     return (
@@ -168,6 +194,25 @@ function OrderDetails ({ navigation, route }) {
   console.warn('onRouteJourneys', onRouteJourneys)
   var result =
     text && text?.slice(0, count) + (text?.length > count ? '...' : '')
+
+    const filterByRecent = offers => {
+      console.warn('offers',offers);
+      if (filterSelected === 'Most Recent') {
+        return offers.sort(function (a, b) {
+          // Turn your strings into dates, and then subtract them
+          // to get a value that is either negative, positive, or zero.
+          return new Date(convertLocalDateToUTCDate1(b?.created_at, true)) - new Date(convertLocalDateToUTCDate1(a?.created_at, true))
+        })
+      } else if (filterSelected === 'Fastest Arrival') {
+        return offers.sort(function (a, b) {
+          // Turn your strings into dates, and then subtract them
+          // to get a value that is either negative, positive, or zero.
+         return moment(b?.date_of_journey).isBefore(moment(a?.date_of_journey))
+        })
+      } else {
+        return offers
+      }
+    }
 
   return (
     <ScrollView
@@ -244,7 +289,7 @@ function OrderDetails ({ navigation, route }) {
         <Text style={styles.tabText}></Text>
       </View>
       <FlatList
-        data={onRouteJourneys}
+        data={filterByRecent(onRouteJourneys)}
         scrollEnabled={false}
         showsVerticalScrollIndicator={false}
         style={{ width: '100%', height: '100%', marginTop: 20 }}
@@ -602,6 +647,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.darkGrey,
     borderRadius: 50
+  },
+  inavtive1: {
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+    marginRight: 10,
+    height: hp(5),
+    alignItems: 'center'
   },
   bgImage: {
     width: '100%',

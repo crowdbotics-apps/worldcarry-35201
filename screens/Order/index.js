@@ -181,12 +181,13 @@ function Order ({ navigation }) {
       Toast.show(`Error: ${errorText}`)
     }
   }
+  
 
   const getOrderType = status => {
     if (status) {
       if (status === 'Unpaid') {
         const filtered = orders?.filter(
-          e => e.status === status || e.status === 'Accepted'
+          e => e.status === status || e.status === 'Accepted' || e.status === 'Requested'
         )
         return filtered || []
       } else {

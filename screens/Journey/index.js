@@ -40,17 +40,19 @@ function Journey ({ navigation }) {
   // Context
   const context = useContext(AppContext)
   const { active, loading } = state
-  const { journeys, _getJourneys } = context
+  const { journeys, _getJourneys, _getMyJourneys, myjourneys } = context
 
-  useEffect(() => {}, [])
+  useEffect(() => {
+    _getMyJourneys()
+  }, [])
 
   const handleChange = (name, value) => {
     setState(pre => ({ ...pre, [name]: value }))
   }
 
   const tabs = [
-    { title: 'Ongoing',value:'' },
-    { title: 'Upcoming',value:'upcoming' },
+    { title: 'Ongoing', value: '' },
+    { title: 'Upcoming', value: 'upcoming' },
     { title: 'Completed' }
   ]
 
@@ -86,6 +88,7 @@ function Journey ({ navigation }) {
       const token = await AsyncStorage.getItem('token')
       await deleteJourney(id, token)
       _getJourneys('')
+      _getMyJourneys()
       handleChange('loading', false)
       Toast.show('Journey Deleted Successfully!')
     } catch (error) {
@@ -97,7 +100,6 @@ function Journey ({ navigation }) {
     }
   }
 
-  
   const getOrderType1 = status => {
     if (status) {
       const filtered = journeys?.filter(e => e?.status !== status)
@@ -106,12 +108,16 @@ function Journey ({ navigation }) {
   }
 
   const getOrderType = status => {
-    if (status) {
-      const filtered = journeys?.filter(e => e.status === status)
-      return filtered || []
-    } else return []
+    console.warn('status', status)
+    if (status === 'ongoing') {
+      // const filtered = journeys?.filter(e => e.status === status)
+      return myjourneys?.ongoing || []
+    } else if (status === 'upcoming') {
+      return myjourneys?.upcoming || []
+    } else return myjourneys?.completed || []
   }
 
+  console.warn('myJourneys', myjourneys?.upcoming)
 
   return (
     <View style={styles.container}>

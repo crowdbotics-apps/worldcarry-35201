@@ -102,6 +102,7 @@ function CreateJourney ({ navigation, route }) {
     setMapLocationForArrival,
     _getJourneys,
     myAddresses,
+    _getMyJourneys,
     _getMyAddresses
   } = context
 
@@ -198,6 +199,7 @@ function CreateJourney ({ navigation, route }) {
       const res1 = await createMyAddresses(payload1, token)
       const res2 = await createMyAddresses(payload2, token)
       _getJourneys('')
+      _getMyJourneys()
       _getMyAddresses()
       handleChange('loading', false)
       handleChange('createdJourney', res?.data)
@@ -363,6 +365,8 @@ function CreateJourney ({ navigation, route }) {
       handleChange('arrival_state', '')
       handleChange('arrival_country', '')
       handleChange('date_of_journey', '')
+      handleChange('departure_city_state', '')
+      handleChange('arrival_city_state', '')
     } else if (step === 1) {
       handleChange('willing_to_carry', [])
       handleChange('total_weight', '')
