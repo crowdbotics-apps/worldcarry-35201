@@ -17,7 +17,7 @@ class JourneySerializer(serializers.ModelSerializer):
         model = Journey
         fields = ('id', 'user', 'type', 'departure_city', 'departure_state', 'departure_country', 'arrival_city',
                   'arrival_state', 'arrival_country', 'date_of_journey', 'date_of_return', 'willing_to_carry',
-                  'total_weight', 'status', 'offers')
+                  'total_weight', 'status', 'offers', 'created_at')
 
         extra_kwargs = {
             'user': {

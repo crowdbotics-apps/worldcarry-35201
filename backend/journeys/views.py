@@ -34,13 +34,15 @@ class JourneyViewSet(ModelViewSet):
     @action(detail=False, methods=['get'])
     def onroute(self, request):
         order_id = request.query_params.get('order_id')
+        ordering = request.query_params.get('ordering', '-created_at')
+
         try:
             order = Order.objects.get(id=order_id)
         except Order.DoesNotExist:
             return Response({"detail": "Invalid Journey ID"}, status=status.HTTP_400_BAD_REQUEST)
         journeys = self.filter_queryset(get_on_rout_journeys(order))
         journeys = journeys.exclude(id__in=list(JourneyOrder.objects.filter(
-            order=order, allowed_by_sender=True).values_list('journey_id', flat=True)))
+            order=order, allowed_by_sender=True).values_list('journey_id', flat=True))).order_by(ordering)
         serializer = JourneySerializer(journeys, many=True)
         return Response(serializer.data)
 
