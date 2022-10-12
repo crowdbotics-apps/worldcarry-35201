@@ -345,6 +345,7 @@ function Chat ({ navigation, route }) {
             style={{
               color: COLORS.primary,
               marginLeft: 10,
+              width:'60%',
               fontFamily: FONT1REGULAR,
               fontSize: hp(1.8)
             }}

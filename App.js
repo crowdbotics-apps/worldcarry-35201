@@ -13,7 +13,7 @@ import {
   getOrders,
   registerDevice
 } from './api/order'
-import { getJourneys, getMyAddresses } from './api/journey'
+import { getJourneys, getMyAddresses, getMyJourneys } from './api/journey'
 import messaging from '@react-native-firebase/messaging'
 import { Alert, Platform, SafeAreaView } from 'react-native'
 import { StripeProvider } from '@stripe/stripe-react-native'
@@ -25,6 +25,7 @@ function App () {
   const [mapLocationForArrival, setMapLocationForArrival] = useState(null)
   const [orders, setOrders] = useState([])
   const [journeys, setJourneys] = useState([])
+  const [myjourneys, setMyJourneys] = useState([])
   const [myAddresses, setMyAddresses] = useState([])
   const [forMeReviews, setForMeReviews] = useState([])
   const [byMeReviews, setByMeReviews] = useState([])
@@ -79,6 +80,17 @@ function App () {
       const qs = payload || ''
       const res = await getJourneys(qs, token)
       setJourneys(res?.data)
+    } catch (error) {
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
+
+  const _getMyJourneys = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token')
+      const res = await getMyJourneys(token)
+      setMyJourneys(res?.data)
     } catch (error) {
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText}`)
@@ -199,7 +211,9 @@ function App () {
         byMeReviews,
         requestUserPermission,
         _createNotification,
-        completedOrders
+        completedOrders,
+        _getMyJourneys,
+        myjourneys
       }}
     >
       <StripeProvider

@@ -15,7 +15,8 @@ function AuthLoading ({ navigation }) {
     _getMyAddresses,
     _getNotification,
     _getByMeReviews,
-    _getForMeReviews
+    _getForMeReviews,
+    _getMyJourneys
   } = context
 
   useEffect(() => {
@@ -35,6 +36,7 @@ function AuthLoading ({ navigation }) {
       _getOrders(`?user=${userData?.id}`)
       _getOrders(`?user=${userData?.id}&status=Received`, true)
       _getJourneys('')
+      _getMyJourneys('')
       _getMyAddresses()
       _getByMeReviews(userData?.id)
       _getForMeReviews(userData?.id)

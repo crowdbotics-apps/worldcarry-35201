@@ -53,7 +53,7 @@ function FeedBack ({ navigation, route }) {
       file && file.map((fil, index) => payload.append('file', fil))
       const res = await postFeedback(payload, token)
       handleChange('loading', false)
-      Toast.show(`Feebback has been submitted`)
+      Toast.show(`Feedback has been submitted`)
       navigation.goBack()
     } catch (error) {
       handleChange('loading', false)

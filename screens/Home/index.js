@@ -206,7 +206,6 @@ function Home ({ navigation }) {
     )
   }
 
-  console.warn('completedOrders', completedOrders)
   const _renderItem = ({ item, index }) => {
     return (
       <View key={index} style={[{ width: '100%', alignItems: 'center' }]}>
@@ -808,17 +807,17 @@ const styles = StyleSheet.create({
   },
   stepText: {
     color: COLORS.white,
-    fontSize: hp(2),
+    fontSize: hp(1.6),
     fontFamily: FONT1REGULAR
   },
   titleText: {
     color: COLORS.white,
-    fontSize: hp(2.8),
+    fontSize: hp(2.2),
     fontFamily: FONT1BOLD
   },
   descText: {
     color: COLORS.white,
-    fontSize: hp(2),
+    fontSize: hp(1.8),
     fontFamily: FONT1LIGHT
   },
   activeTabText: {

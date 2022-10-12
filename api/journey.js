@@ -3,6 +3,9 @@ import { API } from './'
 export const getJourneys = (payload, token) => {
   return API.get(`api/v1/journeys/${payload}`, token)
 }
+export const getMyJourneys = token => {
+  return API.get(`api/v1/journey/my-journey`, token)
+}
 
 export const getJourneyDetails = (id, token) => {
   return API.get(`api/v1/journeys/${id}/`, token)
