@@ -9,12 +9,13 @@ def create_notification(data:dict) -> Notification:
         image=data.get("images", ""),
         user=data.get("user", ""),
     )
-    send_notification(
-        user_id=notification.user.id,
-        title=notification.name,
-        message=notification.description,
-        data={
-            "image":notification.image
-        }
-    )
+    if notification.user.profile.send_notification:
+        send_notification(
+            user_id=notification.user.id,
+            title=notification.name,
+            message=notification.description,
+            data={
+                "image": notification.image
+            }
+        )
     return notification

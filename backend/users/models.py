@@ -61,6 +61,7 @@ class Profile(UUIDModel):
     email_verification_otp = models.CharField(max_length=6, blank=True, null=True)
     phone_verification_otp = models.CharField(max_length=6, blank=True, null=True)
     passport_status = models.CharField(default="Not Applied", max_length=20)
+    send_notification = models.BooleanField(default=True)
 
 
 class UserPassportImage(UUIDModel):

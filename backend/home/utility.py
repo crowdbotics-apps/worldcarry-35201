@@ -102,7 +102,7 @@ def send_verification_phone(user:User, phone:str):
     user.profile.phone_verification_otp = otp
     user.profile.verified_phone = phone
     user.profile.save()
-    message= "World Carry! <br> Your otp verification code is {}".format(otp)
-    send_sms(num=phone, message=message)
-    response = {"message":"Email successfully connected"}
+    message = "World Carry! <br> Your otp verification code is {}".format(otp)
+    result = send_sms(num=phone, message=message)
+    response = {"message": result}
     return response

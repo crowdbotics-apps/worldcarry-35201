@@ -9,7 +9,7 @@ def get_otp():
     return totp.now()
 
 
-def send_sms(num: str, message:str)->None:
+def send_sms(num: str, message: str) -> str:
     account = settings.TWILIO_ACCOUNT_ID
     token = settings.TWILIO_TOKEN
     client = Client(account, token)
@@ -17,5 +17,7 @@ def send_sms(num: str, message:str)->None:
     try:
         message = client.messages.create(to=num, from_=settings.TWILIO_DEFAULT_NUMBER,
                                          body=message)
+        return message
     except TwilioRestException as e:
         print(e)
+        return str(e.msg)
