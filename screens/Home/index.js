@@ -59,6 +59,7 @@ import { Icon } from 'react-native-elements'
 import { getFAQ } from '../../api/auth'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useFocusEffect } from '@react-navigation/native'
+import { Platform } from 'react-native'
 
 const SECTIONS = [
   {
@@ -178,6 +179,7 @@ function Home ({ navigation }) {
   useFocusEffect(
     useCallback(() => {
       _getFAQ()
+      requestGeolocationPermission()
     }, [])
   )
 
@@ -187,6 +189,24 @@ function Home ({ navigation }) {
 
   const _updateSections = activeSections => {
     handleChange('activeSections', activeSections)
+  }
+
+  async function requestGeolocationPermission () {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'World Carry Geolocation Permission',
+          message: 'World Carry needs access to your current location.'
+        }
+      )
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      } else {
+        console.log('Geolocation permission denied')
+      }
+    } catch (err) {
+      console.warn(err)
+    }
   }
 
   const _renderHeader = section => {

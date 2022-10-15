@@ -45,7 +45,7 @@ function Settings ({ navigation }) {
   const [state, setState] = useState({
     avatarSourceURL: '',
     loading: false,
-    isNotification: false
+    isNotification: user?.profile?.send_notification || false
   })
 
   const { avatarSourceURL, isNotification } = state
@@ -92,7 +92,7 @@ function Settings ({ navigation }) {
       })
   }
 
-  const handleProfile = async photo => {
+  const handleProfile = async (photo, notification, notificationValue) => {
     try {
       handleChange('loading', true)
       const token = await AsyncStorage.getItem('token')
@@ -101,12 +101,15 @@ function Settings ({ navigation }) {
       if (photo) {
         formData.append('profile.photo', photo)
       }
+      if (notification) {
+        formData.append('profile.send_notification', notificationValue)
+      }
       const res = await updateProfile(formData, user_id, token)
       if (res?.status === 200) {
         context?.setUser(res?.data)
         await AsyncStorage.setItem('user', JSON.stringify(res?.data))
         handleChange('loading', false)
-        Toast.show('Profile Picture Update Successfully')
+        Toast.show(notification?'Notification Setting Update Successfully':'Profile Picture Update Successfully')
       } else {
         handleChange('loading', false)
         Toast.show('Something went wrong!')
@@ -118,7 +121,7 @@ function Settings ({ navigation }) {
       Toast.show(`Error: ${showWError[0]}`)
     }
   }
-  console.warn('user',user);
+  console.warn('user', user)
 
   const list1 = [
     {
@@ -293,9 +296,13 @@ function Settings ({ navigation }) {
                 </Text>
                 {item?.switch && (
                   <Switch
-                    value={isNotification}
+                    value={user?.profile?.send_notification}
                     onChange={() =>
-                      handleChange('isNotification', !isNotification)
+                      handleProfile(
+                        false,
+                        true,
+                        !user?.profile?.send_notification
+                      )
                     }
                   />
                 )}

@@ -456,7 +456,7 @@ function JourneyDetails ({ navigation, route }) {
         ))}
       </ScrollView>
       {active === 'Offers' && (
-        <View style={[styles.row, { marginTop: -50, marginBottom: 20 }]}>
+        <View style={[styles.row, { marginTop: getOrderFromStatus()?.length>0?-60: -20, marginBottom: 20 }]}>
           <TouchableOpacity
             onPress={() => handleChange('filterSelected', 'Most Recent')}
             style={

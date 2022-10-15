@@ -352,7 +352,7 @@ function CreateJourney ({ navigation, route }) {
         longitudeDelta: LONGITUDE_DELTA
       }
       setState(pre => ({ ...pre, initialRegion: region }))
-      mapRef && mapRef?.current?.animateToRegion(region)
+      // mapRef && mapRef?.current?.animateToRegion(region)
     })
   }
 

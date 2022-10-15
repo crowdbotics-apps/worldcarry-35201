@@ -102,7 +102,7 @@ function PaymentMethod ({ navigation }) {
               }
             >
               <View style={styles.row}>
-                <BouncyCheckbox
+                {/* <BouncyCheckbox
                   size={18}
                   fillColor={COLORS.primary}
                   disableBuiltInState={true}
@@ -110,7 +110,7 @@ function PaymentMethod ({ navigation }) {
                   disableText={true}
                   isChecked={paymethods === 'bank' ? true : false}
                   iconStyle={{ borderColor: COLORS.primary, borderRadius: 20 }}
-                />
+                /> */}
                 <Text style={[styles.text]}>
                   **** **** **** {item?.card?.last4}
                 </Text>

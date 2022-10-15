@@ -68,7 +68,7 @@ function EditNumber ({ navigation }) {
             onChange={handleChange}
             name={'phone'}
             placeholder={'Edit Number'}
-            inputLabel={'Edit Number'}
+            inputLabel={'Number'}
           />
         </View>
       </View>

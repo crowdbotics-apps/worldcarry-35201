@@ -49,7 +49,7 @@ function EditMail ({ navigation }) {
     <View style={styles.container}>
       <View style={{ width: '100%', alignItems: 'center' }}>
         <Header
-          title={'Edit Number'}
+          title={'Change Email'}
           color={COLORS.darkBlack}
           cross
           rightItem={
@@ -68,7 +68,7 @@ function EditMail ({ navigation }) {
             onChange={handleChange}
             name={'email'}
             placeholder={'Edit Mail'}
-            inputLabel={'Edit Mail'}
+            inputLabel={'Email'}
           />
         </View>
       </View>

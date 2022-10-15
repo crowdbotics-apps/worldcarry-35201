@@ -67,7 +67,7 @@ function EditUsername ({ navigation }) {
             onChange={handleChange}
             name={'name'}
             placeholder={'Edit Name'}
-            inputLabel={'Edit Name'}
+            inputLabel={'Name'}
           />
         </View>
       </View>
