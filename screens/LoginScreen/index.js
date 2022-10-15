@@ -294,7 +294,7 @@ function LoginScreen ({ navigation, route }) {
         })
         .catch(error => {
           handleChange('loading', false)
-          console.warn('err', error)
+          console.warn('errcaaaaa', error)
           Toast.show(`Error: ${error.message}`)
         })
         .catch(error => {
@@ -446,7 +446,7 @@ function LoginScreen ({ navigation, route }) {
                 onChangeText={text => handleChange('password', text)}
                 value={password}
                 placeholderTextColor={COLORS.navy}
-                secureTextEntry={!showPassword && password != ''}
+                secureTextEntry={!showPassword}
               />
               <TouchableOpacity
                 onPress={() => handleChange('showPassword', !showPassword)}
@@ -495,7 +495,7 @@ function LoginScreen ({ navigation, route }) {
             </View>
             <View style={styles.buttonWidth}>
               <AppButton
-                title={'SIGN IN'}
+                title={'Login'}
                 loading={loading}
                 disabled={!email || !password}
                 onPress={handleLogin}
@@ -560,7 +560,7 @@ function LoginScreen ({ navigation, route }) {
                 style={styles.textInput}
                 placeholderTextColor={COLORS.navy}
                 onChangeText={text => handleChange('password', text)}
-                secureTextEntry={!showPassword && password != ''}
+                secureTextEntry={!showPassword}
               />
               <TouchableOpacity
                 onPress={() => handleChange('showPassword', !showPassword)}
@@ -596,7 +596,7 @@ function LoginScreen ({ navigation, route }) {
                 value={confirm_password}
                 style={styles.textInput}
                 onChangeText={text => handleChange('confirm_password', text)}
-                secureTextEntry={!showConfirmPassword && confirm_password != ''}
+                secureTextEntry={!showConfirmPassword}
               />
               <TouchableOpacity
                 onPress={() =>
@@ -638,7 +638,7 @@ function LoginScreen ({ navigation, route }) {
             </View>
             <View style={styles.buttonWidth}>
               <AppButton
-                title={'Sign Up'}
+                title={'Signup'}
                 loading={loading}
                 disabled={
                   !name ||

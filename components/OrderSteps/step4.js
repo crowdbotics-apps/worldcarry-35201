@@ -176,7 +176,7 @@ export default function Step4 ({
                       color={COLORS.primary}
                       onPress={() => _removePayMethod(item?.id)}
                       backgroundColor={'transparent'}
-                      width={100}
+                      width={120}
                     />
                   </View>
                 )}

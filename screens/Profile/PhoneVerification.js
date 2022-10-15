@@ -138,7 +138,9 @@ function PhoneVerification ({ navigation }) {
             <AppInput
               placeholder={'phone number'}
               value={phone_number}
+              keyboardType='phone-pad'
               name={'phone_number'}
+              returnKeyType='done'
               onChange={handleChange}
               borderColor={COLORS.borderColor1}
             />

@@ -318,7 +318,7 @@ function Journey ({ navigation }) {
             <AppButton
               title={'Create Journey'}
               onPress={() => navigation.navigate('CreateJourney')}
-              width={150}
+              width={200}
               color={COLORS.primary}
               backgroundColor={COLORS.lightblue}
             />

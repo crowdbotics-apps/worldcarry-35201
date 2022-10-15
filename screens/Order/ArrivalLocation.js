@@ -155,7 +155,7 @@ function ArrivalLocation ({ navigation }) {
         mapRef && mapRef?.current?.animateToRegion(region)
       },
       error => console.log('Error', JSON.stringify(error)),
-      {
+      Platform.OS !== 'ios' &&  {
         enableHighAccuracy: Platform.OS === 'ios' ? false : true,
         timeout: 20000,
         maximumAge: 1000

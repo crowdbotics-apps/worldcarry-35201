@@ -1,5 +1,5 @@
 import React from 'react'
-import { Platform, View } from 'react-native'
+import { Platform, SafeAreaView, View } from 'react-native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import Modal from 'react-native-modal'
 import { COLORS } from '../../../constants'
@@ -8,7 +8,7 @@ import styles from './styles'
 const CustomModel = ({ visible, isNotBar, width, height, children }) => {
   const content = () => {
     return (
-      <View style={styles.screen}>
+      <SafeAreaView style={styles.screen}>
         <View
           style={[
             styles.screenContainer,
@@ -33,7 +33,7 @@ const CustomModel = ({ visible, isNotBar, width, height, children }) => {
           )}
           <View style={{ flex: 1, width: '100%' }}>{children}</View>
         </View>
-      </View>
+      </SafeAreaView>
     )
   }
 

@@ -110,7 +110,7 @@ export default function Step5 ({ createdOrder, navigation }) {
               </View>
             </View>
             <View style={{ alignItems: 'flex-end', width: '20%' }}>
-              <Text style={[styles.nameText, { fontSize: hp(2.4) }]}>
+              <Text style={[styles.nameText, { fontSize: hp(2) }]}>
                 ${createdOrder?.carrier_reward}
               </Text>
               <Text style={styles.postedText}>Reward</Text>
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
   },
   postedText: {
     color: COLORS.darkGrey,
-    fontSize: hp(1.8),
+    fontSize: hp(1.7),
     fontFamily: FONT1REGULAR
   },
   product_image: {

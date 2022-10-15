@@ -74,6 +74,10 @@
 	<string>$(PRODUCT_NAME) Need microphone access for uploading videos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>$(PRODUCT_NAME) Need gallery access to take photo</string>
+  <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>whatsapp</string>
+    </array>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

@@ -44,7 +44,7 @@ const ASPECT_RATIO = width / height
 let LATITUDE_DELTA = 0.0922
 let LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
-function PickupLocation ({ navigation }) {
+function PickupLocation({ navigation }) {
   var mapRef = useRef(null)
   const [state, setState] = useState({
     loading: false,
@@ -111,7 +111,7 @@ function PickupLocation ({ navigation }) {
     }
   }
 
-  async function requestGeolocationPermission () {
+  async function requestGeolocationPermission() {
     try {
       if (Platform.OS === 'ios') {
         getCurrentLocation()
@@ -149,7 +149,7 @@ function PickupLocation ({ navigation }) {
         mapRef && mapRef?.current?.animateToRegion(region)
       },
       error => console.log('Error', JSON.stringify(error)),
-      {
+      Platform.OS !== 'ios' && {
         enableHighAccuracy: Platform.OS === 'ios' ? false : true,
         timeout: 20000,
         maximumAge: 1000

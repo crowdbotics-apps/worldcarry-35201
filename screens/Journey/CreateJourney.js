@@ -41,7 +41,7 @@ const ASPECT_RATIO = width / height
 let LATITUDE_DELTA = 0.0922
 let LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
-function CreateJourney ({ navigation, route }) {
+function CreateJourney({ navigation, route }) {
   const activeRoundParams = route?.params?.activeRoundParams
   const [state, setState] = useState({
     loading: false,
@@ -336,7 +336,7 @@ function CreateJourney ({ navigation, route }) {
           .catch(error => console.warn('Geocodererror', error))
       },
       error => console.log('Error', JSON.stringify(error)),
-      {
+      Platform.OS !== 'ios' && {
         enableHighAccuracy: Platform.OS === 'ios' ? false : true,
         timeout: 20000,
         maximumAge: 1000
@@ -376,16 +376,16 @@ function CreateJourney ({ navigation, route }) {
   const disabled =
     step === 0
       ? !departure_city ||
-        !departure_state ||
-        !departure_country ||
-        !arrival_city ||
-        !arrival_state ||
-        !arrival_country ||
-        !date_of_journey
+      !departure_state ||
+      !departure_country ||
+      !arrival_city ||
+      !arrival_state ||
+      !arrival_country ||
+      !date_of_journey
       : willing_to_carry.length === 0 ||
-        !total_weight ||
-        Number(total_weight) === 0 ||
-        isNotValidWeight
+      !total_weight ||
+      Number(total_weight) === 0 ||
+      isNotValidWeight
 
   return (
     <View style={{ height: '100%', width: '100%' }}>
