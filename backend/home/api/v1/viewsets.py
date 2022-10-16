@@ -63,6 +63,10 @@ class ValidatePassport(APIView):
         passport = request.build_absolute_uri(user_passport_new.passport_photo.url)
         photo = request.build_absolute_uri(user_passport_new.passport_photo.url)
 
+        #  local works like this
+        # passport = user_passport_new.passport_photo.url
+        # photo = (user_passport_new.passport_photo.url)
+
         result = analyze_passport(passport=passport, biometric=photo)
 
         user_passport_new.passport_data = result.get('passport_data', None)
@@ -72,6 +76,12 @@ class ValidatePassport(APIView):
         user_passport_new.biometric_score = result.get('biometric_verification_score')
         user_passport_new.biometric_error = result.get('biometric_error')
         user_passport_new.save()
+
+        if result.get('passport_data', None):
+            if result.get('passport_data').get('documentNumber', None):
+                if result.get('passport_data').get('documentNumber') != data['passport_number']:
+                    return Response({'success': False, 'message': 'Passport Number do not match', 'api_response': result,
+                                     "photos_url": [passport, photo]})
 
         if not result.get('passport_valid', False):
             return Response({'success': False, 'message': 'Fake Passport', 'api_response': result,
