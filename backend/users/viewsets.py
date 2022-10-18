@@ -160,9 +160,10 @@ class UserViewSet(ModelViewSet):
                 if not phone or request.user.profile.is_phone_verified:
                     return Response(data={"message":"Phone field is missing or phone already verified"},status=status.HTTP_400_BAD_REQUEST)
                 response = send_verification_phone(request.user, phone=phone)
+                response_status = response.pop('status')
                 return Response(
                     data=response,
-                    status=status.HTTP_200_OK
+                    status=response_status
                 )
             except Exception as e:
                 return Response(
