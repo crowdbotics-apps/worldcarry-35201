@@ -80,22 +80,22 @@ class ValidatePassport(APIView):
         if result.get('passport_data', None):
             if result.get('passport_data').get('documentNumber', None):
                 if result.get('passport_data').get('documentNumber') != data['passport_number']:
-                    return Response({'success': False, 'message': 'Passport Number do not match', 'api_response': result,
-                                     "photos_url": [passport, photo]})
+                    return Response(status=400, data={'success': False, 'message': 'Passport Number do not match',
+                                                      'api_response': result, "photos_url": [passport, photo]})
 
         if not result.get('passport_valid', False):
-            return Response({'success': False, 'message': 'Fake Passport', 'api_response': result,
-                             "photos_url": [passport, photo]})
+            return Response(status=400, data={'success': False, 'message': 'Fake Passport', 'api_response': result,
+                                              "photos_url": [passport, photo]})
 
         if result.get('passport_valid', False) and result.get('biometric_verified', False):
             user.passport_status = "Pending"
             user.save()
-            return Response({'success': True, 'message': 'Passport is verified Successfully', 'api_response': result,
-                             "photos_url": [passport, photo]})
+            return Response(status=200, data={'success': True, 'message': 'Passport is verified Successfully',
+                                              'api_response': result, "photos_url": [passport, photo]})
 
         if result.get('passport_valid', False) and not result.get('biometric_verified', False):
-            return Response({'success': False, 'message': result.get('biometric_error'), 'api_response': result,
-                             "photos_url": [passport, photo]})
+            return Response(status=400, data={'success': False, 'message': result.get('biometric_error'),
+                                              'api_response': result, "photos_url": [passport, photo]})
 
 
 class NotificationView(APIView):
