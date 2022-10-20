@@ -298,6 +298,11 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 AWS_QUERYSTRING_AUTH = False
 
+APPLE_CLIENT_ID = env.str("APPLE_CLIENT_ID", "")
+APPLE_CLIENT_SECRET = env.str("APPLE_CLIENT_SECRET", "")
+APPLE_KEY = env.str("APPLE_KEY", "")
+APPLE_CERT = env.str("APPLE_CERT", "")
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
@@ -314,8 +319,26 @@ SOCIALACCOUNT_PROVIDERS = {
             'public_profile'
         ],
         'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+    },
+        "apple": {
+        "APP": {
+            # Your service identifier.
+            "client_id": APPLE_CLIENT_ID,
+
+            # The Key ID (visible in the "View Key Details" page).
+            "secret": APPLE_CLIENT_SECRET,
+
+             # Member ID/App ID Prefix -- you can find it below your name
+             # at the top right corner of the page, or it’s your App ID
+             # Prefix in your App ID.
+            "key": APPLE_KEY,
+
+            # The certificate you downloaded when generating the key.
+            "certificate_key": APPLE_CERT
+        }
     }
 }
+
 
 TWILIO_ACCOUNT_ID = env.str("TWILIO_ACCOUNT_ID", "")
 TWILIO_TOKEN = env.str("TWILIO_TOKEN", "")
