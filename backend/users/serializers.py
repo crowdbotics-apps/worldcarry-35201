@@ -191,7 +191,7 @@ class PassportAuthenticationSerializer(serializers.Serializer):
     last_name = serializers.CharField(required=True)
     passport_number = serializers.CharField(required=True)
     gender = serializers.CharField(required=True)
-    meeting_datetime = serializers.DateTimeField(required=True, format="%Y-%m-%d %H:%M:%S")
+    meeting_datetime = serializers.DateTimeField(required=False, format="%Y-%m-%d %H:%M:%S")
 
 
 class UserNotificationSerializer(serializers.Serializer):
