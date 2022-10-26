@@ -78,9 +78,10 @@ function PassportVerification ({ navigation }) {
     if (step === 0) {
       handleChange('step', 1)
     } else if (step === 1) {
-      handleChange('step', 2)
-    } else if (step === 2) {
+      // handleChange('step', 2)
       _validatePassort()
+    } else if (step === 2) {
+      // _validatePassort()
     }
   }
 
@@ -95,11 +96,11 @@ function PassportVerification ({ navigation }) {
       payload.append('gender', gender)
       payload.append('selfie_photo', selfie_photo)
       payload.append('passport_photo', passport_photo)
-      payload.append(
-        'meeting_datetime',
-        moment(schedule_video_date).format('YYYY-MM-DD ') + schedule_video_time
-      )
-      console.warn('payload',payload);
+      // payload.append(
+      //   'meeting_datetime',
+      //   moment(schedule_video_date).format('YYYY-MM-DD ') + schedule_video_time
+      // )
+      console.warn('payload', payload)
       const res = await validatePassort(payload, token)
       console.warn('res', res?.data?.success)
       handleChange('loading', false)
@@ -112,8 +113,12 @@ function PassportVerification ({ navigation }) {
     } catch (error) {
       handleChange('loading', false)
       const errorText = Object.values(error?.response?.data)
-      console.warn('errorText',errorText);
-      Toast.show(`Error: ${errorText}`)
+      console.warn('errorText', error?.response?.data?.message)
+      if (error?.response?.data?.message) {
+        Toast.show(`Error: ${error?.response?.data?.message}`)
+      } else {
+        Toast.show(`Error: ${errorText}`)
+      }
     }
   }
 
@@ -243,12 +248,12 @@ function PassportVerification ({ navigation }) {
               2
             </Text>
           </View>
-          <View style={styles.line} />
+          {/* <View style={styles.line} />
           <View style={step === 2 ? styles.activestep : styles.inActivestep}>
             <Text style={step === 2 ? styles.activeStepText : styles.stepText}>
               3
             </Text>
-          </View>
+          </View> */}
         </View>
         {step === 0 && (
           <PassportStep1
@@ -271,15 +276,15 @@ function PassportVerification ({ navigation }) {
             handleChange={handleChange}
           />
         )}
-        {step === 2 && (
+        {/* {step === 2 && (
           <PassportStep3
             schedule_video_date={schedule_video_date}
             schedule_video_time={schedule_video_time}
             handleChange={handleChange}
           />
-        )}
+        )} */}
       </ScrollView>
-      {step < 3 && (
+      {step < 2 && (
         <View style={styles.bottom}>
           {step === 0 ? (
             <View style={{ width: '48%' }} />
@@ -294,7 +299,7 @@ function PassportVerification ({ navigation }) {
             />
           )}
           <AppButton
-            title={step === 2 ? 'Schedule' : 'Next'}
+            title={step === 1 ? 'Schedule' : 'Next'}
             disabled={disabled}
             loading={loading}
             width={'48%'}
