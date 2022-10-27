@@ -320,21 +320,27 @@ SOCIALACCOUNT_PROVIDERS = {
         ],
         'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
     },
-        "apple": {
+    "apple": {
         "APP": {
             # Your service identifier.
-            "client_id": APPLE_CLIENT_ID,
+            "client_id": "com.worldcarry.signin",
 
             # The Key ID (visible in the "View Key Details" page).
-            "secret": APPLE_CLIENT_SECRET,
+            "secret": "2W52L2B9RN",
 
              # Member ID/App ID Prefix -- you can find it below your name
              # at the top right corner of the page, or it’s your App ID
              # Prefix in your App ID.
-            "key": APPLE_KEY,
+            "key": "TBR65HNY9A",
 
             # The certificate you downloaded when generating the key.
-            "certificate_key": APPLE_CERT
+            "certificate_key": """-----BEGIN PRIVATE KEY-----
+MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgXZp9So4N47F26PuN
+wkBXFFgYGcoqew6Cocbqgx065lqgCgYIKoZIzj0DAQehRANCAARpLwKcm8ya+FWh
+pdvGyHX+o+dCkDxXkFSWHnzCIrw1oWbvaNUU7F9wZ2M61cCn09xyWFIYrt4JGWpn
+1vVBapWa
+-----END PRIVATE KEY-----
+"""
         }
     }
 }
