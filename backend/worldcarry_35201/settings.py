@@ -323,7 +323,7 @@ SOCIALACCOUNT_PROVIDERS = {
     "apple": {
         "APP": {
             # Your service identifier.
-            "client_id": "com.worldcarry.signin",
+            "client_id": "com.worldcarry.app",
 
             # The Key ID (visible in the "View Key Details" page).
             "secret": "2W52L2B9RN",
