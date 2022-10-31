@@ -541,11 +541,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = worldcarry_35201/worldcarry_35201.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
-				DEVELOPMENT_TEAM = TBR65HNY9A;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 9;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = TBR65HNY9A;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = worldcarry_35201/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = WorldCarry;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -651,6 +654,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.worldcarry.app;
 				PRODUCT_NAME = worldcarry_35201;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = worldcarrynew;
 				SWIFT_OBJC_BRIDGING_HEADER = "worldcarry_35201-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -666,10 +670,13 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = worldcarry_35201/worldcarry_35201.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
-				DEVELOPMENT_TEAM = TBR65HNY9A;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 9;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = TBR65HNY9A;
 				INFOPLIST_FILE = worldcarry_35201/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = WorldCarry;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -775,6 +782,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.worldcarry.app;
 				PRODUCT_NAME = worldcarry_35201;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = worldcarrynew;
 				SWIFT_OBJC_BRIDGING_HEADER = "worldcarry_35201-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

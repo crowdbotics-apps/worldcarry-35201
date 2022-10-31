@@ -250,8 +250,7 @@ function LoginScreen ({ navigation, route }) {
       requestedOperation: appleAuth.Operation.LOGIN,
       requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME]
     })
-    console.warn('appleAuthRequestResponse', appleAuthRequestResponse)
-    if (appleAuthRequestResponse.identityToken) {
+    if (appleAuthRequestResponse?.identityToken) {
       const payload = {
         access_token: appleAuthRequestResponse.authorizationCode,
         id_token: appleAuthRequestResponse.identityToken
