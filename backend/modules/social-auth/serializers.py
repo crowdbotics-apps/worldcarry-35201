@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from rest_auth.registration.serializers import SocialLoginSerializer, SocialConnectMixin
 from rest_framework import serializers
 from django.http import HttpRequest
@@ -116,11 +117,11 @@ class CustomAppleSocialLoginSerializer(SocialLoginSerializer):
             # add login.connect(request, email_address.user)
             # https://github.com/pennersr/django-allauth/issues/1149
             #
-            # if allauth_settings.UNIQUE_EMAIL:
-            #     # Do we have an account already with this email address?
-            #     if get_user_model().objects.filter(email=login.user.email).exists():
-            #         raise serializers.ValidationError(
-            #             'E-mail already registered using different signup method.')
+            if allauth_settings.UNIQUE_EMAIL:
+                # Do we have an account already with this email address?
+                if get_user_model().objects.filter(email=login.user.email).exists():
+                    raise serializers.ValidationError(
+                        'E-mail already registered using different signup method.')
 
             login.lookup()
             login.save(request, connect=True)
