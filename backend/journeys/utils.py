@@ -1,6 +1,6 @@
 from django.utils import timezone
-from django.db.models import Q
-from journeys.models import Journey
+from django.db.models import Q, Subquery
+from journeys.models import Journey, DeclineJourneyOrder
 
 
 def get_on_rout_journeys(order):
@@ -28,4 +28,7 @@ def get_on_rout_journeys(order):
                 Q(arrival_country=order.arrival_address_country)
         )
     )
+    # Excluding already reject offers
+    journeys = journeys.exclude(id__in=Subquery(DeclineJourneyOrder.objects.filter(order=order).values_list(
+            'journey', flat=True)))
     return journeys

@@ -78,3 +78,11 @@ class JourneyOrder(UUIDModel):
     class Meta:
         unique_together = (('journey', 'order'), )
         db_table = 'journey_order'
+
+
+class DeclineJourneyOrder(UUIDModel):
+    journey = models.ForeignKey(Journey, on_delete=models.CASCADE, null=False)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=False)
+
+    class Meta:
+        db_table = 'decline_journey_order'

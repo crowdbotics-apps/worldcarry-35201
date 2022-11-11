@@ -3,16 +3,16 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import CreateAPIView
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import Q
 from django.utils import timezone
 from home.filters import JourneyFilter
 from home.constants import JourneyStatus
 from orders.models import Order
-from .serializers import JourneySerializer, JourneyOrderSerializer, MyJourneySerilaizer
+from .serializers import JourneySerializer, JourneyOrderSerializer, MyJourneySerilaizer, DeclineJourneyOrderSerializer
 from rest_framework.views import APIView
 
-from .models import Journey, JourneyOrder
+from .models import Journey, JourneyOrder, DeclineJourneyOrder
 from .utils import get_on_rout_journeys
 from users.authentication import ExpiringTokenAuthentication
 from admin_panel.apps.push_notification.services import create_notification
@@ -107,3 +107,9 @@ class MyJourneyView(APIView):
 
         serializer = MyJourneySerilaizer(data)
         return Response(serializer.data)
+
+
+class RejectOfferView(CreateAPIView):
+    serializer_class = DeclineJourneyOrderSerializer
+    permission_classes = (IsAuthenticated,)
+    queryset = DeclineJourneyOrder.objects.all()

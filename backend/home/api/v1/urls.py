@@ -8,7 +8,7 @@ from home.api.v1.viewsets import (
     ValidatePassport,
     NotificationView
 )
-from journeys.views import JourneyViewSet, JourneyOrderRequest, MyJourneyView
+from journeys.views import JourneyViewSet, JourneyOrderRequest, MyJourneyView, RejectOfferView
 from locations.views import LocationViewSet
 from orders.views import OrderViewSet, GetProductDetailView, QRScanOrder, UpdateOrderStatus
 from reviews.views import ReviewViewSet
@@ -38,6 +38,6 @@ urlpatterns = [
     path("feedback", FeedbackAPIView.as_view(), name='feedback_create'),
     path("faq", FAQListAPIView.as_view(), name='faq_list'),
     path("support", SupportCreateAPIView.as_view(), name='support_create'),
-    #path('notifications/', include('notifications_rest.urls')),
+    path("reject/offer/", RejectOfferView.as_view(), name='reject_offer'),
 
 ]

@@ -7,6 +7,7 @@ from .models import Order, OrderImages
 from journeys.utils import get_on_rout_journeys
 from users.serializers import UserProfileSerializer
 from home.constants import ORDER_STATUS
+from reviews.models import Review
 
 from datetime import timedelta
 
@@ -47,6 +48,7 @@ class OrderSerializer(serializers.ModelSerializer):
         required=False
     )
     can_transit = serializers.ReadOnlyField()
+    reviewed = serializers.SerializerMethodField()
     journey = serializers.ReadOnlyField(allow_null=True, source='order_journey')
     payment_method_id = serializers.CharField(write_only=True)
 
@@ -54,8 +56,12 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = '__all__'
 
+    @staticmethod
+    def get_reviewed(obj):
+        return True if Review.objects.filter(order=obj).exists() else False
+
     def create(self, validated_data):
-        user =  self.context['request'].user
+        user = self.context['request'].user
         images_data = validated_data.pop('images', None)
         payment_method = validated_data.pop('payment_method_id', None)
         order = super().create(validated_data)

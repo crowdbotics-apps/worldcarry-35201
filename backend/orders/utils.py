@@ -1,5 +1,6 @@
-from django.db.models import Q
+from django.db.models import Q, Subquery
 from orders.models import Order
+from journeys.models import DeclineJourneyOrder
 
 
 def get_onround_orders(journey):
@@ -16,5 +17,8 @@ def get_onround_orders(journey):
         orders = Order.objects.filter(status__in=order_statuses,
                                       pickup_address_country=journey.departure_country,
                                       arrival_address_country=journey.arrival_country)
+    # Excluding already reject offers
+    orders = orders.exclude(id__in=Subquery(DeclineJourneyOrder.objects.filter(journey=journey).values_list(
+        'order', flat=True)))
 
     return orders

@@ -2,9 +2,10 @@ from rest_framework import serializers
 from django.db.models import Q
 from users.serializers import UserProfileSerializer
 
-from .models import Journey, JourneyOrder
+from .models import Journey, DeclineJourneyOrder
 from orders.models import Order
 from orders.utils import get_onround_orders
+from reviews.models import Review
 
 
 class JourneySerializer(serializers.ModelSerializer):
@@ -12,12 +13,13 @@ class JourneySerializer(serializers.ModelSerializer):
     A data serialization of a Carrier User's Journey
     """
     offers = serializers.SerializerMethodField()
+    reviewed = serializers.SerializerMethodField()
 
     class Meta:
         model = Journey
         fields = ('id', 'user', 'type', 'departure_city', 'departure_state', 'departure_country', 'arrival_city',
                   'arrival_state', 'arrival_country', 'date_of_journey', 'date_of_return', 'willing_to_carry',
-                  'total_weight', 'status', 'offers', 'created_at')
+                  'total_weight', 'status', 'offers', 'created_at', 'reviewed')
 
         extra_kwargs = {
             'user': {
@@ -40,6 +42,10 @@ class JourneySerializer(serializers.ModelSerializer):
                                           arrival_address_country=journey.arrival_country).count()
 
         return orders
+
+    @staticmethod
+    def get_reviewed(obj):
+        return True if Review.objects.filter(journey=obj).exists() else False
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)
@@ -69,3 +75,9 @@ class MyJourneySerilaizer(serializers.Serializer):
     completed = JourneySerializer(many=True)
     ongoing = JourneySerializer(many=True)
     upcoming = JourneySerializer(many=True)
+
+
+class DeclineJourneyOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = DeclineJourneyOrder
