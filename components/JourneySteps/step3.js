@@ -22,6 +22,7 @@ export default function JourneyStep3 ({
   handleDelete,
   navigation
 }) {
+  console.warn('createdJourney', createdJourney)
   return (
     <ScrollView
       style={styles.container}
@@ -175,7 +176,7 @@ export default function JourneyStep3 ({
             backgroundColor={COLORS.upcoming}
             color={COLORS.upcomingDark}
             onPress={() =>
-              navigation.navigate('JourneyDetails', { createdJourney })
+              navigation.navigate('JourneyDetails', { item: createdJourney })
             }
             prefix={<Image source={usersIcon} style={{ marginRight: 10 }} />}
           />
@@ -318,7 +319,7 @@ export default function JourneyStep3 ({
               backgroundColor={COLORS.upcoming}
               color={COLORS.upcomingDark}
               onPress={() =>
-                navigation.navigate('JourneyDetails', { createdJourney })
+                navigation.navigate('JourneyDetails', { item: createdJourney })
               }
               prefix={<Image source={usersIcon} style={{ marginRight: 10 }} />}
             />

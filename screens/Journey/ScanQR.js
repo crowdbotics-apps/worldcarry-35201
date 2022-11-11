@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 import { RNCamera } from 'react-native-camera'
@@ -14,6 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function ScanQR ({ route, navigation }) {
   const { orderID, order, jItem } = route?.params
+  const scanner = useRef()
   const [state, setState] = useState({
     loading: false,
     visible: false,
@@ -43,6 +44,7 @@ export default function ScanQR ({ route, navigation }) {
       _makeDelivered(id)
     } else {
       alert('Please scan valid QR')
+      scanner?.current?._setScanning(false)
       handleChange('loading', false)
     }
   }
@@ -87,6 +89,7 @@ export default function ScanQR ({ route, navigation }) {
       <View style={{ width: '100%', height: '100%', alignItems: 'center' }}>
         <QRCodeScanner
           onRead={onSuccess}
+          ref={scanner}
           flashMode={RNCamera.Constants.FlashMode.auto}
           containerStyle={{ height: '100%', width: '100%' }}
           cameraContainerStyle={{ height: '100%' }}

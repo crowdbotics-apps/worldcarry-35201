@@ -23,8 +23,12 @@ import Toast from 'react-native-simple-toast'
 
 export default function JourneyStep1 ({
   handleChange,
-  departure_city_state,
+  departureCityState,
   arrival_city_state,
+  departure_city,
+  departure_state,
+  arrival_city,
+  arrival_state,
   activeRound,
   handleSearch1,
   handleSearch,
@@ -35,6 +39,7 @@ export default function JourneyStep1 ({
   handleOpen,
   getCurrentLocation
 }) {
+  console.warn('departureCityState', departureCityState)
   const [modalVisible, setModalVisible] = useState(false)
   const [showReturnCalendar, setShowReturnCalendar] = useState(false)
   const [markedDates, setMarkedDates] = useState({})
@@ -98,7 +103,7 @@ export default function JourneyStep1 ({
         />
         <View style={{ width: '90%' }}>
           <GooglePlacesAutocomplete
-            placeholder={'Departure City'}
+            placeholder={departureCityState || 'Departure City'}
             fetchDetails={true}
             currentLocation={true}
             currentLocationLabel='Current location'
@@ -108,11 +113,15 @@ export default function JourneyStep1 ({
               handleSearch(data, details)
             }}
             textInputProps={{
-              placeholderTextColor: COLORS.placeholder,
-              value: departure_city_state,
+              placeholderTextColor: departureCityState
+                ? COLORS.darkBlack
+                : COLORS.placeholder,
+              // value: departureCityState,
               onFocus: () => handleChange('isFocus', true),
-              onBlur: () => handleChange('isFocus', false),
-              onChangeText: text => handleChange('departure_city_state', text)
+              onBlur: () => handleChange('isFocus', false)
+              // onChangeText: text => {
+              //   handleChange('departureCityState', text)
+              // }
             }}
             styles={{
               // container: styles.textInput,
@@ -253,7 +262,7 @@ export default function JourneyStep1 ({
         />
         <View style={{ width: '90%' }}>
           <GooglePlacesAutocomplete
-            placeholder={'Arrival City'}
+            placeholder={arrival_city_state || 'Arrival City'}
             fetchDetails={true}
             onPress={(data, details) => {
               // 'details' is provided when fetchDetails = true
@@ -261,11 +270,13 @@ export default function JourneyStep1 ({
               handleSearch1(data, details)
             }}
             textInputProps={{
-              placeholderTextColor: COLORS.placeholder,
-              value: arrival_city_state,
+              placeholderTextColor: arrival_city_state
+                ? COLORS.darkBlack
+                : COLORS.placeholder,
+              // value: arrival_city_state,
               onFocus: () => handleChange('isFocus1', true),
-              onBlur: () => handleChange('isFocus1', false),
-              onChangeText: text => handleChange('arrival_city_state', text)
+              onBlur: () => handleChange('isFocus1', false)
+              // onChangeText: text => handleChange('arrival_city_state', text)
             }}
             styles={{
               // container: styles.textInput,
@@ -433,7 +444,13 @@ export default function JourneyStep1 ({
                   todayTextColor: '#fff',
                   todayBackgroundColor: COLORS.primary
                 }}
-                minDate={new Date()}
+                minDate={
+                  showReturnCalendar
+                    ? date_of_journey
+                      ? new Date(moment(date_of_journey))
+                      : new Date()
+                    : new Date()
+                }
                 markingType={'custom'}
                 enableSwipeMonths={true}
                 firstDay={1}

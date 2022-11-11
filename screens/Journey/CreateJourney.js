@@ -41,7 +41,7 @@ const ASPECT_RATIO = width / height
 let LATITUDE_DELTA = 0.0922
 let LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
-function CreateJourney({ navigation, route }) {
+function CreateJourney ({ navigation, route }) {
   const activeRoundParams = route?.params?.activeRoundParams
   const [state, setState] = useState({
     loading: false,
@@ -49,7 +49,7 @@ function CreateJourney({ navigation, route }) {
     departure_city: '',
     departure_state: '',
     departure_country: '',
-    departure_city_state: '',
+    departureCityState: '',
     arrival_city: '',
     arrival_city_state: '',
     arrival_state: '',
@@ -74,7 +74,7 @@ function CreateJourney({ navigation, route }) {
     departure_city,
     departure_state,
     departure_country,
-    departure_city_state,
+    departureCityState,
     arrival_city,
     arrival_city_state,
     arrival_state,
@@ -106,6 +106,8 @@ function CreateJourney({ navigation, route }) {
     _getMyAddresses
   } = context
 
+  console.warn('departureCityState',departureCityState);
+
   useEffect(() => {
     if (mapLocationForPickup) {
       handleChange('pickup_address', mapLocationForPickup)
@@ -120,6 +122,7 @@ function CreateJourney({ navigation, route }) {
   const handleChange = (name, value) => {
     setState(pre => ({ ...pre, [name]: value }))
   }
+
   const handleOpen = type => {
     handleChange('locationType', type)
     handleChange('locationOpen', true)
@@ -131,7 +134,7 @@ function CreateJourney({ navigation, route }) {
       handleChange('departure_state', location?.state)
       handleChange('departure_country', location?.country)
       handleChange(
-        'departure_city_state',
+        'departureCityState',
         location?.city + ', ' + location?.country
       )
       handleChange('locationType', '')
@@ -158,6 +161,10 @@ function CreateJourney({ navigation, route }) {
 
   const handlePrevious = () => {
     if (step === 1) {
+      handleChange(
+        'departureCityState',
+        departure_city + ' ' + departure_state
+      )
       handleChange('step', 0)
     } else if (step === 2) {
       handleChange('step', 1)
@@ -196,8 +203,16 @@ function CreateJourney({ navigation, route }) {
         country: arrival_country,
         coordinates: arrival_coords
       }
-      const res1 = await createMyAddresses(payload1, token)
-      const res2 = await createMyAddresses(payload2, token)
+      await createMyAddresses(payload1, token)
+      await createMyAddresses(payload2, token)
+      handleChange('departure_city', '')
+      handleChange('departure_state', '')
+      handleChange('departure_country', '')
+      handleChange('departure_coords', '')
+      handleChange('arrival_city', '')
+      handleChange('arrival_state', '')
+      handleChange('arrival_country', '')
+      handleChange('arrival_coords', '')
       _getJourneys('')
       _getMyJourneys()
       _getMyAddresses()
@@ -241,7 +256,7 @@ function CreateJourney({ navigation, route }) {
           }
           const departure_coords = `Point(${details?.geometry?.location?.lat} ${details?.geometry?.location?.lng})`
           handleChange('departure_coords', departure_coords)
-          handleChange('departure_city_state', city + ', ' + dState)
+          handleChange('departureCityState', city + ', ' + dState)
           handleChange('departure_city', city)
           handleChange('departure_country', country)
           handleChange('departure_state', dState)
@@ -328,7 +343,7 @@ function CreateJourney({ navigation, route }) {
             }
             const departure_coords = `Point(${lat} ${long})`
             handleChange('departure_coords', departure_coords)
-            handleChange('departure_city_state', city + ', ' + dState)
+            handleChange('departureCityState', city + ', ' + dState)
             handleChange('departure_city', city)
             handleChange('departure_country', country)
             handleChange('departure_state', dState)
@@ -365,7 +380,7 @@ function CreateJourney({ navigation, route }) {
       handleChange('arrival_state', '')
       handleChange('arrival_country', '')
       handleChange('date_of_journey', '')
-      handleChange('departure_city_state', '')
+      handleChange('departureCityState', '')
       handleChange('arrival_city_state', '')
     } else if (step === 1) {
       handleChange('willing_to_carry', [])
@@ -373,19 +388,22 @@ function CreateJourney({ navigation, route }) {
       handleChange('isNotValidWeight', false)
     }
   }
+
+  console.warn('departureCityState',departureCityState);
+  console.warn('arrival_city_state',arrival_city_state);
   const disabled =
     step === 0
       ? !departure_city ||
-      !departure_state ||
-      !departure_country ||
-      !arrival_city ||
-      !arrival_state ||
-      !arrival_country ||
-      !date_of_journey
+        !departure_state ||
+        !departure_country ||
+        !arrival_city ||
+        !arrival_state ||
+        !arrival_country ||
+        !date_of_journey
       : willing_to_carry.length === 0 ||
-      !total_weight ||
-      Number(total_weight) === 0 ||
-      isNotValidWeight
+        !total_weight ||
+        Number(total_weight) === 0 ||
+        isNotValidWeight
 
   return (
     <View style={{ height: '100%', width: '100%' }}>
@@ -480,7 +498,7 @@ function CreateJourney({ navigation, route }) {
                 departure_city={departure_city}
                 departure_state={departure_state}
                 departure_country={departure_country}
-                departure_city_state={departure_city_state}
+                departureCityState={departureCityState}
                 arrival_city={arrival_city}
                 arrival_city_state={arrival_city_state}
                 arrival_state={arrival_state}

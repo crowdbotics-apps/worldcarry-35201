@@ -7,6 +7,7 @@ buildscript {
         compileSdkVersion = 31
         targetSdkVersion = 31
         ndkVersion = "20.1.5948944"
+        kotlinVersion = "1.5.30"
         googlePlayServicesAuthVersion = "19.2.0"
     }
     repositories {
@@ -24,6 +25,11 @@ buildscript {
 }
 
 allprojects {
+    configurations.all {
+        resolutionStrategy {
+            force 'com.facebook.react:react-native:0.64.0' //select Version you used
+        }
+    }
     repositories {
         mavenLocal()
         mavenCentral()

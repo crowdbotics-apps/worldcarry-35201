@@ -44,6 +44,7 @@ import database from '@react-native-firebase/database'
 
 function JourneyOrderDetails ({ navigation, route }) {
   const item = route?.params?.item
+  console.warn('item',item);
   const successDelivered = route?.params?.successDelivered
   const active = route?.params?.active
   const order = route?.params?.order

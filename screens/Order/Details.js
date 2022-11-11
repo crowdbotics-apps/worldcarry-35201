@@ -191,28 +191,30 @@ function OrderDetails ({ navigation, route }) {
   var text = orderData?.product_name
   var count = 30
 
-  console.warn('onRouteJourneys', onRouteJourneys)
   var result =
     text && text?.slice(0, count) + (text?.length > count ? '...' : '')
 
-    const filterByRecent = offers => {
-      console.warn('offers',offers);
-      if (filterSelected === 'Most Recent') {
-        return offers.sort(function (a, b) {
-          // Turn your strings into dates, and then subtract them
-          // to get a value that is either negative, positive, or zero.
-          return new Date(convertLocalDateToUTCDate1(b?.created_at, true)) - new Date(convertLocalDateToUTCDate1(a?.created_at, true))
-        })
-      } else if (filterSelected === 'Fastest Arrival') {
-        return offers.sort(function (a, b) {
-          // Turn your strings into dates, and then subtract them
-          // to get a value that is either negative, positive, or zero.
-         return moment(b?.date_of_journey).isBefore(moment(a?.date_of_journey))
-        })
-      } else {
-        return offers
-      }
+  const filterByRecent = offers => {
+    console.warn('offers', offers)
+    if (filterSelected === 'Most Recent') {
+      return offers?.sort(function (a, b) {
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
+        return (
+          new Date(convertLocalDateToUTCDate1(b?.created_at, true)) -
+          new Date(convertLocalDateToUTCDate1(a?.created_at, true))
+        )
+      })
+    } else if (filterSelected === 'Fastest Arrival') {
+      return offers?.sort(function (a, b) {
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
+        return moment(b?.date_of_journey).isBefore(moment(a?.date_of_journey))
+      })
+    } else {
+      return offers
     }
+  }
 
   return (
     <ScrollView
@@ -514,7 +516,12 @@ function OrderDetails ({ navigation, route }) {
                   ]}
                 >
                   <View style={styles.box}>
-                    <SvgXml xml={calendarIcon} style={{ opacity: 0.6 }} />
+                    <SvgXml
+                      xml={calendarIcon}
+                      width={hp(2.5)}
+                      height={hp(2.5)}
+                      style={{ opacity: 0.6 }}
+                    />
                     <Text style={styles.boxText}>
                       {' '}
                       {moment(selectedItem?.date_of_journey).format(
@@ -523,7 +530,7 @@ function OrderDetails ({ navigation, route }) {
                     </Text>
                   </View>
                   <View style={styles.box}>
-                    <SvgXml xml={weightIcon} />
+                    <SvgXml xml={weightIcon} width={hp(2.5)} height={hp(2.5)} />
                     <Text style={styles.boxText}>
                       {selectedItem?.total_weight}Kg
                     </Text>
@@ -572,6 +579,7 @@ function OrderDetails ({ navigation, route }) {
                     outlined
                     color={COLORS.darkBlack}
                     backgroundColor={COLORS.white}
+                    onPress={() => setModalVisible(false)}
                   />
                   <AppButton
                     title={'Accept'}
@@ -789,7 +797,7 @@ const styles = StyleSheet.create({
   },
   boxText: {
     color: COLORS.darkBlack,
-    fontSize: hp(2),
+    fontSize: hp(1.6),
     marginLeft: 5,
     fontFamily: FONT1MEDIUM
   },

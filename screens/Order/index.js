@@ -792,7 +792,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingLeft: 15,
     paddingRight: 15,
-    height: hp(7),
+    height: hp(6),
     marginBottom: 20
   },
   tab: {
@@ -804,20 +804,21 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 8,
     justifyContent: 'center',
-    height: hp(5),
+    height: hp(4),
     alignItems: 'center',
     borderWidth: 1,
     borderColor: COLORS.primary
   },
   tabText: {
     color: COLORS.darkGrey,
-    fontSize: hp(2),
+    fontSize: hp(1.8),
+    marginTop:-5,
     fontFamily: FONT1MEDIUM
   },
 
   activeTabText: {
     color: COLORS.primary,
-    fontSize: hp(2),
+    fontSize: hp(1.8),
     fontFamily: FONT1MEDIUM
   },
   nameText: {

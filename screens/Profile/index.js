@@ -449,7 +449,7 @@ function Profile ({ navigation }) {
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    width: '80%'
+                    width: '70%'
                   }}
                 >
                   <SvgXml xml={item.icon} />
@@ -470,7 +470,7 @@ function Profile ({ navigation }) {
                 <View
                   style={{
                     flexDirection: 'row',
-                    alignItems: 'center'
+                    alignItems: 'center',
                   }}
                 >
                   <Text
@@ -481,7 +481,7 @@ function Profile ({ navigation }) {
                       color: COLORS.primary
                     }}
                   >
-                    {item.right}
+                    ${2003635.95}
                   </Text>
                   <Icon
                     name='right'

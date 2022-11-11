@@ -46,6 +46,7 @@ import { Icon } from 'react-native-elements'
 
 function JourneyDetails ({ navigation, route }) {
   const item = route?.params?.item
+  console.warn('item',item);
   const successDelivered = route?.params?.successDelivered
   const order = route?.params?.order
   const [state, setState] = useState({
@@ -302,16 +303,19 @@ function JourneyDetails ({ navigation, route }) {
 
   const filterByRecent = offers => {
     if (filterSelected === 'Most Recent') {
-      return offers.sort(function (a, b) {
+      return offers?.sort(function (a, b) {
         // Turn your strings into dates, and then subtract them
         // to get a value that is either negative, positive, or zero.
-        return new Date(convertLocalDateToUTCDate1(b?.created_at, true)) - new Date(convertLocalDateToUTCDate1(a?.created_at, true))
+        return (
+          new Date(convertLocalDateToUTCDate1(b?.created_at, true)) -
+          new Date(convertLocalDateToUTCDate1(a?.created_at, true))
+        )
       })
     } else if (filterSelected === 'High Reward') {
-      return offers.sort(function (a, b) {
+      return offers?.sort(function (a, b) {
         // Turn your strings into dates, and then subtract them
         // to get a value that is either negative, positive, or zero.
-       return Number(b.carrier_reward) - Number(a.carrier_reward)
+        return Number(b.carrier_reward) - Number(a.carrier_reward)
       })
     } else {
       return offers
@@ -456,7 +460,15 @@ function JourneyDetails ({ navigation, route }) {
         ))}
       </ScrollView>
       {active === 'Offers' && (
-        <View style={[styles.row, { marginTop: getOrderFromStatus()?.length>0?-60: -20, marginBottom: 20 }]}>
+        <View
+          style={[
+            styles.row,
+            {
+              marginTop: getOrderFromStatus()?.length > 0 ? -60 : -20,
+              marginBottom: 20
+            }
+          ]}
+        >
           <TouchableOpacity
             onPress={() => handleChange('filterSelected', 'Most Recent')}
             style={

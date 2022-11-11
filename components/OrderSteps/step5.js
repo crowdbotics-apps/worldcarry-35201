@@ -110,10 +110,12 @@ export default function Step5 ({ createdOrder, navigation }) {
               </View>
             </View>
             <View style={{ alignItems: 'flex-end', width: '20%' }}>
-              <Text style={[styles.nameText, { fontSize: hp(2) }]}>
+              <Text style={[styles.nameText, { fontSize: hp(1.8) }]}>
                 ${createdOrder?.carrier_reward}
               </Text>
-              <Text style={styles.postedText}>Reward</Text>
+              <Text style={[styles.postedText, { fontSize: hp(1.5) }]}>
+                Reward
+              </Text>
             </View>
           </View>
           <View style={styles.hline} />
@@ -136,7 +138,7 @@ export default function Step5 ({ createdOrder, navigation }) {
               {createdOrder?.arrival_address_country}
             </Text>
           </View> */}
-          <Text style={[styles.nameText, { fontSize: hp(2.5), width: '90%' }]}>
+          <Text style={[styles.nameText, { fontSize: hp(2), width: '90%' }]}>
             {createdOrder?.product_name}
           </Text>
           <Text style={styles.postedText}>
@@ -219,12 +221,21 @@ export default function Step5 ({ createdOrder, navigation }) {
               <Text
                 style={[
                   styles.nameText,
-                  { color: COLORS.stepGreen, fontFamily: FONT1LIGHT }
+                  {
+                    color: COLORS.stepGreen,
+                    fontFamily: FONT1LIGHT,
+                    fontSize: hp(1.6)
+                  }
                 ]}
               >
                 DELIVER FROM
               </Text>
-              <Text style={[styles.nameText, { color: COLORS.darkBlack }]}>
+              <Text
+                style={[
+                  styles.nameText,
+                  { color: COLORS.darkBlack, fontSize: hp(1.6) }
+                ]}
+              >
                 {createdOrder.pickup_address_country}
               </Text>
               <Text
@@ -233,13 +244,19 @@ export default function Step5 ({ createdOrder, navigation }) {
                   {
                     color: COLORS.stepGreen,
                     fontFamily: FONT1LIGHT,
-                    marginTop: 5
+                    marginTop: 5,
+                    fontSize: hp(1.6)
                   }
                 ]}
               >
                 DELIVER TO
               </Text>
-              <Text style={[styles.nameText, { color: COLORS.darkBlack }]}>
+              <Text
+                style={[
+                  styles.nameText,
+                  { color: COLORS.darkBlack, fontSize: hp(1.6) }
+                ]}
+              >
                 {createdOrder.arrival_address_country}
               </Text>
             </View>
@@ -264,7 +281,7 @@ const styles = StyleSheet.create({
   },
   success: {
     fontFamily: FONT1REGULAR,
-    fontSize: hp(2.2),
+    fontSize: hp(1.8),
     textAlign: 'center',
     color: COLORS.successBGBorder
   },
@@ -293,12 +310,12 @@ const styles = StyleSheet.create({
   },
   nameText: {
     color: COLORS.darkBlack,
-    fontSize: hp(2),
+    fontSize: hp(1.8),
     fontFamily: FONT1MEDIUM
   },
   postedText: {
     color: COLORS.darkGrey,
-    fontSize: hp(1.7),
+    fontSize: hp(1.5),
     fontFamily: FONT1REGULAR
   },
   product_image: {
