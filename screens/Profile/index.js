@@ -986,7 +986,7 @@ function Profile ({ navigation }) {
                               : item?.target_user?.name}
                           </Text>
                           <Text style={[styles.address, { marginLeft: 10 }]}>
-                            {moment(item?.created_by).fromNow()}
+                            {moment(item?.created_at).fromNow()}
                           </Text>
                         </View>
                         <Rating

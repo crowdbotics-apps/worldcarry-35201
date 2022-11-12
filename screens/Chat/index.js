@@ -189,7 +189,15 @@ function Chat ({ navigation, route }) {
       })
   }
 
+  function onlySpaces(str) {
+    return /^\s*$/.test(str);
+  }
+
   const onSend = (text, type) => {
+    if(onlySpaces(text || state.messageText)){
+      Toast.show('Please enter any character', Toast.LONG)
+      return
+    }
     const data = {
       text: text || state.messageText,
       timeStamp: Date.now(),

@@ -48,7 +48,7 @@ export default function Step2 ({
           style={{ marginLeft: 10, marginTop: hp(2) }}
         />
         <GooglePlacesAutocomplete
-          placeholder={'Pickup Country'}
+          placeholder={pickup_address_country || 'Pickup Country'}
           fetchDetails={true}
           onPress={(data, details) => {
             // 'details' is provided when fetchDetails = true
@@ -56,11 +56,13 @@ export default function Step2 ({
             handleSearch(data, details)
           }}
           textInputProps={{
-            placeholderTextColor: COLORS.placeholder,
-            value: pickup_address_country,
+            placeholderTextColor: pickup_address_country
+              ? COLORS.darkGrey
+              : COLORS.placeholder,
+            // value: pickup_address_country,
             onFocus: () => handleChange('isFocus', true),
-            onBlur: () => handleChange('isFocus', false),
-            onChangeText: text => handleChange('pickup_address_country', text)
+            onBlur: () => handleChange('isFocus', false)
+            // onChangeText: text => handleChange('pickup_address_country', text)
           }}
           styles={{
             // container: styles.textInput,
@@ -101,12 +103,12 @@ export default function Step2 ({
         <View
           style={{
             width: '100%',
-            height: 50,
             marginTop: 20,
             backgroundColor: COLORS.lightblue,
             borderRadius: 12,
             alignItems: 'center',
             paddingHorizontal: 10,
+            paddingVertical: 10,
             flexDirection: 'row'
           }}
         >

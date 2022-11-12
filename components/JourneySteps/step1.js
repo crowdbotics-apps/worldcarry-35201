@@ -25,10 +25,7 @@ export default function JourneyStep1 ({
   handleChange,
   departureCityState,
   arrival_city_state,
-  departure_city,
-  departure_state,
-  arrival_city,
-  arrival_state,
+  isPrevious,
   activeRound,
   handleSearch1,
   handleSearch,
@@ -116,12 +113,17 @@ export default function JourneyStep1 ({
               placeholderTextColor: departureCityState
                 ? COLORS.darkBlack
                 : COLORS.placeholder,
-              // value: departureCityState,
-              onFocus: () => handleChange('isFocus', true),
-              onBlur: () => handleChange('isFocus', false)
-              // onChangeText: text => {
-              //   handleChange('departureCityState', text)
-              // }
+              value: departureCityState,
+              onFocus: () => {
+                handleChange('isFocus', true)
+                handleChange('isPrevious', false)
+              },
+              onBlur: () => handleChange('isFocus', false),
+              onChangeText: text => {
+                if (!isPrevious) {
+                  handleChange('departureCityState', text)
+                }
+              }
             }}
             styles={{
               // container: styles.textInput,
@@ -273,10 +275,17 @@ export default function JourneyStep1 ({
               placeholderTextColor: arrival_city_state
                 ? COLORS.darkBlack
                 : COLORS.placeholder,
-              // value: arrival_city_state,
-              onFocus: () => handleChange('isFocus1', true),
-              onBlur: () => handleChange('isFocus1', false)
-              // onChangeText: text => handleChange('arrival_city_state', text)
+              value: arrival_city_state,
+              onFocus: () => {
+                handleChange('isFocus', true)
+                handleChange('isPrevious', false)
+              },
+              onBlur: () => handleChange('isFocus1', false),
+              onChangeText: text => {
+                if (!isPrevious) {
+                  handleChange('arrival_city_state', text)
+                }
+              }
             }}
             styles={{
               // container: styles.textInput,

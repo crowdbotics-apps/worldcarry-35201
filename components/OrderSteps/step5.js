@@ -82,7 +82,7 @@ export default function Step5 ({ createdOrder, navigation }) {
           borderRadius: 10
         }}
       >
-        <Text style={styles.success}>Successfully created{'\n'}new Order.</Text>
+        <Text style={styles.success}>Successfully created{'\n'}new order.</Text>
       </View>
       <View style={{ width: '100%', alignItems: 'center', marginVertical: 20 }}>
         <View style={styles.paper}>

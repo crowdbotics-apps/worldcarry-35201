@@ -26,7 +26,8 @@ export default function AppButton ({
   width,
   marginTop,
   borderWidth,
-  borderRadius
+  borderRadius,
+  minWidth
 }) {
   return (
     <TouchableOpacity
@@ -43,7 +44,8 @@ export default function AppButton ({
           borderRadius: borderRadius ? borderRadius : 13,
           opacity: disabled ? 0.5 : 1,
           height: height ? height : hp(6),
-          width: width ? width : '100%'
+          minWidth: minWidth ? minWidth : 'auto',
+          width: width ? width : '100%',
         }
       ]}
       onPress={loading ? console.log('') : onPress}

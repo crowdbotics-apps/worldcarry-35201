@@ -84,11 +84,11 @@ export default function Step1 ({
             }}
           >
             {[
-              'Electronics',
               'Jewelry',
+              'Electronics',
+              'Clothing',
               'Documents and Books',
               'Food items',
-              'Clothing',
               'Medication'
             ].map(el => (
               <MenuOption
