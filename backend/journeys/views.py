@@ -77,6 +77,8 @@ class JourneyOrderRequest(APIView):
             order.status = "Requested"
             order.save(update_fields=['status'])
         elif user == 'carrier':
+            if order.deliver_before_date >= timezone.now().date():
+                return Response({"message": "You Can't Accept Past Order"}, status=status.HTTP_400_BAD_REQUEST)
             create_notification({"name": "Order Request", "description": "A Carrier requested you for journey",
                                  "user": order.user})
             jo_instance.allowed_by_carrier = True

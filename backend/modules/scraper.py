@@ -138,6 +138,11 @@ class EBAYScraper:
         except Exception as ex:
             pass
 
+        try:
+            price = soup.find('span', {"itemprop":"price"}).findChildren("span" , recursive=False)[0].get_text().split(' ')[1]
+            return price
+        except Exception as ex:
+            pass
         return price
 
     @staticmethod

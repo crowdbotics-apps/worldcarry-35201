@@ -9,6 +9,7 @@ from home.permissions import IsAdmin
 from rest_framework.generics import CreateAPIView, ListAPIView
 from django_filters import rest_framework as filters
 
+
 class FeedbackViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = FeedbackSerializer
