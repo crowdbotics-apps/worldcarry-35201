@@ -58,7 +58,7 @@ function FeedBack ({ navigation, route }) {
     } catch (error) {
       handleChange('loading', false)
       const errorText = Object.values(error?.response?.data)
-      Toast.show(`Error: ${errorText}`)
+      Toast.show(`Error: ${errorText[0]}`)
     }
   }
 

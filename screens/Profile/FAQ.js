@@ -180,7 +180,7 @@ function FAQ ({ navigation, route }) {
     questions: [],
     FAQs: [],
     activeSections: [],
-    filteredList: list2 || [],
+    filteredList:  [],
     searchText: ''
   })
   const { questions, activeSections, searchText, filteredList, FAQs } = state

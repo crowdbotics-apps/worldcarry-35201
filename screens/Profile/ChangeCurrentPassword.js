@@ -6,7 +6,12 @@ import {
 } from 'react-native-responsive-screen'
 import { SvgXml } from 'react-native-svg'
 import { Icon } from 'react-native-elements'
-import { COLORS, FONT1MEDIUM, FONT1REGULAR, FONT1SEMIBOLD } from '../../constants'
+import {
+  COLORS,
+  FONT1MEDIUM,
+  FONT1REGULAR,
+  FONT1SEMIBOLD
+} from '../../constants'
 import { AppButton, AppInput, Header, SuccessModal } from '../../components'
 import Toast from 'react-native-simple-toast'
 import logo from '../../assets/svg/logo.svg'
@@ -72,7 +77,7 @@ function ChangeCurrentPassword ({ navigation }) {
   }
 
   const checkPass = () => {
-    const regex = /^.{8,}$/
+    const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/
     if (regex.test(password)) {
       if (password != '') {
         handleChange('invalidPass', false)
@@ -191,8 +196,12 @@ function ChangeCurrentPassword ({ navigation }) {
           />
         </View>
         {invalidPass && (
-          <View style={styles.textFieldContainer}>
-            <Text style={styles.errorText}>Password at least 6 characters</Text>
+          <View style={{ width: '90%' }}>
+            <Text style={styles.errorText}>
+              Password at least 8 characters which contain at least one
+              lowercase letter, one uppercase letter, one numeric digit, and one
+              special character
+            </Text>
           </View>
         )}
         <View style={styles.textInputContainer}>
@@ -278,6 +287,10 @@ const styles = StyleSheet.create({
   textInputContainer: {
     marginBottom: hp('2%'),
     width: '90%'
+  },
+  errorText: {
+    width: '100%',
+    marginBottom: 10
   },
   remeberContainer: {
     alignItems: 'flex-end',

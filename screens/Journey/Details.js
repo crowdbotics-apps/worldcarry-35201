@@ -365,8 +365,6 @@ function JourneyDetails ({ navigation, route }) {
     )
   }
 
-  console.warn('onRouteOrders', onRouteOrders)
-
   return (
     <ScrollView
       style={styles.container}

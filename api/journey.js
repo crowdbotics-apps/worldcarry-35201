@@ -27,6 +27,10 @@ export const makeOffer = (body, token) => {
   return API.post(`api/v1/journey/order/request`, body, token)
 }
 
+export const declineOffer = (body, token) => {
+  return API.post(`api/v1/reject/offer/`, body, token)
+}
+
 export const addReview = (body, token) => {
   return API.post(`api/v1/reviews/`, body, token)
 }

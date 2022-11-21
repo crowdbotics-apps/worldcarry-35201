@@ -121,6 +121,11 @@ function LoginScreen ({ navigation, route }) {
   }
 
   const _isNameValid = () => {
+    if (onlySpaces(name)) {
+      Toast.show('Please enter name', Toast.LONG)
+      handleChange('name', '')
+      return
+    }
     if (name) {
       const isValid = validateName(name)
       if (!isValid) {
@@ -128,6 +133,10 @@ function LoginScreen ({ navigation, route }) {
         Toast.show('Username is not valid!')
       }
     }
+  }
+
+  function onlySpaces (str) {
+    return /^\s*$/.test(str)
   }
 
   const handleSignup = async () => {

@@ -181,13 +181,15 @@ function Order ({ navigation }) {
       Toast.show(`Error: ${errorText}`)
     }
   }
-  
 
   const getOrderType = status => {
     if (status) {
       if (status === 'Unpaid') {
         const filtered = orders?.filter(
-          e => e.status === status || e.status === 'Accepted' || e.status === 'Requested'
+          e =>
+            e.status === status ||
+            e.status === 'Accepted' ||
+            e.status === 'Requested'
         )
         return filtered || []
       } else {
@@ -473,16 +475,19 @@ function Order ({ navigation }) {
                     outlined
                     backgroundColor={COLORS.white}
                     color={COLORS.darkBlack}
+                    disabled={item?.reviewed}
                     titleLight
                     prefix={
                       <SvgXml xml={starBlack} style={{ marginRight: 8 }} />
                     }
                     onPress={() => {
-                      handleChange('writeReview', true)
-                      handleChange('order', item)
-                      handleChange('writeReview', true)
-                      handleChange('oid', item?.id)
-                      handleChange('uid', item?.carrier?.id)
+                      if (!item?.reviewed) {
+                        handleChange('writeReview', true)
+                        handleChange('order', item)
+                        handleChange('writeReview', true)
+                        handleChange('oid', item?.id)
+                        handleChange('uid', item?.carrier?.id)
+                      }
                     }}
                   />
                 </>
@@ -812,10 +817,9 @@ const styles = StyleSheet.create({
   tabText: {
     color: COLORS.darkGrey,
     fontSize: hp(1.8),
-    marginTop:-5,
+    marginTop: -5,
     fontFamily: FONT1MEDIUM
   },
-
   activeTabText: {
     color: COLORS.primary,
     fontSize: hp(1.8),

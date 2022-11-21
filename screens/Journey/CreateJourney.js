@@ -64,6 +64,7 @@ function CreateJourney ({ navigation, route }) {
     isNotValidWeight: false,
     locationType: '',
     locationOpen: false,
+    isPrevious: false,
     createdJourney: null
   })
 
@@ -92,7 +93,8 @@ function CreateJourney ({ navigation, route }) {
     departure_coords,
     locationOpen,
     isFocus1,
-    locationType
+    locationType,
+    isPrevious
   } = state
   const {
     user,
@@ -106,7 +108,7 @@ function CreateJourney ({ navigation, route }) {
     _getMyAddresses
   } = context
 
-  console.warn('departureCityState',departureCityState);
+  console.warn('departureCityState', departureCityState)
 
   useEffect(() => {
     if (mapLocationForPickup) {
@@ -161,11 +163,9 @@ function CreateJourney ({ navigation, route }) {
 
   const handlePrevious = () => {
     if (step === 1) {
-      handleChange(
-        'departureCityState',
-        departure_city + ' ' + departure_state
-      )
+      handleChange('departureCityState', departure_city + ' ' + departure_state)
       handleChange('step', 0)
+      handleChange('isPrevious', true)
     } else if (step === 2) {
       handleChange('step', 1)
     } else if (step === 3) {
@@ -389,8 +389,6 @@ function CreateJourney ({ navigation, route }) {
     }
   }
 
-  console.warn('departureCityState',departureCityState);
-  console.warn('arrival_city_state',arrival_city_state);
   const disabled =
     step === 0
       ? !departure_city ||
@@ -496,6 +494,7 @@ function CreateJourney ({ navigation, route }) {
             {step === 0 && (
               <JourneyStep1
                 departure_city={departure_city}
+                isPrevious={isPrevious}
                 departure_state={departure_state}
                 departure_country={departure_country}
                 departureCityState={departureCityState}

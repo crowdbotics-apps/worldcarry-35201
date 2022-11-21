@@ -48,7 +48,7 @@ export default function Step3 ({
           style={{ marginLeft: 10, marginTop: hp(2) }}
         />
         <GooglePlacesAutocomplete
-          placeholder={'Arrival Country'}
+          placeholder={arrival_address_country || 'Arrival Country'}
           fetchDetails={true}
           onPress={(data, details) => {
             // 'details' is provided when fetchDetails = true
@@ -56,11 +56,13 @@ export default function Step3 ({
             handleSearch(data, details)
           }}
           textInputProps={{
-            placeholderTextColor: COLORS.placeholder,
-            value: arrival_address_country,
+            placeholderTextColor: arrival_address_country
+              ? COLORS.darkGrey
+              : COLORS.placeholder,
+            // value: arrival_address_country,
             onFocus: () => handleChange('isFocus', true),
-            onBlur: () => handleChange('isFocus', false),
-            onChangeText: text => handleChange('arrival_address_country', text)
+            onBlur: () => handleChange('isFocus', false)
+            // onChangeText: text => handleChange('arrival_address_country', text)
           }}
           styles={{
             // container: styles.textInput,

@@ -29,7 +29,7 @@ import moment from 'moment'
 import momenttimezone from 'moment-timezone'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Toast from 'react-native-simple-toast'
-import { getOnrouteJourneys, makeOffer } from '../../api/journey'
+import { declineOffer, getOnrouteJourneys, makeOffer } from '../../api/journey'
 import { getOrderDetails } from '../../api/order'
 import { Icon } from 'react-native-elements'
 
@@ -42,6 +42,7 @@ function OrderDetails ({ navigation, route }) {
     orderData: null,
     selectedItem: null,
     loadingAccept: false,
+    loadingDecline: false,
     filterSelected: ''
   })
   const [modalVisible, setModalVisible] = useState(false)
@@ -54,7 +55,8 @@ function OrderDetails ({ navigation, route }) {
     orderData,
     selectedItem,
     loadingAccept,
-    filterSelected
+    filterSelected,
+    loadingDecline
   } = state
   const { journeys, user, _getOrders } = context
 
@@ -115,6 +117,27 @@ function OrderDetails ({ navigation, route }) {
       setModalVisible(false)
     } catch (error) {
       handleChange('loadingAccept', false)
+      const errorText = Object.values(error?.response?.data)
+      Toast.show(`Error: ${errorText}`)
+    }
+  }
+
+  const _declineOffer = async () => {
+    try {
+      handleChange('loadingDecline', true)
+      const token = await AsyncStorage.getItem('token')
+      const payload = {
+        journey: selectedItem?.id,
+        order: item?.id
+      }
+      await declineOffer(payload, token)
+      getData()
+      handleChange('loadingDecline', false)
+      Toast.show(`Offer has been declined`)
+      // navigation.goBack()
+      setModalVisible(false)
+    } catch (error) {
+      handleChange('loadingDecline', false)
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText}`)
     }
@@ -578,8 +601,9 @@ function OrderDetails ({ navigation, route }) {
                     width={'48%'}
                     outlined
                     color={COLORS.darkBlack}
+                    loading={loadingDecline}
                     backgroundColor={COLORS.white}
-                    onPress={() => setModalVisible(false)}
+                    onPress={_declineOffer}
                   />
                   <AppButton
                     title={'Accept'}

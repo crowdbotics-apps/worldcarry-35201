@@ -61,7 +61,16 @@ function Signup ({ navigation, route }) {
       handleChange('isEmailValid', true)
     }
   }
+
+  function onlySpaces (str) {
+    return /^\s*$/.test(str)
+  }
+
   const handleSignup = async () => {
+    if (onlySpaces(name)) {
+      Toast.show('Please enter name', Toast.LONG)
+      return
+    }
     try {
       handleChange('loading', true)
       const payload = {

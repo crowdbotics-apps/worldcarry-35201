@@ -117,7 +117,7 @@ function PassportVerification ({ navigation }) {
       if (error?.response?.data?.message) {
         Toast.show(`Error: ${error?.response?.data?.message}`)
       } else {
-        Toast.show(`Error: ${errorText}`)
+        Toast.show(`Error: ${errorText[0]}`)
       }
     }
   }
