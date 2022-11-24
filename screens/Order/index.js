@@ -4,7 +4,7 @@ import React, {
   useEffect,
   useRef,
   useState
-} from 'react'
+} from "react"
 import {
   View,
   StyleSheet,
@@ -17,20 +17,20 @@ import {
   ImageBackground,
   Image,
   Modal
-} from 'react-native'
+} from "react-native"
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
-} from 'react-native-responsive-screen'
-import { SvgXml } from 'react-native-svg'
-import chatIcon from '../../assets/svg/chatIcon.svg'
-import qrSymbol from '../../assets/svg/qrSymbol.svg'
-import NoOrder from '../../assets/svg/NoOrder.svg'
-import starBlack from '../../assets/svg/starBlack.svg'
-import cehcked from '../../assets/svg/cehcked.svg'
-import planIcon from '../../assets/svg/plan.svg'
-import userProfile from '../../assets/images/userProfile.png'
-import { AppButton, AppInput, CustomModel, Header } from '../../components'
+} from "react-native-responsive-screen"
+import { SvgXml } from "react-native-svg"
+import chatIcon from "../../assets/svg/chatIcon.svg"
+import qrSymbol from "../../assets/svg/qrSymbol.svg"
+import NoOrder from "../../assets/svg/NoOrder.svg"
+import starBlack from "../../assets/svg/starBlack.svg"
+import cehcked from "../../assets/svg/cehcked.svg"
+import planIcon from "../../assets/svg/plan.svg"
+import userProfile from "../../assets/images/userProfile.png"
+import { AppButton, AppInput, CustomModel, Header } from "../../components"
 import {
   COLORS,
   FONT1BOLD,
@@ -38,36 +38,36 @@ import {
   FONT1MEDIUM,
   FONT1REGULAR,
   FONT1SEMIBOLD
-} from '../../constants'
-import AppContext from '../../store/Context'
-import moment from 'moment'
-import momenttimezone from 'moment-timezone'
-import BouncyCheckbox from 'react-native-bouncy-checkbox'
-import Toast from 'react-native-simple-toast'
-import { addReview } from '../../api/journey'
-import { Rating } from 'react-native-ratings'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import database from '@react-native-firebase/database'
+} from "../../constants"
+import AppContext from "../../store/Context"
+import moment from "moment"
+import momenttimezone from "moment-timezone"
+import BouncyCheckbox from "react-native-bouncy-checkbox"
+import Toast from "react-native-simple-toast"
+import { addReview } from "../../api/journey"
+import { Rating } from "react-native-ratings"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import database from "@react-native-firebase/database"
 
-function Order ({ navigation }) {
+function Order({ navigation }) {
   const [state, setState] = useState({
     loading: false,
-    active: 'Requested',
-    activeStatus: 'Unpaid',
+    active: "Requested",
+    activeStatus: "Unpaid",
     showQR: false,
-    showQRImage: '',
-    OrderID: '',
-    product_name: '',
+    showQRImage: "",
+    OrderID: "",
+    product_name: "",
     writeReview: false,
     rating: 0,
-    content: '',
+    content: "",
     respectful_attitude: false,
     no_additional_payment_asked: false,
     d2d_delivery: false,
     loadingReview: false,
-    jid: '',
-    oid: '',
-    uid: '',
+    jid: "",
+    oid: "",
+    uid: "",
     order: null
   })
 
@@ -103,14 +103,14 @@ function Order ({ navigation }) {
   }
 
   const tabs = [
-    { title: 'Requested', status: 'Unpaid' },
-    { title: 'In Transit', status: 'In Transit' },
-    { title: 'Received', status: 'Received' },
-    { title: 'Inactive', status: 'Inactive' }
+    { title: "Requested", status: "Unpaid" },
+    { title: "In Transit", status: "In Transit" },
+    { title: "Received", status: "Received" },
+    { title: "Inactive", status: "Inactive" }
   ]
 
-  function convertLocalDateToUTCDate (time, toLocal) {
-    const todayDate = moment(new Date()).format('YYYY-MM-DD')
+  function convertLocalDateToUTCDate(time, toLocal) {
+    const todayDate = moment(new Date()).format("YYYY-MM-DD")
     if (toLocal) {
       const today = momenttimezone.tz.guess()
       const timeUTC = momenttimezone.tz(time, today).format()
@@ -131,28 +131,28 @@ function Order ({ navigation }) {
       const todayDate1 = momenttimezone
         .tz(`${todayDate} ${time}`, today)
         .format()
-      const utcTime = moment.utc(todayDate1).format('YYYY-MM-DDTHH:mm')
+      const utcTime = moment.utc(todayDate1).format("YYYY-MM-DDTHH:mm")
       return utcTime
     }
   }
 
   const handleCloseReview = () => {
-    handleChange('writeReview', false)
-    handleChange('respectful_attitude', false)
-    handleChange('no_additional_payment_asked', false)
-    handleChange('d2d_delivery', false)
-    handleChange('review', 0)
-    handleChange('content', '')
-    handleChange('uid', '')
-    handleChange('jid', '')
-    handleChange('oid', '')
-    handleChange('order', '')
+    handleChange("writeReview", false)
+    handleChange("respectful_attitude", false)
+    handleChange("no_additional_payment_asked", false)
+    handleChange("d2d_delivery", false)
+    handleChange("review", 0)
+    handleChange("content", "")
+    handleChange("uid", "")
+    handleChange("jid", "")
+    handleChange("oid", "")
+    handleChange("order", "")
   }
 
   const _addReview = async () => {
     try {
-      handleChange('loadingReview', true)
-      const token = await AsyncStorage.getItem('token')
+      handleChange("loadingReview", true)
+      const token = await AsyncStorage.getItem("token")
       const payload = {
         journey: jid,
         order: oid,
@@ -165,18 +165,18 @@ function Order ({ navigation }) {
       }
       await addReview(payload, token)
       Toast.show(`You have successfully reviewed to the sender`)
-      handleChange('loadingReview', false)
-      handleChange('successfullyDelivered', false)
+      handleChange("loadingReview", false)
+      handleChange("successfullyDelivered", false)
       navigation.setParams({ successDelivered: null })
-      handleChange('writeReview', false)
-      handleChange('respectful_attitude', false)
-      handleChange('no_additional_payment_asked', false)
-      handleChange('d2d_delivery', false)
-      handleChange('review', 0)
-      handleChange('content', '')
+      handleChange("writeReview", false)
+      handleChange("respectful_attitude", false)
+      handleChange("no_additional_payment_asked", false)
+      handleChange("d2d_delivery", false)
+      handleChange("review", 0)
+      handleChange("content", "")
       getData()
     } catch (error) {
-      handleChange('loadingReview', false)
+      handleChange("loadingReview", false)
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText}`)
     }
@@ -184,12 +184,12 @@ function Order ({ navigation }) {
 
   const getOrderType = status => {
     if (status) {
-      if (status === 'Unpaid') {
+      if (status === "Unpaid") {
         const filtered = orders?.filter(
           e =>
             e.status === status ||
-            e.status === 'Accepted' ||
-            e.status === 'Requested'
+            e.status === "Accepted" ||
+            e.status === "Requested"
         )
         return filtered || []
       } else {
@@ -214,42 +214,38 @@ function Order ({ navigation }) {
       order: item
     }
     database()
-      .ref('Messages/' + item?.id)
+      .ref("Messages/" + item?.id)
       .update(value)
       .then(res => {
-        navigation.navigate('Chat', { orderID: item?.id })
+        navigation.navigate("Chat", { orderID: item?.id })
       })
       .catch(err => {
-        Toast.show('Something went wrong!')
+        Toast.show("Something went wrong!")
       })
   }
 
-  console.warn('orders', orders)
+  console.warn("orders", orders)
 
   return (
     <View style={styles.container}>
       <Header
-        title={'Orders'}
+        title={"Orders"}
         rightItem={
           <AppButton
             width={hp(15)}
             height={hp(5)}
             marginTop={1}
-            title={'+ Add'}
-            onPress={() => navigation.navigate('CreateOrder')}
+            title={"+ Add"}
+            onPress={() => navigation.navigate("CreateOrder")}
           />
         }
       />
-      <ScrollView
-        style={styles.tabs}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      >
+      <View style={styles.tabs}>
         {tabs.map((tab, index) => (
           <TouchableOpacity
             onPress={() => {
-              handleChange('active', tab?.title)
-              handleChange('activeStatus', tab?.status)
+              handleChange("active", tab?.title)
+              handleChange("activeStatus", tab?.status)
             }}
             key={index}
             style={active === tab.title ? styles.activeTab : styles.inavtive}
@@ -263,18 +259,18 @@ function Order ({ navigation }) {
             </Text>
           </TouchableOpacity>
         ))}
-      </ScrollView>
+      </View>
       <FlatList
         data={getOrderType(activeStatus)}
         showsVerticalScrollIndicator={false}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: "100%", height: "100%" }}
         renderItem={({ item, index }) => (
           <View
             key={index}
-            style={{ width: '100%', alignItems: 'center', marginBottom: 20 }}
+            style={{ width: "100%", alignItems: "center", marginBottom: 20 }}
           >
             <View style={styles.paper}>
-              <View style={[styles.rowBetween, { width: '100%' }]}>
+              <View style={[styles.rowBetween, { width: "100%" }]}>
                 <View style={styles.row}>
                   <Image
                     style={{
@@ -296,7 +292,7 @@ function Order ({ navigation }) {
                     </Text>
                   </View>
                 </View>
-                <View style={{ alignItems: 'flex-end' }}>
+                <View style={{ alignItems: "flex-end" }}>
                   <Text style={[styles.nameText, { fontSize: hp(2.4) }]}>
                     ${item?.carrier_reward}
                   </Text>
@@ -304,11 +300,11 @@ function Order ({ navigation }) {
                 </View>
               </View>
               <View style={styles.hline} />
-              <View style={[styles.row, { width: '90%' }]}>
+              <View style={[styles.row, { width: "90%" }]}>
                 <Text
                   style={[
                     styles.nameText,
-                    { color: COLORS.primary, maxWidth: '40%' }
+                    { color: COLORS.primary, maxWidth: "40%" }
                   ]}
                 >
                   {item?.pickup_address_country}
@@ -317,21 +313,21 @@ function Order ({ navigation }) {
                 <Text
                   style={[
                     styles.nameText,
-                    { color: COLORS.primary, maxWidth: '60%' }
+                    { color: COLORS.primary, maxWidth: "60%" }
                   ]}
                 >
                   {item?.arrival_address_country}
                 </Text>
               </View>
               <Text
-                style={[styles.nameText, { fontSize: hp(2.5), width: '90%' }]}
+                style={[styles.nameText, { fontSize: hp(2.5), width: "90%" }]}
               >
-                Take My {item?.product_name} from {item?.pickup_address_country}{' '}
+                Take My {item?.product_name} from {item?.pickup_address_country}{" "}
                 to {item?.arrival_address_country}
               </Text>
               <Text style={styles.postedText}>
-                Deliver Before :{' '}
-                {moment(item?.deliver_before_date).format('DD / MM / YYYY')}
+                Deliver Before :{" "}
+                {moment(item?.deliver_before_date).format("DD / MM / YYYY")}
               </Text>
               <View style={styles.rowBetween}>
                 {item?.images?.length > 0 && (
@@ -347,18 +343,18 @@ function Order ({ navigation }) {
                   />
                 )}
               </View>
-              {(item?.status === 'Unpaid' || item?.status === 'Requested') && (
+              {(item?.status === "Unpaid" || item?.status === "Requested") && (
                 <AppButton
-                  title={'View Journeys'}
-                  onPress={() => navigation.navigate('OrderDetails', { item })}
+                  title={"View Journeys"}
+                  onPress={() => navigation.navigate("OrderDetails", { item })}
                 />
               )}
-              {(item?.status === 'Accepted' ||
-                item?.status === 'In transit') && (
+              {(item?.status === "Accepted" ||
+                item?.status === "In transit") && (
                 <>
                   <View style={styles.hline} />
                   <AppButton
-                    title={'Show QR Code'}
+                    title={"Show QR Code"}
                     outlined
                     color={COLORS.darkBlack}
                     backgroundColor={COLORS.white}
@@ -367,15 +363,15 @@ function Order ({ navigation }) {
                       <SvgXml xml={qrSymbol} style={{ marginRight: 5 }} />
                     }
                     onPress={() => {
-                      handleChange('showQR', true)
-                      handleChange('showQRImage', item?.qr_code)
-                      handleChange('product_name', item?.product_name)
+                      handleChange("showQR", true)
+                      handleChange("showQRImage", item?.qr_code)
+                      handleChange("product_name", item?.product_name)
                       handleChange(
-                        'pickup_address_country',
+                        "pickup_address_country",
                         item?.pickup_address_country
                       )
                       handleChange(
-                        'arrival_address_country',
+                        "arrival_address_country",
                         item?.arrival_address_country
                       )
                     }}
@@ -383,10 +379,10 @@ function Order ({ navigation }) {
                   <View
                     style={[
                       styles.rowBetween,
-                      { width: '100%', marginTop: 10 }
+                      { width: "100%", marginTop: 10 }
                     ]}
                   >
-                    <View style={[styles.row, { width: '40%' }]}>
+                    <View style={[styles.row, { width: "40%" }]}>
                       <Image
                         style={{
                           width: 50,
@@ -407,11 +403,11 @@ function Order ({ navigation }) {
                         <Text style={styles.postedText}>Order Carrier</Text>
                       </View>
                     </View>
-                    <View style={{ alignItems: 'flex-end' }}>
+                    <View style={{ alignItems: "flex-end" }}>
                       <AppButton
-                        title={'Chat'}
+                        title={"Chat"}
                         outlined
-                        width={'60%'}
+                        width={"60%"}
                         backgroundColor={COLORS.white}
                         color={COLORS.darkBlack}
                         titleLight
@@ -424,9 +420,9 @@ function Order ({ navigation }) {
                   </View>
                 </>
               )}
-              {item?.status === 'Received' && (
+              {item?.status === "Received" && (
                 <>
-                  <View style={[styles.row, { width: '40%' }]}>
+                  <View style={[styles.row, { width: "40%" }]}>
                     <Image
                       style={{
                         width: 50,
@@ -448,13 +444,13 @@ function Order ({ navigation }) {
                   <View
                     // onPress={() => handleChange('writeReview', true)}
                     style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
+                      flexDirection: "row",
+                      alignItems: "center",
                       backgroundColor: COLORS.successBG,
                       borderRadius: 30,
                       height: hp(6),
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      alignItems: "center",
+                      justifyContent: "center",
                       marginTop: 15
                     }}
                   >
@@ -471,7 +467,7 @@ function Order ({ navigation }) {
                     </Text>
                   </View>
                   <AppButton
-                    title={'Write a review'}
+                    title={"Write a review"}
                     outlined
                     backgroundColor={COLORS.white}
                     color={COLORS.darkBlack}
@@ -482,11 +478,11 @@ function Order ({ navigation }) {
                     }
                     onPress={() => {
                       if (!item?.reviewed) {
-                        handleChange('writeReview', true)
-                        handleChange('order', item)
-                        handleChange('writeReview', true)
-                        handleChange('oid', item?.id)
-                        handleChange('uid', item?.carrier?.id)
+                        handleChange("writeReview", true)
+                        handleChange("order", item)
+                        handleChange("writeReview", true)
+                        handleChange("oid", item?.id)
+                        handleChange("uid", item?.carrier?.id)
                       }
                     }}
                   />
@@ -496,14 +492,14 @@ function Order ({ navigation }) {
           </View>
         )}
         ListEmptyComponent={() => (
-          <View style={{ width: '100%', alignItems: 'center' }}>
+          <View style={{ width: "100%", alignItems: "center" }}>
             <SvgXml xml={NoOrder} />
             <Text style={styles.timetext}>
               You don’t have new order requests
             </Text>
             <AppButton
-              title={'Create Order'}
-              onPress={() => navigation.navigate('CreateOrder')}
+              title={"Create Order"}
+              onPress={() => navigation.navigate("CreateOrder")}
               width={150}
               color={COLORS.primary}
               backgroundColor={COLORS.lightblue}
@@ -511,23 +507,23 @@ function Order ({ navigation }) {
           </View>
         )}
       />
-      <Modal animationType='slide' transparent={true} visible={showQR}>
+      <Modal animationType="slide" transparent={true} visible={showQR}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.textView}>
-              <Text style={[styles.pricetext, { width: '100%' }]}>
-                Take My {product_name} from {pickup_address_country} to{' '}
+              <Text style={[styles.pricetext, { width: "100%" }]}>
+                Take My {product_name} from {pickup_address_country} to{" "}
                 {arrival_address_country}
               </Text>
               <View
-                style={[styles.rowBetween, { width: '100%', marginBottom: 20 }]}
+                style={[styles.rowBetween, { width: "100%", marginBottom: 20 }]}
               >
                 <Text style={styles.successText}>Order ID</Text>
-                <Text style={styles.successText}>{'#WC021654'}</Text>
+                <Text style={styles.successText}>{"#WC021654"}</Text>
               </View>
               <Image
                 source={{ uri: showQRImage }}
-                style={{ width: '100%', height: 250, resizeMode: 'cover' }}
+                style={{ width: "100%", height: 250, resizeMode: "cover" }}
               />
               <Text style={styles.successText}>
                 Show the QR code to order carrier for a safe hand to hand
@@ -535,13 +531,13 @@ function Order ({ navigation }) {
               </Text>
 
               <AppButton
-                title={'Done'}
+                title={"Done"}
                 onPress={() => {
-                  handleChange('showQR', false)
-                  handleChange('showQRImage', '')
-                  handleChange('product_name', '')
-                  handleChange('arrival_address_country', '')
-                  handleChange('pickup_address_country', '')
+                  handleChange("showQR", false)
+                  handleChange("showQRImage", "")
+                  handleChange("product_name", "")
+                  handleChange("arrival_address_country", "")
+                  handleChange("pickup_address_country", "")
                 }}
               />
             </View>
@@ -550,11 +546,11 @@ function Order ({ navigation }) {
       </Modal>
       <CustomModel
         visible={writeReview}
-        height={'90%'}
+        height={"90%"}
         onClose={handleCloseReview}
       >
-        <View style={{ alignItems: 'center', width: '100%' }}>
-          <View style={{ alignItems: 'center', width: '90%' }}>
+        <View style={{ alignItems: "center", width: "100%" }}>
+          <View style={{ alignItems: "center", width: "90%" }}>
             <Image
               style={{
                 width: 100,
@@ -581,42 +577,42 @@ function Order ({ navigation }) {
               {rating?.toFixed(1)}
             </Text>
             <Rating
-              type='custom'
+              type="custom"
               style={{ marginBottom: 10 }}
               startingValue={rating}
               fractions={0.1}
-              onFinishRating={rating => handleChange('rating', rating)}
+              onFinishRating={rating => handleChange("rating", rating)}
               ratingBackgroundColor={COLORS.tripBoxBorder}
               imageSize={35}
             />
 
             <AppInput
-              placeholder={'write review'}
+              placeholder={"write review"}
               value={content}
               borderColor={COLORS.grey}
-              name={'content'}
+              name={"content"}
               onChange={handleChange}
               multiline
               height={100}
             />
-            <View style={{ width: '100%' }}>
+            <View style={{ width: "100%" }}>
               <BouncyCheckbox
                 size={20}
                 fillColor={COLORS.primary}
                 unfillColor={COLORS.white}
                 disableBuiltInState
                 isChecked={respectful_attitude}
-                text='Respectful attitude'
+                text="Respectful attitude"
                 iconStyle={{ borderColor: COLORS.primary, borderRadius: 8 }}
                 textStyle={{
                   fontFamily: FONT1REGULAR,
                   fontSize: hp(2),
                   color: COLORS.darkBlack,
-                  textDecorationLine: 'none'
+                  textDecorationLine: "none"
                 }}
                 style={{ marginTop: 10 }}
                 onPress={() =>
-                  handleChange('respectful_attitude', !respectful_attitude)
+                  handleChange("respectful_attitude", !respectful_attitude)
                 }
               />
               <BouncyCheckbox
@@ -625,18 +621,18 @@ function Order ({ navigation }) {
                 unfillColor={COLORS.white}
                 disableBuiltInState
                 isChecked={no_additional_payment_asked}
-                text='Provide additional charge'
+                text="Provide additional charge"
                 iconStyle={{ borderColor: COLORS.primary, borderRadius: 8 }}
                 textStyle={{
                   fontFamily: FONT1REGULAR,
                   fontSize: hp(2),
                   color: COLORS.darkBlack,
-                  textDecorationLine: 'none'
+                  textDecorationLine: "none"
                 }}
                 style={{ marginTop: 10 }}
                 onPress={() =>
                   handleChange(
-                    'no_additional_payment_asked',
+                    "no_additional_payment_asked",
                     !no_additional_payment_asked
                   )
                 }
@@ -647,31 +643,31 @@ function Order ({ navigation }) {
                 unfillColor={COLORS.white}
                 disableBuiltInState
                 isChecked={d2d_delivery}
-                text='Carry again for them'
+                text="Carry again for them"
                 iconStyle={{ borderColor: COLORS.primary, borderRadius: 8 }}
                 textStyle={{
                   fontFamily: FONT1REGULAR,
                   fontSize: hp(2),
                   color: COLORS.darkBlack,
-                  textDecorationLine: 'none'
+                  textDecorationLine: "none"
                 }}
                 style={{ marginTop: 10, marginBottom: 10 }}
-                onPress={() => handleChange('d2d_delivery', !d2d_delivery)}
+                onPress={() => handleChange("d2d_delivery", !d2d_delivery)}
               />
             </View>
-            <View style={[styles.rowBetween, { width: '100%' }]}>
+            <View style={[styles.rowBetween, { width: "100%" }]}>
               <AppButton
-                title={'Cancel'}
+                title={"Cancel"}
                 onPress={handleCloseReview}
                 outlined
-                width={'48%'}
+                width={"48%"}
                 color={COLORS.darkBlack}
                 backgroundColor={COLORS.white}
               />
               <AppButton
-                title={'Submit'}
+                title={"Submit"}
                 loading={loadingReview}
-                width={'48%'}
+                width={"48%"}
                 onPress={_addReview}
                 disabled={!content || !rating}
               />
@@ -686,29 +682,29 @@ function Order ({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.backgroud,
-    width: '100%',
-    height: '100%',
-    alignItems: 'center'
+    width: "100%",
+    height: "100%",
+    alignItems: "center"
   },
   hline: {
-    width: '100%',
+    width: "100%",
     height: 1,
     marginVertical: 10,
     backgroundColor: COLORS.tripBoxBorder
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center'
+    flexDirection: "row",
+    alignItems: "center"
   },
   rowBetween: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
   },
   textView: {
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center'
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center"
   },
   successText: {
     fontSize: hp(2),
@@ -718,10 +714,10 @@ const styles = StyleSheet.create({
   },
   paper: {
     backgroundColor: COLORS.white,
-    width: '90%',
+    width: "90%",
     borderRadius: 20,
     padding: 15,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2
@@ -731,8 +727,8 @@ const styles = StyleSheet.create({
     elevation: 5
   },
   bgImage: {
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     height: 200,
     paddingTop: 20,
     borderBottomRightRadius: 20,
@@ -740,50 +736,50 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 50,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     backgroundColor: COLORS.white,
     borderBottomWidth: 1,
     borderColor: COLORS.tripBoxBorder,
-    paddingHorizontal: '5%'
+    paddingHorizontal: "5%"
   },
   headerText: {
-    width: '80%',
+    width: "80%",
     fontFamily: FONT1REGULAR,
     fontSize: hp(2),
     color: COLORS.darkBlack
   },
   imgStyle: {
-    width: '100%',
+    width: "100%",
     height: 200,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20
   },
   viewAll: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: hp(2),
     color: COLORS.primary,
-    textDecorationLine: 'underline',
+    textDecorationLine: "underline",
     fontFamily: FONT1REGULAR
   },
   timetext: {
-    width: '40%',
-    textAlign: 'center',
+    width: "40%",
+    textAlign: "center",
     fontSize: hp(2),
     color: COLORS.darkGrey,
     fontFamily: FONT1REGULAR
   },
   pricetext: {
-    width: '80%',
+    width: "80%",
     fontSize: hp(2.8),
     color: COLORS.darkBlack,
     fontFamily: FONT1REGULAR
   },
   slide: {
-    width: '90%',
-    justifyContent: 'space-between',
+    width: "90%",
+    justifyContent: "space-between",
     height: 220,
     borderRadius: 22
   },
@@ -793,7 +789,10 @@ const styles = StyleSheet.create({
     width: 50
   },
   tabs: {
-    width: '100%',
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginTop: 20,
     paddingLeft: 15,
     paddingRight: 15,
@@ -801,28 +800,28 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   tab: {
-    width: '50%',
-    alignItems: 'center'
+    width: "50%",
+    alignItems: "center"
   },
   activeTab: {
     backgroundColor: COLORS.lightblue,
     borderRadius: 12,
     paddingHorizontal: 8,
-    justifyContent: 'center',
+    justifyContent: "center",
     height: hp(4),
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
     borderColor: COLORS.primary
   },
   tabText: {
     color: COLORS.darkGrey,
-    fontSize: hp(1.8),
+    fontSize: hp(1.7),
     marginTop: -5,
     fontFamily: FONT1MEDIUM
   },
   activeTabText: {
     color: COLORS.primary,
-    fontSize: hp(1.8),
+    fontSize: hp(1.7),
     fontFamily: FONT1MEDIUM
   },
   nameText: {
@@ -837,9 +836,9 @@ const styles = StyleSheet.create({
   },
   inavtive: {
     paddingHorizontal: 8,
-    justifyContent: 'center',
+    justifyContent: "center",
     height: hp(5),
-    alignItems: 'center'
+    alignItems: "center"
   },
   active: {
     borderWidth: 0,
@@ -850,27 +849,27 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   product_image: {
-    width: '48%',
+    width: "48%",
     marginTop: 10,
     marginBottom: 10,
     height: 130,
     borderRadius: 10,
-    resizeMode: 'cover'
+    resizeMode: "cover"
   },
   centeredView: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     backgroundColor: COLORS.modalBG,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: "center",
+    alignItems: "center"
   },
   modalView: {
-    width: '90%',
+    width: "90%",
     backgroundColor: COLORS.white,
     borderRadius: 20,
     padding: 30,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2
