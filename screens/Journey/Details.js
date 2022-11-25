@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from "react"
 import {
   View,
   StyleSheet,
@@ -9,20 +9,20 @@ import {
   Image,
   ActivityIndicator,
   Modal
-} from 'react-native'
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
-import { SvgXml } from 'react-native-svg'
-import NoOrder from '../../assets/svg/NoOrder.svg'
-import planIcon from '../../assets/svg/plan.svg'
-import enRoute from '../../assets/svg/enRoute.svg'
-import chatIcon from '../../assets/svg/chatIcon.svg'
-import locateIcon from '../../assets/svg/locate.svg'
-import successImage from '../../assets/images/successImage.png'
-import cehcked from '../../assets/svg/cehcked.svg'
-import Filter from '../../assets/svg/Filter.svg'
-import starBlack from '../../assets/svg/starBlack.svg'
-import userProfile from '../../assets/images/userProfile.png'
-import { AppButton, AppInput, CustomModel, Header } from '../../components'
+} from "react-native"
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
+import { SvgXml } from "react-native-svg"
+import NoOrder from "../../assets/svg/NoOrder.svg"
+import planIcon from "../../assets/svg/plan.svg"
+import enRoute from "../../assets/svg/enRoute.svg"
+import chatIcon from "../../assets/svg/chatIcon.svg"
+import locateIcon from "../../assets/svg/locate.svg"
+import successImage from "../../assets/images/successImage.png"
+import cehcked from "../../assets/svg/cehcked.svg"
+import Filter from "../../assets/svg/Filter.svg"
+import starBlack from "../../assets/svg/starBlack.svg"
+import userProfile from "../../assets/images/userProfile.png"
+import { AppButton, AppInput, CustomModel, Header } from "../../components"
 import {
   COLORS,
   FONT1BOLD,
@@ -30,28 +30,28 @@ import {
   FONT1MEDIUM,
   FONT1REGULAR,
   FONT1SEMIBOLD
-} from '../../constants'
-import AppContext from '../../store/Context'
-import moment from 'moment'
-import momenttimezone from 'moment-timezone'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import Toast from 'react-native-simple-toast'
-import { addReview, getJourneyDetails, makeOffer } from '../../api/journey'
-import { getOnrouteOrders, updateOrderStatus } from '../../api/order'
-import { useFocusEffect } from '@react-navigation/native'
-import { Rating } from 'react-native-ratings'
-import BouncyCheckbox from 'react-native-bouncy-checkbox'
-import database from '@react-native-firebase/database'
-import { Icon } from 'react-native-elements'
+} from "../../constants"
+import AppContext from "../../store/Context"
+import moment from "moment"
+import momenttimezone from "moment-timezone"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import Toast from "react-native-simple-toast"
+import { addReview, getJourneyDetails, makeOffer } from "../../api/journey"
+import { getOnrouteOrders, updateOrderStatus } from "../../api/order"
+import { useFocusEffect } from "@react-navigation/native"
+import { Rating } from "react-native-ratings"
+import BouncyCheckbox from "react-native-bouncy-checkbox"
+import database from "@react-native-firebase/database"
+import { Icon } from "react-native-elements"
 
-function JourneyDetails ({ navigation, route }) {
+function JourneyDetails({ navigation, route }) {
   const item = route?.params?.item
-  console.warn('item',item);
+  console.warn("item", item)
   const successDelivered = route?.params?.successDelivered
   const order = route?.params?.order
   const [state, setState] = useState({
     loading: false,
-    active: 'Offers',
+    active: "Offers",
     onRouteOrders: [],
     loadingJourney: false,
     loadingStatus: false,
@@ -59,8 +59,8 @@ function JourneyDetails ({ navigation, route }) {
     writeReview: false,
     journeyData: null,
     rating: 0,
-    content: '',
-    filterSelected: '',
+    content: "",
+    filterSelected: "",
     respectful_attitude: false,
     no_additional_payment_asked: false,
     d2d_delivery: false,
@@ -93,15 +93,15 @@ function JourneyDetails ({ navigation, route }) {
   }
 
   const tabs = [
-    { title: 'Offers', total: onRouteOrders?.offers_count || 0 },
+    { title: "Offers", total: onRouteOrders?.offers_count || 0 },
     {
-      title: 'Accepted',
+      title: "Accepted",
       total:
         onRouteOrders?.accepted_count +
           onRouteOrders?.requested_by_sender_count || 0
     },
-    { title: 'In Transit', total: onRouteOrders?.in_transit_count || 0 },
-    { title: 'Delivered', total: onRouteOrders?.delivered_count || 0 }
+    { title: "In Transit", total: onRouteOrders?.in_transit_count || 0 },
+    { title: "Delivered", total: onRouteOrders?.delivered_count || 0 }
   ]
 
   useFocusEffect(
@@ -110,7 +110,7 @@ function JourneyDetails ({ navigation, route }) {
         getData()
       }
       if (successDelivered) {
-        handleChange('successfullyDelivered', true)
+        handleChange("successfullyDelivered", true)
       }
     }, [item, successDelivered])
   )
@@ -124,10 +124,10 @@ function JourneyDetails ({ navigation, route }) {
 
   const _getOnrouteOrders = async payload => {
     try {
-      const token = await AsyncStorage.getItem('token')
-      const qs = payload || ''
+      const token = await AsyncStorage.getItem("token")
+      const qs = payload || ""
       const res = await getOnrouteOrders(qs, token)
-      handleChange('onRouteOrders', res?.data)
+      handleChange("onRouteOrders", res?.data)
     } catch (error) {
       const errorText = Object.values(error?.response?.data)
       // Toast.show(`Error: ${errorText}`)
@@ -136,9 +136,9 @@ function JourneyDetails ({ navigation, route }) {
 
   const _getJourneyDetails = async () => {
     try {
-      const token = await AsyncStorage.getItem('token')
+      const token = await AsyncStorage.getItem("token")
       const res = await getJourneyDetails(item?.id, token)
-      handleChange('journeyData', res?.data)
+      handleChange("journeyData", res?.data)
     } catch (error) {
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText}`)
@@ -147,19 +147,19 @@ function JourneyDetails ({ navigation, route }) {
 
   const _makeOffer = async oid => {
     try {
-      handleChange('loadingJourney', true)
-      const token = await AsyncStorage.getItem('token')
+      handleChange("loadingJourney", true)
+      const token = await AsyncStorage.getItem("token")
       const payload = {
         journey: item?.id,
         order: oid,
-        user: 'carrier'
+        user: "carrier"
       }
       await makeOffer(payload, token)
       Toast.show(`You have successfully make an offer`)
-      handleChange('loadingJourney', false)
+      handleChange("loadingJourney", false)
       getData()
     } catch (error) {
-      handleChange('loadingJourney', false)
+      handleChange("loadingJourney", false)
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText}`)
     }
@@ -167,39 +167,39 @@ function JourneyDetails ({ navigation, route }) {
 
   const _acceptOffer = async oid => {
     try {
-      handleChange('loadingJourney', true)
-      const token = await AsyncStorage.getItem('token')
+      handleChange("loadingJourney", true)
+      const token = await AsyncStorage.getItem("token")
       const payload = {
         journey: item?.id,
         order: oid,
-        user: 'carrier'
+        user: "carrier"
       }
       await makeOffer(payload, token)
       Toast.show(`You have successfully accepted an offer`)
-      handleChange('loadingJourney', false)
+      handleChange("loadingJourney", false)
       getData()
     } catch (error) {
-      handleChange('loadingJourney', false)
+      handleChange("loadingJourney", false)
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText}`)
     }
   }
 
   const handleCloseReview = () => {
-    handleChange('successfullyDelivered', false)
+    handleChange("successfullyDelivered", false)
     navigation.setParams({ successDelivered: null })
-    handleChange('writeReview', false)
-    handleChange('respectful_attitude', false)
-    handleChange('no_additional_payment_asked', false)
-    handleChange('d2d_delivery', false)
-    handleChange('review', 0)
-    handleChange('content', '')
+    handleChange("writeReview", false)
+    handleChange("respectful_attitude", false)
+    handleChange("no_additional_payment_asked", false)
+    handleChange("d2d_delivery", false)
+    handleChange("review", 0)
+    handleChange("content", "")
   }
 
   const _addReview = async () => {
     try {
-      handleChange('loadingReview', true)
-      const token = await AsyncStorage.getItem('token')
+      handleChange("loadingReview", true)
+      const token = await AsyncStorage.getItem("token")
       const payload = {
         journey: item?.id,
         order: order?.id,
@@ -212,18 +212,18 @@ function JourneyDetails ({ navigation, route }) {
       }
       await addReview(payload, token)
       Toast.show(`You have successfully reviewed to the sender`)
-      handleChange('loadingReview', false)
-      handleChange('successfullyDelivered', false)
+      handleChange("loadingReview", false)
+      handleChange("successfullyDelivered", false)
       navigation.setParams({ successDelivered: null })
-      handleChange('writeReview', false)
-      handleChange('respectful_attitude', false)
-      handleChange('no_additional_payment_asked', false)
-      handleChange('d2d_delivery', false)
-      handleChange('review', 0)
-      handleChange('content', '')
+      handleChange("writeReview", false)
+      handleChange("respectful_attitude", false)
+      handleChange("no_additional_payment_asked", false)
+      handleChange("d2d_delivery", false)
+      handleChange("review", 0)
+      handleChange("content", "")
       getData()
     } catch (error) {
-      handleChange('loadingReview', false)
+      handleChange("loadingReview", false)
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText}`)
     }
@@ -231,25 +231,25 @@ function JourneyDetails ({ navigation, route }) {
 
   const _makeInTransit = async oid => {
     try {
-      handleChange('loadingStatus', true)
-      const token = await AsyncStorage.getItem('token')
+      handleChange("loadingStatus", true)
+      const token = await AsyncStorage.getItem("token")
       const payload = {
         order: oid,
-        status: 'In transit'
+        status: "In transit"
       }
       await updateOrderStatus(payload, token)
       Toast.show(`Order now move in "In Transit"`)
-      handleChange('loadingStatus', false)
+      handleChange("loadingStatus", false)
       getData()
     } catch (error) {
-      handleChange('loadingStatus', false)
+      handleChange("loadingStatus", false)
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText}`)
     }
   }
 
-  function convertLocalDateToUTCDate (time, toLocal) {
-    const todayDate = moment(new Date()).format('YYYY-MM-DD')
+  function convertLocalDateToUTCDate(time, toLocal) {
+    const todayDate = moment(new Date()).format("YYYY-MM-DD")
     if (toLocal) {
       const today = momenttimezone.tz.guess()
       const timeUTC = momenttimezone.tz(time, today).format()
@@ -270,12 +270,12 @@ function JourneyDetails ({ navigation, route }) {
       const todayDate1 = momenttimezone
         .tz(`${todayDate} ${time}`, today)
         .format()
-      const utcTime = moment.utc(todayDate1).format('YYYY-MM-DDTHH:mm')
+      const utcTime = moment.utc(todayDate1).format("YYYY-MM-DDTHH:mm")
       return utcTime
     }
   }
-  function convertLocalDateToUTCDate1 (time, toLocal) {
-    const todayDate = moment(new Date()).format('YYYY-MM-DD')
+  function convertLocalDateToUTCDate1(time, toLocal) {
+    const todayDate = moment(new Date()).format("YYYY-MM-DD")
     if (toLocal) {
       const today = momenttimezone.tz.guess()
       const timeUTC = momenttimezone.tz(time, today).format()
@@ -296,13 +296,13 @@ function JourneyDetails ({ navigation, route }) {
       const todayDate1 = momenttimezone
         .tz(`${todayDate} ${time}`, today)
         .format()
-      const utcTime = moment.utc(todayDate1).format('YYYY-MM-DDTHH:mm')
+      const utcTime = moment.utc(todayDate1).format("YYYY-MM-DDTHH:mm")
       return utcTime
     }
   }
 
   const filterByRecent = offers => {
-    if (filterSelected === 'Most Recent') {
+    if (filterSelected === "Most Recent") {
       return offers?.sort(function (a, b) {
         // Turn your strings into dates, and then subtract them
         // to get a value that is either negative, positive, or zero.
@@ -311,7 +311,7 @@ function JourneyDetails ({ navigation, route }) {
           new Date(convertLocalDateToUTCDate1(a?.created_at, true))
         )
       })
-    } else if (filterSelected === 'High Reward') {
+    } else if (filterSelected === "High Reward") {
       return offers?.sort(function (a, b) {
         // Turn your strings into dates, and then subtract them
         // to get a value that is either negative, positive, or zero.
@@ -323,11 +323,11 @@ function JourneyDetails ({ navigation, route }) {
   }
 
   const getOrderFromStatus = () => {
-    if (active === 'Offers') {
+    if (active === "Offers") {
       return filterByRecent(onRouteOrders?.offers)
-    } else if (active === 'Accepted') {
+    } else if (active === "Accepted") {
       return onRouteOrders?.accepted?.concat(onRouteOrders?.requested_by_sender)
-    } else if (active === 'In Transit') {
+    } else if (active === "In Transit") {
       return onRouteOrders?.in_transit
     } else {
       return onRouteOrders?.delivered
@@ -347,20 +347,20 @@ function JourneyDetails ({ navigation, route }) {
       order: item
     }
     database()
-      .ref('Messages/' + item?.id)
+      .ref("Messages/" + item?.id)
       .update(value)
       .then(res => {
-        navigation.navigate('Chat', { orderID: item?.id })
+        navigation.navigate("Chat", { orderID: item?.id })
       })
       .catch(err => {
-        Toast.show('Something went wrong!')
+        Toast.show("Something went wrong!")
       })
   }
 
   if (loading) {
     return (
       <View style={styles.loading}>
-        <ActivityIndicator color={COLORS.primary} size={'large'} />
+        <ActivityIndicator color={COLORS.primary} size={"large"} />
       </View>
     )
   }
@@ -368,17 +368,17 @@ function JourneyDetails ({ navigation, route }) {
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={{ alignItems: 'center' }}
+      contentContainerStyle={{ alignItems: "center" }}
     >
-      <Header title={'Journeys'} rightEmpty back />
+      <Header title={"Journeys"} rightEmpty back />
       <View
         style={{
           backgroundColor: COLORS.blueBG,
-          width: '90%',
+          width: "90%",
           padding: 10,
           marginVertical: 20,
           borderRadius: 10,
-          shadowColor: '#000',
+          shadowColor: "#000",
           shadowOffset: {
             width: 0,
             height: 2
@@ -388,12 +388,12 @@ function JourneyDetails ({ navigation, route }) {
           elevation: 5
         }}
       >
-        <View style={[styles.row, { width: '90%' }]}>
-          <Text style={[styles.coutryText, { maxWidth: '40%' }]}>
+        <View style={[styles.row, { width: "90%" }]}>
+          <Text style={[styles.coutryText, { maxWidth: "40%" }]}>
             {journeyData?.departure_country}
           </Text>
           <SvgXml xml={planIcon} style={{ marginTop: 5 }} />
-          <Text style={[styles.coutryText, { maxWidth: '60%' }]}>
+          <Text style={[styles.coutryText, { maxWidth: "60%" }]}>
             {journeyData?.arrival_country}
           </Text>
         </View>
@@ -404,18 +404,18 @@ function JourneyDetails ({ navigation, route }) {
         <View style={[styles.rowBetween, { marginVertical: 10 }]}>
           <Text style={styles.leftText}>Journey Date</Text>
           <Text style={styles.rightText}>
-            {moment(journeyData?.date_of_journey).format('DD / MM / YYYY')}
+            {moment(journeyData?.date_of_journey).format("DD / MM / YYYY")}
           </Text>
         </View>
         <View style={styles.rowBetween}>
           <Text style={styles.leftText}>Carry a weight of</Text>
           <Text style={styles.rightText}>{journeyData?.total_weight}Kg</Text>
         </View>
-        <View style={[styles.rowBetween, { alignItems: 'flex-start' }]}>
+        <View style={[styles.rowBetween, { alignItems: "flex-start" }]}>
           <Text style={[styles.leftText, { marginTop: 8 }]}>
             Willing to carry
           </Text>
-          <View style={{ maxWidth: '60%' }}>
+          <View style={{ maxWidth: "60%" }}>
             {journeyData?.willing_to_carry?.map(res => (
               <View
                 style={{
@@ -442,7 +442,7 @@ function JourneyDetails ({ navigation, route }) {
         {tabs.map((tab, index) => (
           <TouchableOpacity
             onPress={() => {
-              handleChange('active', tab?.title)
+              handleChange("active", tab?.title)
             }}
             key={index}
             style={active === tab.title ? styles.activeTab : styles.inavtive}
@@ -457,7 +457,7 @@ function JourneyDetails ({ navigation, route }) {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      {active === 'Offers' && (
+      {active === "Offers" && (
         <View
           style={[
             styles.row,
@@ -468,26 +468,26 @@ function JourneyDetails ({ navigation, route }) {
           ]}
         >
           <TouchableOpacity
-            onPress={() => handleChange('filterSelected', 'Most Recent')}
+            onPress={() => handleChange("filterSelected", "Most Recent")}
             style={
-              filterSelected == 'Most Recent'
+              filterSelected == "Most Recent"
                 ? styles.activeTab1
                 : styles.inavtive1
             }
           >
             <Text
               style={
-                filterSelected === 'Most Recent'
+                filterSelected === "Most Recent"
                   ? styles.activeTabText1
                   : styles.tabText
               }
             >
               Most Recent
             </Text>
-            {filterSelected == 'Most Recent' && (
+            {filterSelected == "Most Recent" && (
               <Icon
-                name='check'
-                type='feather'
+                name="check"
+                type="feather"
                 size={16}
                 containerStyle={{ marginLeft: 5 }}
                 color={COLORS.successBGBorder}
@@ -495,26 +495,26 @@ function JourneyDetails ({ navigation, route }) {
             )}
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => handleChange('filterSelected', 'High Reward')}
+            onPress={() => handleChange("filterSelected", "High Reward")}
             style={
-              filterSelected === 'High Reward'
+              filterSelected === "High Reward"
                 ? styles.activeTab1
                 : styles.inavtive1
             }
           >
             <Text
               style={
-                filterSelected === 'High Reward'
+                filterSelected === "High Reward"
                   ? styles.activeTabText1
                   : styles.tabText
               }
             >
               High Reward
             </Text>
-            {filterSelected == 'High Reward' && (
+            {filterSelected == "High Reward" && (
               <Icon
-                name='check'
-                type='feather'
+                name="check"
+                type="feather"
                 size={16}
                 containerStyle={{ marginLeft: 5 }}
                 color={COLORS.successBGBorder}
@@ -535,14 +535,14 @@ function JourneyDetails ({ navigation, route }) {
         data={getOrderFromStatus()}
         scrollEnabled={false}
         showsVerticalScrollIndicator={false}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: "100%", height: "100%" }}
         renderItem={({ item, index }) => (
           <View
             key={index}
-            style={{ width: '100%', alignItems: 'center', marginBottom: 20 }}
+            style={{ width: "100%", alignItems: "center", marginBottom: 20 }}
           >
             <View style={styles.paper}>
-              <View style={[styles.rowBetween, { width: '100%' }]}>
+              <View style={[styles.rowBetween, { width: "100%" }]}>
                 <View style={styles.row}>
                   <Image
                     style={{
@@ -564,7 +564,7 @@ function JourneyDetails ({ navigation, route }) {
                     </Text>
                   </View>
                 </View>
-                <View style={{ alignItems: 'flex-end' }}>
+                <View style={{ alignItems: "flex-end" }}>
                   <Text style={[styles.nameText, { fontSize: hp(2.4) }]}>
                     ${item?.carrier_reward}
                   </Text>
@@ -574,13 +574,13 @@ function JourneyDetails ({ navigation, route }) {
               <View style={styles.hline} />
 
               <Text
-                style={[styles.nameText, { fontSize: hp(2.5), width: '90%' }]}
+                style={[styles.nameText, { fontSize: hp(2.5), width: "90%" }]}
               >
                 {item?.product_name}
               </Text>
               <Text style={styles.postedText}>
-                Deliver Before :{' '}
-                {moment(item?.deliver_before_date).format('DD / MM / YYYY')}
+                Deliver Before :{" "}
+                {moment(item?.deliver_before_date).format("DD / MM / YYYY")}
               </Text>
               <View style={styles.rowBetween}>
                 {item?.images?.length > 0 && (
@@ -597,10 +597,10 @@ function JourneyDetails ({ navigation, route }) {
                 )}
               </View>
               <View style={styles.hline} />
-              <View style={[styles.row, { width: '90%' }]}>
+              <View style={[styles.row, { width: "90%" }]}>
                 <SvgXml xml={enRoute} />
                 <View
-                  style={{ justifyContent: 'space-between', marginTop: -20 }}
+                  style={{ justifyContent: "space-between", marginTop: -20 }}
                 >
                   <Text
                     style={[
@@ -626,30 +626,30 @@ function JourneyDetails ({ navigation, route }) {
                     DELIVER TO
                   </Text>
                   <Text style={[styles.nameText, { color: COLORS.darkBlack }]}>
-                    {item?.arrival_address_city},{' '}
+                    {item?.arrival_address_city},{" "}
                     {item?.arrival_address_country}
                   </Text>
                 </View>
               </View>
-              {active === 'Offers' && (
+              {active === "Offers" && (
                 <AppButton
-                  title={'Make Offer'}
+                  title={"Make Offer"}
                   disabled={loadingJourney}
                   onPress={() => _makeOffer(item?.id)}
                 />
               )}
-              {active !== 'Offers' && (
+              {active !== "Offers" && (
                 <View
                   style={{
-                    width: '100%',
+                    width: "100%",
                     marginTop: -20,
-                    alignItems: 'center'
+                    alignItems: "center"
                   }}
                 >
                   <View style={styles.hline} />
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.navigate('JourneyOrderDetails', {
+                      navigation.navigate("JourneyOrderDetails", {
                         item,
                         active,
                         jItem: route?.params?.item
@@ -661,7 +661,7 @@ function JourneyDetails ({ navigation, route }) {
                         color: COLORS.successBGBorder,
                         fontFamily: FONT1REGULAR,
                         fontSize: hp(1.8),
-                        textDecorationLine: 'underline'
+                        textDecorationLine: "underline"
                       }}
                     >
                       View full details
@@ -669,12 +669,12 @@ function JourneyDetails ({ navigation, route }) {
                   </TouchableOpacity>
                 </View>
               )}
-              {active === 'Accepted' &&
+              {active === "Accepted" &&
                 onRouteOrders?.requested_by_sender?.filter(
                   e => e.id === item?.id
                 )?.length === 0 && (
                   <AppButton
-                    title={'Chat with sender'}
+                    title={"Chat with sender"}
                     outlined
                     backgroundColor={COLORS.white}
                     color={COLORS.darkBlack}
@@ -685,15 +685,15 @@ function JourneyDetails ({ navigation, route }) {
                     onPress={() => createMessageList(item)}
                   />
                 )}
-              {active === 'Accepted' &&
+              {active === "Accepted" &&
                 onRouteOrders?.requested_by_sender?.filter(
                   e => e.id === item?.id
                 )?.length === 0 && (
                   <AppButton
                     title={
                       item?.can_transit
-                        ? 'Move to Transit'
-                        : 'Waiting for sender approval...'
+                        ? "Move to Transit"
+                        : "Waiting for sender approval..."
                     }
                     disabled={!item?.can_transit}
                     backgroundColor={
@@ -704,7 +704,7 @@ function JourneyDetails ({ navigation, route }) {
                     onPress={() => _makeInTransit(item?.id)}
                   />
                 )}
-              {active === 'Accepted' &&
+              {active === "Accepted" &&
                 onRouteOrders?.requested_by_sender?.filter(
                   e => e.id === item?.id
                 )?.length > 0 &&
@@ -712,8 +712,8 @@ function JourneyDetails ({ navigation, route }) {
                   <AppButton
                     title={
                       item?.can_transit
-                        ? 'Move to Transit'
-                        : 'Waiting for sender approval...'
+                        ? "Move to Transit"
+                        : "Waiting for sender approval..."
                     }
                     disabled={!item?.can_transit}
                     backgroundColor={
@@ -724,24 +724,24 @@ function JourneyDetails ({ navigation, route }) {
                     onPress={() => _makeInTransit(item?.id)}
                   />
                 )}
-              {active === 'Accepted' &&
+              {active === "Accepted" &&
                 onRouteOrders?.requested_by_sender?.filter(
                   e => e.id === item?.id
                 )?.length > 0 &&
                 !item?.can_transit && (
                   <View style={styles.rowBetween}>
                     <AppButton
-                      title={'Decline'}
-                      width={'48%'}
+                      title={"Decline"}
+                      width={"48%"}
                       backgroundColor={COLORS.white}
                       color={COLORS.darkBlack}
                       outlined
                       // onPress={() => _makeOffer(item?.id)}
                     />
                     <AppButton
-                      title={'Accept'}
+                      title={"Accept"}
                       disabled={item?.can_transit}
-                      width={'48%'}
+                      width={"48%"}
                       backgroundColor={COLORS.primary}
                       loading={loadingJourney}
                       color={!item?.can_transit ? COLORS.white : COLORS.primary}
@@ -750,26 +750,26 @@ function JourneyDetails ({ navigation, route }) {
                   </View>
                 )}
 
-              {active === 'In Transit' && (
+              {active === "In Transit" && (
                 <>
                   <View style={styles.rowBetween}>
                     <AppButton
-                      title={'Chat'}
+                      title={"Chat"}
                       outlined
                       backgroundColor={COLORS.white}
                       color={COLORS.darkBlack}
                       titleLight
-                      width={'48%'}
+                      width={"48%"}
                       prefix={
                         <SvgXml xml={chatIcon} style={{ marginRight: 8 }} />
                       }
                       onPress={() => createMessageList(item)}
                     />
                     <AppButton
-                      title={'Locate'}
+                      title={"Locate"}
                       backgroundColor={COLORS.stepGreen}
                       color={COLORS.white}
-                      width={'48%'}
+                      width={"48%"}
                       prefix={
                         <SvgXml xml={locateIcon} style={{ marginRight: 8 }} />
                       }
@@ -777,7 +777,7 @@ function JourneyDetails ({ navigation, route }) {
                     />
                   </View>
                   <AppButton
-                    title={'Deliver Order'}
+                    title={"Deliver Order"}
                     disabled={!item?.can_transit}
                     backgroundColor={
                       item?.can_transit ? COLORS.primary : COLORS.primaryLight
@@ -785,7 +785,7 @@ function JourneyDetails ({ navigation, route }) {
                     loading={loadingStatus}
                     color={item?.can_transit ? COLORS.white : COLORS.primary}
                     onPress={() =>
-                      navigation.navigate('ScanQR', {
+                      navigation.navigate("ScanQR", {
                         orderID: item?.id,
                         order: item,
                         jItem: route?.params?.item
@@ -794,17 +794,17 @@ function JourneyDetails ({ navigation, route }) {
                   />
                 </>
               )}
-              {active === 'Delivered' && (
+              {active === "Delivered" && (
                 <View
                   // onPress={() => handleChange('writeReview', true)}
                   style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
+                    flexDirection: "row",
+                    alignItems: "center",
                     backgroundColor: COLORS.successBG,
                     borderRadius: 30,
                     height: hp(6),
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    alignItems: "center",
+                    justifyContent: "center",
                     marginTop: 15
                   }}
                 >
@@ -825,14 +825,14 @@ function JourneyDetails ({ navigation, route }) {
           </View>
         )}
         ListEmptyComponent={() => (
-          <View style={{ width: '100%', alignItems: 'center' }}>
+          <View style={{ width: "100%", alignItems: "center" }}>
             <SvgXml xml={NoOrder} />
             <Text style={styles.timetext}>
               You don’t have new order requests
             </Text>
             <AppButton
-              title={'Create Order'}
-              onPress={() => navigation.navigate('CreateOrder')}
+              title={"Create Order"}
+              onPress={() => navigation.navigate("CreateOrder")}
               width={150}
               color={COLORS.primary}
               backgroundColor={COLORS.lightblue}
@@ -841,7 +841,7 @@ function JourneyDetails ({ navigation, route }) {
         )}
       />
       <Modal
-        animationType='slide'
+        animationType="slide"
         transparent={true}
         visible={successfullyDelivered}
       >
@@ -850,10 +850,10 @@ function JourneyDetails ({ navigation, route }) {
             <Image
               source={successImage}
               style={{
-                width: '100%',
+                width: "100%",
                 height: 150,
                 marginTop: -30,
-                resizeMode: 'cover'
+                resizeMode: "cover"
               }}
             />
             <View style={styles.textView}>
@@ -861,45 +861,46 @@ function JourneyDetails ({ navigation, route }) {
               <Text style={styles.collectReward}>Collect your Reward</Text>
               <Text style={styles.reward}>${order?.carrier_reward}</Text>
               <Text style={[styles.successText, { color: COLORS.darkBlack }]}>
-                Your delivery of Order ID #WC021654
+                Your delivery of Order ID #`Order ID #WC
+                {order?.id?.substr(order?.id?.length - 5)}
               </Text>
               <Text
                 style={[
                   styles.collectReward,
-                  { fontFamily: FONT1REGULAR, textAlign: 'center' }
+                  { fontFamily: FONT1REGULAR, textAlign: "center" }
                 ]}
               >
-                “Carry my {order?.product_name} from{' '}
+                “Carry my {order?.product_name} from{" "}
                 {order?.pickup_address_city
-                  ? order?.pickup_address_city + ', '
-                  : '' + order?.pickup_address_state
-                  ? order?.pickup_address_state + ', '
-                  : '' + order?.pickup_address_country}{' '}
-                to{' '}
+                  ? order?.pickup_address_city + ", "
+                  : "" + order?.pickup_address_state
+                  ? order?.pickup_address_state + ", "
+                  : "" + order?.pickup_address_country}{" "}
+                to{" "}
                 {order?.arrival_address_city
-                  ? order?.arrival_address_city + ', '
-                  : '' + order?.arrival_address_state
-                  ? order?.arrival_address_state + ', '
-                  : '' + order?.arrival_address_country}
-                ”{' '}
+                  ? order?.arrival_address_city + ", "
+                  : "" + order?.arrival_address_state
+                  ? order?.arrival_address_state + ", "
+                  : "" + order?.arrival_address_country}
+                ”{" "}
                 <Text style={{ color: COLORS.darkBlack }}>is successfull.</Text>
               </Text>
               <AppButton
-                title={'Write a review'}
+                title={"Write a review"}
                 outlined
                 backgroundColor={COLORS.white}
                 color={COLORS.darkBlack}
                 titleLight
                 prefix={<SvgXml xml={starBlack} style={{ marginRight: 8 }} />}
                 onPress={() => {
-                  handleChange('successfullyDelivered', false)
-                  handleChange('writeReview', true)
+                  handleChange("successfullyDelivered", false)
+                  handleChange("writeReview", true)
                 }}
               />
               <AppButton
-                title={'Done'}
+                title={"Done"}
                 onPress={() => {
-                  handleChange('successfullyDelivered', false)
+                  handleChange("successfullyDelivered", false)
                   navigation.setParams({ successDelivered: null })
                 }}
               />
@@ -909,11 +910,11 @@ function JourneyDetails ({ navigation, route }) {
       </Modal>
       <CustomModel
         visible={writeReview}
-        height={'90%'}
+        height={"90%"}
         onClose={handleCloseReview}
       >
-        <View style={{ alignItems: 'center', width: '100%' }}>
-          <View style={{ alignItems: 'center', width: '90%' }}>
+        <View style={{ alignItems: "center", width: "100%" }}>
+          <View style={{ alignItems: "center", width: "90%" }}>
             <Image
               style={{
                 width: 100,
@@ -940,42 +941,42 @@ function JourneyDetails ({ navigation, route }) {
               {rating?.toFixed(1)}
             </Text>
             <Rating
-              type='custom'
+              type="custom"
               style={{ marginBottom: 10 }}
               startingValue={rating}
               fractions={0.1}
-              onFinishRating={rating => handleChange('rating', rating)}
+              onFinishRating={rating => handleChange("rating", rating)}
               ratingBackgroundColor={COLORS.tripBoxBorder}
               imageSize={35}
             />
 
             <AppInput
-              placeholder={'write review'}
+              placeholder={"write review"}
               value={content}
               borderColor={COLORS.grey}
-              name={'content'}
+              name={"content"}
               onChange={handleChange}
               multiline
               height={100}
             />
-            <View style={{ width: '100%' }}>
+            <View style={{ width: "100%" }}>
               <BouncyCheckbox
                 size={20}
                 fillColor={COLORS.primary}
                 unfillColor={COLORS.white}
                 disableBuiltInState
                 isChecked={respectful_attitude}
-                text='Respectful attitude'
+                text="Respectful attitude"
                 iconStyle={{ borderColor: COLORS.primary, borderRadius: 8 }}
                 textStyle={{
                   fontFamily: FONT1REGULAR,
                   fontSize: hp(2),
                   color: COLORS.darkBlack,
-                  textDecorationLine: 'none'
+                  textDecorationLine: "none"
                 }}
                 style={{ marginTop: 10 }}
                 onPress={() =>
-                  handleChange('respectful_attitude', !respectful_attitude)
+                  handleChange("respectful_attitude", !respectful_attitude)
                 }
               />
               <BouncyCheckbox
@@ -984,18 +985,18 @@ function JourneyDetails ({ navigation, route }) {
                 unfillColor={COLORS.white}
                 disableBuiltInState
                 isChecked={no_additional_payment_asked}
-                text='Provide additional charge'
+                text="Provide additional charge"
                 iconStyle={{ borderColor: COLORS.primary, borderRadius: 8 }}
                 textStyle={{
                   fontFamily: FONT1REGULAR,
                   fontSize: hp(2),
                   color: COLORS.darkBlack,
-                  textDecorationLine: 'none'
+                  textDecorationLine: "none"
                 }}
                 style={{ marginTop: 10 }}
                 onPress={() =>
                   handleChange(
-                    'no_additional_payment_asked',
+                    "no_additional_payment_asked",
                     !no_additional_payment_asked
                   )
                 }
@@ -1006,31 +1007,31 @@ function JourneyDetails ({ navigation, route }) {
                 unfillColor={COLORS.white}
                 disableBuiltInState
                 isChecked={d2d_delivery}
-                text='Carry again for them'
+                text="Carry again for them"
                 iconStyle={{ borderColor: COLORS.primary, borderRadius: 8 }}
                 textStyle={{
                   fontFamily: FONT1REGULAR,
                   fontSize: hp(2),
                   color: COLORS.darkBlack,
-                  textDecorationLine: 'none'
+                  textDecorationLine: "none"
                 }}
                 style={{ marginTop: 10, marginBottom: 10 }}
-                onPress={() => handleChange('d2d_delivery', !d2d_delivery)}
+                onPress={() => handleChange("d2d_delivery", !d2d_delivery)}
               />
             </View>
-            <View style={[styles.rowBetween, { width: '100%' }]}>
+            <View style={[styles.rowBetween, { width: "100%" }]}>
               <AppButton
-                title={'Cancel'}
+                title={"Cancel"}
                 onPress={handleCloseReview}
                 outlined
-                width={'48%'}
+                width={"48%"}
                 color={COLORS.darkBlack}
                 backgroundColor={COLORS.white}
               />
               <AppButton
-                title={'Submit'}
+                title={"Submit"}
                 loading={loadingReview}
-                width={'48%'}
+                width={"48%"}
                 onPress={_addReview}
                 disabled={!content || !rating}
               />
@@ -1045,48 +1046,48 @@ function JourneyDetails ({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.backgroud,
-    width: '100%',
-    height: '100%'
+    width: "100%",
+    height: "100%"
   },
   hline: {
-    width: '100%',
+    width: "100%",
     height: 1,
     marginVertical: 10,
     backgroundColor: COLORS.tripBoxBorder
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center'
+    flexDirection: "row",
+    alignItems: "center"
   },
   rowBetween: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
   },
   ongoingBox: {
     height: 30,
     borderRadius: 30,
     paddingHorizontal: 10,
-    flexDirection: 'row',
-    alignItems: 'center'
+    flexDirection: "row",
+    alignItems: "center"
   },
   textView: {
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center'
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center"
   },
   loading: {
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center'
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center"
   },
   paper: {
     backgroundColor: COLORS.white,
-    width: '90%',
+    width: "90%",
     borderRadius: 20,
     padding: 15,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2
@@ -1096,8 +1097,8 @@ const styles = StyleSheet.create({
     elevation: 5
   },
   bgImage: {
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     height: 200,
     paddingTop: 20,
     borderBottomRightRadius: 20,
@@ -1105,37 +1106,37 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 50,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     backgroundColor: COLORS.white,
     borderBottomWidth: 1,
     borderColor: COLORS.tripBoxBorder,
-    paddingHorizontal: '5%'
+    paddingHorizontal: "5%"
   },
   headerText: {
-    width: '80%',
+    width: "80%",
     fontFamily: FONT1REGULAR,
     fontSize: hp(2),
     color: COLORS.darkBlack
   },
   imgStyle: {
-    width: '100%',
+    width: "100%",
     height: 200,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20
   },
   viewAll: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: hp(2),
     color: COLORS.primary,
-    textDecorationLine: 'underline',
+    textDecorationLine: "underline",
     fontFamily: FONT1REGULAR
   },
   timetext: {
-    width: '40%',
-    textAlign: 'center',
+    width: "40%",
+    textAlign: "center",
     fontSize: hp(2),
     color: COLORS.darkGrey,
     fontFamily: FONT1REGULAR
@@ -1173,14 +1174,14 @@ const styles = StyleSheet.create({
     fontFamily: FONT1MEDIUM
   },
   pricetext: {
-    width: '80%',
+    width: "80%",
     fontSize: hp(2.8),
     color: COLORS.darkBlack,
     fontFamily: FONT1REGULAR
   },
   slide: {
-    width: '90%',
-    justifyContent: 'space-between',
+    width: "90%",
+    justifyContent: "space-between",
     height: 220,
     borderRadius: 22
   },
@@ -1190,7 +1191,7 @@ const styles = StyleSheet.create({
     width: 50
   },
   tabs: {
-    width: '100%',
+    width: "100%",
     marginTop: 20,
     paddingLeft: 15,
     paddingRight: 20,
@@ -1199,27 +1200,27 @@ const styles = StyleSheet.create({
   },
   tab: {
     marginRight: 20,
-    alignItems: 'center'
+    alignItems: "center"
   },
   activeTab: {
     backgroundColor: COLORS.lightblue,
     borderRadius: 20,
     marginRight: 20,
     paddingHorizontal: 15,
-    justifyContent: 'center',
+    justifyContent: "center",
     height: hp(5),
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
     borderColor: COLORS.primary
   },
   activeTab1: {
     borderRadius: 20,
     marginRight: 10,
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 15,
-    justifyContent: 'center',
+    justifyContent: "center",
     height: hp(5),
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
     backgroundColor: COLORS.successBG,
     borderColor: COLORS.successBGBorder
@@ -1252,18 +1253,18 @@ const styles = StyleSheet.create({
   },
   inavtive: {
     paddingHorizontal: 10,
-    justifyContent: 'center',
+    justifyContent: "center",
     marginRight: 10,
     height: hp(5),
-    alignItems: 'center'
+    alignItems: "center"
   },
   inavtive1: {
     paddingHorizontal: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginRight: 10,
     height: hp(5),
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
     backgroundColor: COLORS.white,
     borderRadius: 20,
@@ -1278,27 +1279,27 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   product_image: {
-    width: '48%',
+    width: "48%",
     marginTop: 10,
     marginBottom: 10,
     height: 130,
     borderRadius: 10,
-    resizeMode: 'cover'
+    resizeMode: "cover"
   },
   centeredView: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     backgroundColor: COLORS.modalBG,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: "center",
+    alignItems: "center"
   },
   modalView: {
-    width: '90%',
+    width: "90%",
     backgroundColor: COLORS.backgroud,
     borderRadius: 20,
     padding: 30,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2

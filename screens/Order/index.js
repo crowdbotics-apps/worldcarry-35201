@@ -58,6 +58,7 @@ function Order({ navigation }) {
     showQRImage: "",
     OrderID: "",
     product_name: "",
+    product_id: "",
     writeReview: false,
     rating: 0,
     content: "",
@@ -80,6 +81,7 @@ function Order({ navigation }) {
     showQRImage,
     OrderID,
     product_name,
+    product_id,
     arrival_address_country,
     pickup_address_country,
     writeReview,
@@ -366,6 +368,7 @@ function Order({ navigation }) {
                       handleChange("showQR", true)
                       handleChange("showQRImage", item?.qr_code)
                       handleChange("product_name", item?.product_name)
+                      handleChange("product_id", item?.id)
                       handleChange(
                         "pickup_address_country",
                         item?.pickup_address_country
@@ -519,7 +522,9 @@ function Order({ navigation }) {
                 style={[styles.rowBetween, { width: "100%", marginBottom: 20 }]}
               >
                 <Text style={styles.successText}>Order ID</Text>
-                <Text style={styles.successText}>{"#WC021654"}</Text>
+                <Text style={styles.successText}>
+                  {"#WC" + product_id?.substr(product_id?.length - 5)}
+                </Text>
               </View>
               <Image
                 source={{ uri: showQRImage }}
@@ -536,6 +541,7 @@ function Order({ navigation }) {
                   handleChange("showQR", false)
                   handleChange("showQRImage", "")
                   handleChange("product_name", "")
+                  handleChange("product_id", "")
                   handleChange("arrival_address_country", "")
                   handleChange("pickup_address_country", "")
                 }}

@@ -1,29 +1,29 @@
-import React, { useContext, useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import React, { useContext, useState } from "react"
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
-} from 'react-native-responsive-screen'
-import { SvgXml } from 'react-native-svg'
-import { Icon } from 'react-native-elements'
+} from "react-native-responsive-screen"
+import { SvgXml } from "react-native-svg"
+import { Icon } from "react-native-elements"
 import {
   COLORS,
   FONT1MEDIUM,
   FONT1REGULAR,
   FONT1SEMIBOLD
-} from '../../constants'
-import { AppButton, AppInput, Header, SuccessModal } from '../../components'
-import Toast from 'react-native-simple-toast'
-import logo from '../../assets/svg/logo.svg'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { changePassword } from '../../api/auth'
+} from "../../constants"
+import { AppButton, AppInput, Header, SuccessModal } from "../../components"
+import Toast from "react-native-simple-toast"
+import logo from "../../assets/svg/logo.svg"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import { changePassword } from "../../api/auth"
 
-function ChangeCurrentPassword ({ navigation }) {
+function ChangeCurrentPassword({ navigation }) {
   // State
   const [state, setState] = useState({
-    c_password: '',
-    password: '',
-    confirm_password: '',
+    c_password: "",
+    password: "",
+    confirm_password: "",
     invalidPass: false,
     invalidPass1: false,
     loading: false,
@@ -52,21 +52,21 @@ function ChangeCurrentPassword ({ navigation }) {
 
   const handlePassword = async () => {
     try {
-      const token = await AsyncStorage.getItem('token')
-      handleChange('loading', true)
+      const token = await AsyncStorage.getItem("token")
+      handleChange("loading", true)
       const payload = {
         new_password1: password,
         new_password2: confirm_password
       }
       const res = await changePassword(payload, token)
-      handleChange('loading', false)
-      handleChange('c_password', '')
-      handleChange('password', '')
-      handleChange('confirm_password', '')
-      Toast.show('Password has been changed')
+      handleChange("loading", false)
+      handleChange("c_password", "")
+      handleChange("password", "")
+      handleChange("confirm_password", "")
+      Toast.show("Password has been changed")
       navigation.goBack()
     } catch (error) {
-      handleChange('loading', false)
+      handleChange("loading", false)
       const errorText = Object.values(error?.response?.data)
       if (errorText.length > 0) {
         Toast.show(`Error: ${JSON.stringify(errorText[0])}`)
@@ -77,41 +77,42 @@ function ChangeCurrentPassword ({ navigation }) {
   }
 
   const checkPass = () => {
-    const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/
+    const regex =
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/
     if (regex.test(password)) {
-      if (password != '') {
-        handleChange('invalidPass', false)
+      if (password != "") {
+        handleChange("invalidPass", false)
       } else {
-        handleChange('password', '')
+        handleChange("password", "")
       }
     } else {
-      handleChange('invalidPass', true)
+      handleChange("invalidPass", true)
     }
   }
 
   const checkCurrentPass = () => {
     const regex = /^.{6,}$/
     if (regex.test(c_password)) {
-      if (c_password != '') {
-        handleChange('invalidPass1', false)
+      if (c_password != "") {
+        handleChange("invalidPass1", false)
       } else {
-        handleChange('c_password', '')
+        handleChange("c_password", "")
       }
     } else {
-      handleChange('invalidPass1', true)
+      handleChange("invalidPass1", true)
     }
   }
 
   const handleDone = () => {
-    handleChange('modalVisible', false)
-    navigation.navigate('AuthLoading')
+    handleChange("modalVisible", false)
+    navigation.navigate("AuthLoading")
   }
 
   return (
     <View style={styles.container}>
       <View style={styles.top}>
         <Header
-          title={'Change Password'}
+          title={"Change Password"}
           color={COLORS.darkBlack}
           cross
           rightItem={
@@ -120,33 +121,33 @@ function ChangeCurrentPassword ({ navigation }) {
                 navigation.goBack()
               }}
             >
-              <Text style={styles.activeTabText}>{'Cancel'}</Text>
+              <Text style={styles.activeTabText}>{"Cancel"}</Text>
             </TouchableOpacity>
           }
         />
         <View style={[styles.textInputContainer, { marginTop: 20 }]}>
           <AppInput
-            inputLabel={'Password'}
-            placeholder={'Current Password'}
+            inputLabel={"Password"}
+            placeholder={"Current Password"}
             prefixBGTransparent
-            name={'c_password'}
+            name={"c_password"}
             // onBlur={checkCurrentPass}
             postfix={
               <TouchableOpacity
-                onPress={() => handleChange('showPassword1', !showPassword1)}
+                onPress={() => handleChange("showPassword1", !showPassword1)}
               >
                 {showPassword1 ? (
                   <Icon
-                    name={'eye-outline'}
+                    name={"eye-outline"}
                     color={COLORS.darkGrey}
-                    type={'ionicon'}
+                    type={"ionicon"}
                     size={20}
                   />
                 ) : (
                   <Icon
-                    name={'eye-off-outline'}
+                    name={"eye-off-outline"}
                     color={COLORS.darkGrey}
-                    type={'ionicon'}
+                    type={"ionicon"}
                     size={20}
                   />
                 )}
@@ -154,7 +155,7 @@ function ChangeCurrentPassword ({ navigation }) {
             }
             value={c_password}
             onChange={handleChange}
-            secureTextEntry={!showPassword1 && c_password != ''}
+            secureTextEntry={!showPassword1 && c_password != ""}
           />
         </View>
         {/* {invalidPass1 && (
@@ -164,27 +165,27 @@ function ChangeCurrentPassword ({ navigation }) {
         )} */}
         <View style={styles.textInputContainer}>
           <AppInput
-            label={'New Password'}
-            placeholder={'New Password'}
+            label={"New Password"}
+            placeholder={"New Password"}
             prefixBGTransparent
-            name={'password'}
+            name={"password"}
             onBlur={checkPass}
             postfix={
               <TouchableOpacity
-                onPress={() => handleChange('showPassword', !showPassword)}
+                onPress={() => handleChange("showPassword", !showPassword)}
               >
                 {showPassword ? (
                   <Icon
-                    name={'eye-outline'}
+                    name={"eye-outline"}
                     color={COLORS.darkGrey}
-                    type={'ionicon'}
+                    type={"ionicon"}
                     size={20}
                   />
                 ) : (
                   <Icon
-                    name={'eye-off-outline'}
+                    name={"eye-off-outline"}
                     color={COLORS.darkGrey}
-                    type={'ionicon'}
+                    type={"ionicon"}
                     size={20}
                   />
                 )}
@@ -192,11 +193,11 @@ function ChangeCurrentPassword ({ navigation }) {
             }
             value={password}
             onChange={handleChange}
-            secureTextEntry={!showPassword && password != ''}
+            secureTextEntry={!showPassword && password != ""}
           />
         </View>
         {invalidPass && (
-          <View style={{ width: '90%' }}>
+          <View style={{ width: "90%" }}>
             <Text style={styles.errorText}>
               Password at least 8 characters which contain at least one
               lowercase letter, one uppercase letter, one numeric digit, and one
@@ -206,36 +207,36 @@ function ChangeCurrentPassword ({ navigation }) {
         )}
         <View style={styles.textInputContainer}>
           <AppInput
-            label={'Re-enter New Password'}
-            placeholder={'Confirm New Password'}
+            label={"Re-enter New Password"}
+            placeholder={"Confirm New Password"}
             prefixBGTransparent
             postfix={
               <TouchableOpacity
                 onPress={() =>
-                  handleChange('showConfirmPassword', !showConfirmPassword)
+                  handleChange("showConfirmPassword", !showConfirmPassword)
                 }
               >
                 {showConfirmPassword ? (
                   <Icon
-                    name={'eye-outline'}
+                    name={"eye-outline"}
                     color={COLORS.darkGrey}
-                    type={'ionicon'}
+                    type={"ionicon"}
                     size={20}
                   />
                 ) : (
                   <Icon
-                    name={'eye-off-outline'}
+                    name={"eye-off-outline"}
                     color={COLORS.darkGrey}
-                    type={'ionicon'}
+                    type={"ionicon"}
                     size={20}
                   />
                 )}
               </TouchableOpacity>
             }
-            name={'confirm_password'}
+            name={"confirm_password"}
             value={confirm_password}
             onChange={handleChange}
-            secureTextEntry={!showConfirmPassword && password != ''}
+            secureTextEntry={!showConfirmPassword && password != ""}
           />
         </View>
         {confirm_password && password !== confirm_password ? (
@@ -246,7 +247,7 @@ function ChangeCurrentPassword ({ navigation }) {
       </View>
       <View style={styles.buttonWidth}>
         <AppButton
-          title={'Save'}
+          title={"Save"}
           loading={loading}
           disabled={
             !c_password ||
@@ -264,11 +265,11 @@ function ChangeCurrentPassword ({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    width: wp('100%'),
+    width: wp("100%"),
     backgroundColor: COLORS.white,
-    height: '100%',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    height: "100%",
+    justifyContent: "space-between",
+    alignItems: "center"
   },
   activeTabText: {
     color: COLORS.primary,
@@ -276,25 +277,25 @@ const styles = StyleSheet.create({
     fontFamily: FONT1MEDIUM
   },
   top: {
-    width: '100%',
-    alignItems: 'center'
+    width: "100%",
+    alignItems: "center"
   },
-  backContainer: { width: '90%', alignItems: 'flex-start', marginBottom: 30 },
-  header: { width: '90%', marginBottom: '10%' },
-  buttonWidth: { width: '90%', marginBottom: 20 },
-  row: { flexDirection: 'row', alignItems: 'center' },
+  backContainer: { width: "90%", alignItems: "flex-start", marginBottom: 30 },
+  header: { width: "90%", marginBottom: "10%" },
+  buttonWidth: { width: "90%", marginBottom: 20 },
+  row: { flexDirection: "row", alignItems: "center" },
   hLine: { height: 1, width: 100, backgroundColor: COLORS.grey },
   textInputContainer: {
-    marginBottom: hp('2%'),
-    width: '90%'
+    marginBottom: hp("2%"),
+    width: "90%"
   },
   errorText: {
-    width: '100%',
+    width: "100%",
     marginBottom: 10
   },
   remeberContainer: {
-    alignItems: 'flex-end',
-    width: '90%',
+    alignItems: "flex-end",
+    width: "90%",
     marginBottom: hp(2)
   },
   forgotText: { color: COLORS.primary, fontFamily: FONT1REGULAR },
@@ -309,7 +310,7 @@ const styles = StyleSheet.create({
   },
   loginText: {
     color: COLORS.black,
-    fontSize: hp('4%'),
+    fontSize: hp("4%"),
     marginBottom: 20,
     fontFamily: FONT1SEMIBOLD
   },

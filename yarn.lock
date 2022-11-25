@@ -1840,7 +1840,7 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@stripe/stripe-react-native@^0.5.0":
+"@stripe/stripe-react-native@0.5.0":
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@stripe/stripe-react-native/-/stripe-react-native-0.5.0.tgz#ccc0362da9e6f67ff70c5073ff63937e9dd6bd55"
   integrity sha512-ak/IaC4Cus3OI/N9UXP7Vv5XLyOV6EDWsT1Tjmg+BtUxJwvbRp8MYBB94V/pSU9UubfcOG8/+loX7Qm4FNXIKQ==

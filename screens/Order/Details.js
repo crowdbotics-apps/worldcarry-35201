@@ -790,13 +790,13 @@ const styles = StyleSheet.create({
   },
   tabText: {
     color: COLORS.darkBlack,
-    fontSize: hp(2),
+    fontSize: hp(1.6),
     fontFamily: FONT1MEDIUM
   },
 
   activeTabText: {
     color: COLORS.successBGBorder,
-    fontSize: hp(2),
+    fontSize: hp(1.6),
     fontFamily: FONT1MEDIUM
   },
   nameText: {

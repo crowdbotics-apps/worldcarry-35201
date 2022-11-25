@@ -164,9 +164,9 @@ const styles = StyleSheet.create({
   },
   textInput: {
     color: COLORS.inputText,
-    width: '80%',
+    width: '100%',
     fontFamily: FONT1REGULAR,
-    fontSize: hp(1.8)
+    fontSize: hp(1.6)
   },
   lebel: {
     color: COLORS.navy,
