@@ -150,4 +150,4 @@ class TestNotification(APIView):
         create_notification({"name": "test notification", "description": "Order has been moved to transit",
                              "user": request.user})
 
-        return Response({"message": "noptication sent"}, status=status.HTTP_200_OK)
+        return Response({"message": "notification sent"}, status=status.HTTP_200_OK)

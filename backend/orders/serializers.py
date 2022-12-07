@@ -209,7 +209,7 @@ class OrderRouteSerialzier(serializers.Serializer):
 
 
 class ProductScraperSerializer(serializers.Serializer):
-    url = serializers.URLField(required=True, allow_null=False, allow_blank=False)
+    url = serializers.CharField(required=True, allow_null=False, allow_blank=False)
 
     def validate(self, attrs):
         attrs = super().validate(attrs)
