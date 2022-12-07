@@ -10,7 +10,7 @@ from home.api.v1.viewsets import (
 )
 from journeys.views import JourneyViewSet, JourneyOrderRequest, MyJourneyView, RejectOfferView
 from locations.views import LocationViewSet
-from orders.views import OrderViewSet, GetProductDetailView, QRScanOrder, UpdateOrderStatus
+from orders.views import OrderViewSet, GetProductDetailView, QRScanOrder, UpdateOrderStatus, TestNotification
 from reviews.views import ReviewViewSet
 from users.viewsets import UserViewSet
 from payments.views import PaymentViewSet
@@ -39,5 +39,6 @@ urlpatterns = [
     path("faq", FAQListAPIView.as_view(), name='faq_list'),
     path("support", SupportCreateAPIView.as_view(), name='support_create'),
     path("reject/offer/", RejectOfferView.as_view(), name='reject_offer'),
+    path("test/notification/", TestNotification.as_view(), name='test_notification'),
 
 ]

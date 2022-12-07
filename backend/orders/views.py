@@ -139,3 +139,15 @@ class UpdateOrderStatus(APIView):
                 }
             )
             return Response({"message": "Order has been received"}, status=status.HTTP_200_OK)
+
+
+class TestNotification(APIView):
+    serializer_class = UpdateOrderStatusSerializer
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = [ExpiringTokenAuthentication]
+
+    def post(self, request):
+        create_notification({"name": "test notification", "description": "Order has been moved to transit",
+                             "user": request.user})
+
+        return Response({"message": "noptication sent"}, status=status.HTTP_200_OK)
