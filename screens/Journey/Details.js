@@ -462,7 +462,7 @@ function JourneyDetails({ navigation, route }) {
           style={[
             styles.row,
             {
-              marginTop: getOrderFromStatus()?.length > 0 ? -60 : -20,
+              marginTop: 0,
               marginBottom: 20
             }
           ]}
@@ -535,7 +535,7 @@ function JourneyDetails({ navigation, route }) {
         data={getOrderFromStatus()}
         scrollEnabled={false}
         showsVerticalScrollIndicator={false}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%" }}
         renderItem={({ item, index }) => (
           <View
             key={index}
@@ -825,7 +825,9 @@ function JourneyDetails({ navigation, route }) {
           </View>
         )}
         ListEmptyComponent={() => (
-          <View style={{ width: "100%", alignItems: "center" }}>
+          <View
+            style={{ width: "100%", alignItems: "center", marginBottom: 20 }}
+          >
             <SvgXml xml={NoOrder} />
             <Text style={styles.timetext}>
               You don’t have new order requests
@@ -1195,7 +1197,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingLeft: 15,
     paddingRight: 20,
-    height: hp(15),
+    // height: hp(15),
     marginBottom: 20
   },
   tab: {

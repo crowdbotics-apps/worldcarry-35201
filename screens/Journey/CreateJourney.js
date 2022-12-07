@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from "react"
 import {
   View,
   StyleSheet,
@@ -6,14 +6,14 @@ import {
   Text,
   TouchableOpacity,
   Platform
-} from 'react-native'
+} from "react-native"
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
-} from 'react-native-responsive-screen'
-import { SvgXml } from 'react-native-svg'
-import InfoCircle from '../../assets/svg/InfoCircle.svg'
-import pinBlack from '../../assets/svg/pinBlack.svg'
+} from "react-native-responsive-screen"
+import { SvgXml } from "react-native-svg"
+import InfoCircle from "../../assets/svg/InfoCircle.svg"
+import pinBlack from "../../assets/svg/pinBlack.svg"
 import {
   AppButton,
   CustomModel,
@@ -21,48 +21,48 @@ import {
   JourneyStep1,
   JourneyStep2,
   JourneyStep3
-} from '../../components'
-import { COLORS, FONT1MEDIUM, FONT1REGULAR } from '../../constants'
-import AppContext from '../../store/Context'
-import Toast from 'react-native-simple-toast'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+} from "../../components"
+import { COLORS, FONT1MEDIUM, FONT1REGULAR } from "../../constants"
+import AppContext from "../../store/Context"
+import Toast from "react-native-simple-toast"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 import {
   createJourney,
   createMyAddresses,
   deleteJourney
-} from '../../api/journey'
-import Geocoder from 'react-native-geocoding'
-import Geolocation from '@react-native-community/geolocation'
-import { Dimensions } from 'react-native'
+} from "../../api/journey"
+import Geocoder from "react-native-geocoding"
+import Geolocation from "@react-native-community/geolocation"
+import { Dimensions } from "react-native"
 
-Geocoder.init('AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU')
-const { width, height } = Dimensions.get('window')
+Geocoder.init("AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU")
+const { width, height } = Dimensions.get("window")
 const ASPECT_RATIO = width / height
 let LATITUDE_DELTA = 0.0922
 let LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
-function CreateJourney ({ navigation, route }) {
+function CreateJourney({ navigation, route }) {
   const activeRoundParams = route?.params?.activeRoundParams
   const [state, setState] = useState({
     loading: false,
     step: 0,
-    departure_city: '',
-    departure_state: '',
-    departure_country: '',
-    departureCityState: '',
-    arrival_city: '',
-    arrival_city_state: '',
-    arrival_state: '',
-    arrival_country: '',
-    date_of_journey: '',
-    date_of_return: '',
+    departure_city: "",
+    departure_state: "",
+    departure_country: "",
+    departureCityState: "",
+    arrival_city: "",
+    arrival_city_state: "",
+    arrival_state: "",
+    arrival_country: "",
+    date_of_journey: "",
+    date_of_return: "",
     willing_to_carry: [],
-    total_weight: '',
+    total_weight: "",
     activeRound: activeRoundParams || false,
     isFocus: false,
     isFocus1: false,
     isNotValidWeight: false,
-    locationType: '',
+    locationType: "",
     locationOpen: false,
     isPrevious: false,
     createdJourney: null
@@ -108,15 +108,15 @@ function CreateJourney ({ navigation, route }) {
     _getMyAddresses
   } = context
 
-  console.warn('departureCityState', departureCityState)
+  console.warn("departureCityState", departureCityState)
 
   useEffect(() => {
     if (mapLocationForPickup) {
-      handleChange('pickup_address', mapLocationForPickup)
+      handleChange("pickup_address", mapLocationForPickup)
       setMapLocationForPickup(null)
     }
     if (mapLocationForArrival) {
-      handleChange('arrival_address', mapLocationForArrival)
+      handleChange("arrival_address", mapLocationForArrival)
       setMapLocationForArrival(null)
     }
   }, [mapLocationForPickup, mapLocationForArrival])
@@ -126,36 +126,36 @@ function CreateJourney ({ navigation, route }) {
   }
 
   const handleOpen = type => {
-    handleChange('locationType', type)
-    handleChange('locationOpen', true)
+    handleChange("locationType", type)
+    handleChange("locationOpen", true)
   }
 
   const selectLocation = location => {
-    if (locationType === 'departure') {
-      handleChange('departure_city', location?.city)
-      handleChange('departure_state', location?.state)
-      handleChange('departure_country', location?.country)
+    if (locationType === "departure") {
+      handleChange("departure_city", location?.city)
+      handleChange("departure_state", location?.state)
+      handleChange("departure_country", location?.country)
       handleChange(
-        'departureCityState',
-        location?.city + ', ' + location?.country
+        "departureCityState",
+        location?.city + ", " + location?.country
       )
-      handleChange('locationType', '')
+      handleChange("locationType", "")
     } else {
-      handleChange('arrival_city', location?.city)
-      handleChange('arrival_state', location?.state)
-      handleChange('arrival_country', location?.country)
+      handleChange("arrival_city", location?.city)
+      handleChange("arrival_state", location?.state)
+      handleChange("arrival_country", location?.country)
       handleChange(
-        'arrival_city_state',
-        location?.city + ', ' + location?.country
+        "arrival_city_state",
+        location?.city + ", " + location?.country
       )
-      handleChange('locationType', '')
+      handleChange("locationType", "")
     }
-    handleChange('locationOpen', false)
+    handleChange("locationOpen", false)
   }
 
   const handleNext = () => {
     if (step === 0) {
-      handleChange('step', 1)
+      handleChange("step", 1)
     } else if (step === 1) {
       handleCreate()
     }
@@ -163,22 +163,22 @@ function CreateJourney ({ navigation, route }) {
 
   const handlePrevious = () => {
     if (step === 1) {
-      handleChange('departureCityState', departure_city + ' ' + departure_state)
-      handleChange('step', 0)
-      handleChange('isPrevious', true)
+      handleChange("departureCityState", departure_city + " " + departure_state)
+      handleChange("step", 0)
+      handleChange("isPrevious", true)
     } else if (step === 2) {
-      handleChange('step', 1)
+      handleChange("step", 1)
     } else if (step === 3) {
-      handleChange('step', 2)
+      handleChange("step", 2)
     }
   }
 
   const handleCreate = async () => {
     try {
-      handleChange('loading', true)
-      const token = await AsyncStorage.getItem('token')
+      handleChange("loading", true)
+      const token = await AsyncStorage.getItem("token")
       const payload = {
-        type: activeRound ? 'Round Trip' : 'One Way',
+        type: activeRound ? "Round Trip" : "One Way",
         departure_city,
         departure_state,
         departure_country,
@@ -189,7 +189,7 @@ function CreateJourney ({ navigation, route }) {
         total_weight,
         willing_to_carry
       }
-      date_of_return ? (payload['date_of_return'] = date_of_return) : ''
+      date_of_return ? (payload["date_of_return"] = date_of_return) : ""
       const res = await createJourney(payload, token)
       const payload1 = {
         city: departure_city,
@@ -205,26 +205,26 @@ function CreateJourney ({ navigation, route }) {
       }
       await createMyAddresses(payload1, token)
       await createMyAddresses(payload2, token)
-      handleChange('departure_city', '')
-      handleChange('departure_state', '')
-      handleChange('departure_country', '')
-      handleChange('departure_coords', '')
-      handleChange('arrival_city', '')
-      handleChange('arrival_state', '')
-      handleChange('arrival_country', '')
-      handleChange('arrival_coords', '')
-      _getJourneys('')
+      handleChange("departure_city", "")
+      handleChange("departure_state", "")
+      handleChange("departure_country", "")
+      handleChange("departure_coords", "")
+      handleChange("arrival_city", "")
+      handleChange("arrival_state", "")
+      handleChange("arrival_country", "")
+      handleChange("arrival_coords", "")
+      _getJourneys("")
       _getMyJourneys()
       _getMyAddresses()
-      handleChange('loading', false)
-      handleChange('createdJourney', res?.data)
-      handleChange('step', 2)
-      Toast.show('Journey Created Successfully!')
+      handleChange("loading", false)
+      handleChange("createdJourney", res?.data)
+      handleChange("step", 2)
+      Toast.show("Journey Created Successfully!")
       // navigation.navigate('Orders')
     } catch (error) {
-      console.warn('error', error)
-      handleChange('loading', false)
-      console.warn('error?.response?.data', error?.response?.data)
+      console.warn("error", error)
+      handleChange("loading", false)
+      console.warn("error?.response?.data", error?.response?.data)
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText[0]}`)
     }
@@ -238,45 +238,45 @@ function CreateJourney ({ navigation, route }) {
       )
         .then(async json => {
           var address_components = json.results[0].address_components
-          let dState = ''
-          let country = ''
-          let city = ''
+          let dState = ""
+          let country = ""
+          let city = ""
           if (address_components !== undefined) {
             const addrComp = address_components
             for (let i = 0; i < addrComp.length; ++i) {
               var typ = addrComp[i].types[0]
-              if (typ === 'administrative_area_level_1') {
+              if (typ === "administrative_area_level_1") {
                 dState = addrComp[i].long_name
-              } else if (typ === 'locality') {
+              } else if (typ === "locality") {
                 city = addrComp[i].long_name
-              } else if (typ === 'country') {
+              } else if (typ === "country") {
                 country = addrComp[i].long_name
               } //store the country
             }
           }
           const departure_coords = `Point(${details?.geometry?.location?.lat} ${details?.geometry?.location?.lng})`
-          handleChange('departure_coords', departure_coords)
-          handleChange('departureCityState', city + ', ' + dState)
-          handleChange('departure_city', city)
-          handleChange('departure_country', country)
-          handleChange('departure_state', dState)
+          handleChange("departure_coords", departure_coords)
+          handleChange("departureCityState", city + ", " + dState)
+          handleChange("departure_city", city)
+          handleChange("departure_country", country)
+          handleChange("departure_state", dState)
         })
         .catch(error => alert(error?.origin?.error_message))
     }
   }
   const handleDelete = async id => {
     try {
-      handleChange('loading', true)
-      const token = await AsyncStorage.getItem('token')
+      handleChange("loading", true)
+      const token = await AsyncStorage.getItem("token")
       await deleteJourney(id, token)
-      _getJourneys('')
-      handleChange('loading', false)
-      navigation.navigate('Journey')
-      Toast.show('Journey Deleted Successfully!')
+      _getJourneys("")
+      handleChange("loading", false)
+      navigation.navigate("Journey")
+      Toast.show("Journey Deleted Successfully!")
     } catch (error) {
-      console.warn('error', error)
-      handleChange('loading', false)
-      console.warn('error?.response?.data', error?.response?.data)
+      console.warn("error", error)
+      handleChange("loading", false)
+      console.warn("error?.response?.data", error?.response?.data)
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText[0]}`)
     }
@@ -289,30 +289,30 @@ function CreateJourney ({ navigation, route }) {
       )
         .then(async json => {
           var address_components = json.results[0].address_components
-          let dState = ''
-          let country = ''
-          let city = ''
+          let dState = ""
+          let country = ""
+          let city = ""
           if (address_components !== undefined) {
             const addrComp = address_components
             for (let i = 0; i < addrComp.length; ++i) {
               var typ = addrComp[i].types[0]
-              if (typ === 'administrative_area_level_1') {
+              if (typ === "administrative_area_level_1") {
                 dState = addrComp[i].long_name
-              } else if (typ === 'locality') {
+              } else if (typ === "locality") {
                 city = addrComp[i].long_name
-              } else if (typ === 'country') {
+              } else if (typ === "country") {
                 country = addrComp[i].long_name
               } //store the country
             }
           }
           const arrival_coords = `Point(${details?.geometry?.location?.lat} ${details?.geometry?.location?.lng})`
-          handleChange('arrival_coords', arrival_coords)
-          handleChange('arrival_city_state', city + ', ' + dState)
-          handleChange('arrival_city', city)
-          handleChange('arrival_country', country)
-          handleChange('arrival_state', dState)
+          handleChange("arrival_coords", arrival_coords)
+          handleChange("arrival_city_state", city + ", " + dState)
+          handleChange("arrival_city", city)
+          handleChange("arrival_country", country)
+          handleChange("arrival_state", dState)
         })
-        .catch(error => console.warn('Geocodererror', error))
+        .catch(error => console.warn("Geocodererror", error))
     }
   }
 
@@ -325,34 +325,34 @@ function CreateJourney ({ navigation, route }) {
         Geocoder.from(lat, long)
           .then(async json => {
             var address_components = json.results[0].address_components
-            let dState = ''
-            let country = ''
-            let city = ''
+            let dState = ""
+            let country = ""
+            let city = ""
             if (address_components !== undefined) {
               const addrComp = address_components
               for (let i = 0; i < addrComp.length; ++i) {
                 var typ = addrComp[i].types[0]
-                if (typ === 'administrative_area_level_1') {
+                if (typ === "administrative_area_level_1") {
                   dState = addrComp[i].long_name
-                } else if (typ === 'locality') {
+                } else if (typ === "locality") {
                   city = addrComp[i].long_name
-                } else if (typ === 'country') {
+                } else if (typ === "country") {
                   country = addrComp[i].long_name
                 } //store the country
               }
             }
             const departure_coords = `Point(${lat} ${long})`
-            handleChange('departure_coords', departure_coords)
-            handleChange('departureCityState', city + ', ' + dState)
-            handleChange('departure_city', city)
-            handleChange('departure_country', country)
-            handleChange('departure_state', dState)
+            handleChange("departure_coords", departure_coords)
+            handleChange("departureCityState", city + ", " + dState)
+            handleChange("departure_city", city)
+            handleChange("departure_country", country)
+            handleChange("departure_state", dState)
           })
-          .catch(error => console.warn('Geocodererror', error))
+          .catch(error => console.warn("Geocodererror", error))
       },
-      error => console.log('Error', JSON.stringify(error)),
-      Platform.OS !== 'ios' && {
-        enableHighAccuracy: Platform.OS === 'ios' ? false : true,
+      error => console.log("Error", JSON.stringify(error)),
+      Platform.OS !== "ios" && {
+        enableHighAccuracy: Platform.OS === "ios" ? false : true,
         timeout: 20000,
         maximumAge: 1000
       }
@@ -373,19 +373,19 @@ function CreateJourney ({ navigation, route }) {
 
   const clearForm = () => {
     if (step === 0) {
-      handleChange('departure_city', '')
-      handleChange('departure_state', '')
-      handleChange('departure_country', '')
-      handleChange('arrival_city', '')
-      handleChange('arrival_state', '')
-      handleChange('arrival_country', '')
-      handleChange('date_of_journey', '')
-      handleChange('departureCityState', '')
-      handleChange('arrival_city_state', '')
+      handleChange("departure_city", "")
+      handleChange("departure_state", "")
+      handleChange("departure_country", "")
+      handleChange("arrival_city", "")
+      handleChange("arrival_state", "")
+      handleChange("arrival_country", "")
+      handleChange("date_of_journey", "")
+      handleChange("departureCityState", "")
+      handleChange("arrival_city_state", "")
     } else if (step === 1) {
-      handleChange('willing_to_carry', [])
-      handleChange('total_weight', '')
-      handleChange('isNotValidWeight', false)
+      handleChange("willing_to_carry", [])
+      handleChange("total_weight", "")
+      handleChange("isNotValidWeight", false)
     }
   }
 
@@ -401,22 +401,22 @@ function CreateJourney ({ navigation, route }) {
       : willing_to_carry.length === 0 ||
         !total_weight ||
         Number(total_weight) === 0 ||
-        isNotValidWeight
-
+        isNotValidWeight ||
+        (activeRound && !date_of_return)
   return (
-    <View style={{ height: '100%', width: '100%' }}>
+    <View style={{ height: "100%", width: "100%" }}>
       <Header
-        title={step === 2 ? 'Journey Added' : 'Add Journey'}
+        title={step === 2 ? "Journey Added" : "Add Journey"}
         back
         color={COLORS.darkBlack}
         rightItem={
           <TouchableOpacity
             onPress={() =>
-              step === 2 ? navigation.navigate('Journey') : clearForm()
+              step === 2 ? navigation.navigate("Journey") : clearForm()
             }
           >
             <Text style={styles.activeTabText}>
-              {step === 2 ? 'Done' : 'Clear Form'}
+              {step === 2 ? "Done" : "Clear Form"}
             </Text>
           </TouchableOpacity>
         }
@@ -424,10 +424,10 @@ function CreateJourney ({ navigation, route }) {
       <ScrollView
         style={styles.container}
         showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps={'handled'}
+        keyboardShouldPersistTaps={"handled"}
         contentContainerStyle={{
-          alignItems: 'center',
-          height: step === 2 ? '100%' : '85%'
+          alignItems: "center",
+          height: step === 2 ? "100%" : "85%"
         }}
       >
         {step === 2 ? (
@@ -441,7 +441,7 @@ function CreateJourney ({ navigation, route }) {
             <View style={styles.tabs}>
               <View style={styles.row}>
                 <TouchableOpacity
-                  onPress={() => handleChange('activeRound', false)}
+                  onPress={() => handleChange("activeRound", false)}
                   style={!activeRound ? styles.activeTab : styles.inavtive}
                 >
                   <Text
@@ -451,7 +451,7 @@ function CreateJourney ({ navigation, route }) {
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => handleChange('activeRound', true)}
+                  onPress={() => handleChange("activeRound", true)}
                   style={activeRound ? styles.activeTab : styles.inavtive}
                 >
                   <Text
@@ -467,8 +467,8 @@ function CreateJourney ({ navigation, route }) {
               </TouchableOpacity>
             </View>
             <Text style={styles.timetext}>
-              {step === 0 && 'Step 1. Add Journey Details'}
-              {step === 1 && 'Step 2. Carrying Details'}
+              {step === 0 && "Step 1. Add Journey Details"}
+              {step === 1 && "Step 2. Carrying Details"}
             </Text>
             <View style={styles.stepView}>
               <View
@@ -528,37 +528,37 @@ function CreateJourney ({ navigation, route }) {
       {step < 2 && (
         <View style={styles.bottom}>
           {step === 0 ? (
-            <View style={{ width: '48%' }} />
+            <View style={{ width: "48%" }} />
           ) : (
             <AppButton
-              title={'Previous'}
+              title={"Previous"}
               onPress={handlePrevious}
               backgroundColor={COLORS.backgroud}
               outlined
               color={COLORS.primary}
-              width={'48%'}
+              width={"48%"}
             />
           )}
           <AppButton
-            title={step === 1 ? 'Add Journey' : 'Next'}
+            title={step === 1 ? "Add Journey" : "Next"}
             disabled={disabled}
             loading={loading}
-            width={'48%'}
+            width={"48%"}
             onPress={handleNext}
           />
         </View>
       )}
       <CustomModel
         visible={locationOpen}
-        onClose={() => handleChange('locationOpen', false)}
+        onClose={() => handleChange("locationOpen", false)}
       >
         <View
           style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            width: '100%',
-            paddingHorizontal: '5%',
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+            paddingHorizontal: "5%",
             marginTop: 10,
             marginBottom: 10
           }}
@@ -572,7 +572,7 @@ function CreateJourney ({ navigation, route }) {
           >
             Choose Location
           </Text>
-          <TouchableOpacity onPress={() => handleChange('locationOpen', false)}>
+          <TouchableOpacity onPress={() => handleChange("locationOpen", false)}>
             <Text
               style={{
                 fontFamily: FONT1REGULAR,
@@ -586,22 +586,22 @@ function CreateJourney ({ navigation, route }) {
         </View>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ alignItems: 'center' }}
-          style={{ width: '100%', height: '100%', marginBottom: 20 }}
+          contentContainerStyle={{ alignItems: "center" }}
+          style={{ width: "100%", height: "100%", marginBottom: 20 }}
         >
           {myAddresses?.map((item, index) => (
             <TouchableOpacity
               onPress={() => selectLocation(item)}
               key={index}
               style={{
-                width: '90%',
+                width: "90%",
                 borderWidth: 1,
                 borderColor: COLORS.borderColor,
                 borderRadius: 10,
                 marginTop: 10,
                 padding: 10,
-                flexDirection: 'row',
-                alignItems: 'center'
+                flexDirection: "row",
+                alignItems: "center"
               }}
             >
               <View
@@ -613,8 +613,8 @@ function CreateJourney ({ navigation, route }) {
                   borderWidth: 1,
                   borderColor: COLORS.borderColor,
                   marginRight: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center'
+                  alignItems: "center",
+                  justifyContent: "center"
                 }}
               >
                 <SvgXml xml={pinBlack} />
@@ -633,33 +633,33 @@ function CreateJourney ({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.backgroud,
-    width: '100%',
-    height: '80%'
+    width: "100%",
+    height: "80%"
   },
   stepView: {
-    width: '90%',
+    width: "90%",
     marginTop: 20,
-    justifyContent: 'center',
-    flexDirection: 'row',
-    alignItems: 'center'
+    justifyContent: "center",
+    flexDirection: "row",
+    alignItems: "center"
   },
   bottom: {
-    flexDirection: 'row',
-    width: '90%',
-    height: '10%',
-    position: 'absolute',
-    marginLeft: '5%',
+    flexDirection: "row",
+    width: "90%",
+    height: "10%",
+    position: "absolute",
+    marginLeft: "5%",
     bottom: 20,
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    justifyContent: "space-between",
+    alignItems: "center"
   },
   activestep: {
     width: 30,
     height: 30,
     borderRadius: 30,
     backgroundColor: COLORS.stepGreen,
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center"
   },
   inActivestep: {
     width: 30,
@@ -668,8 +668,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.backgroud,
     borderWidth: 1,
     borderColor: COLORS.stepGreen,
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center"
   },
   activeStepText: {
     fontFamily: FONT1MEDIUM,
@@ -682,18 +682,18 @@ const styles = StyleSheet.create({
     color: COLORS.stepGreen
   },
   line: {
-    width: '15F%',
+    width: "15F%",
     height: 1,
     backgroundColor: COLORS.stepGreen
   },
   hline: {
-    width: '100%',
+    width: "100%",
     height: 2,
     backgroundColor: COLORS.tripBoxBorder
   },
   bgImage: {
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     height: 200,
     paddingTop: 20,
     borderBottomRightRadius: 20,
@@ -701,23 +701,23 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 50,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     backgroundColor: COLORS.white,
     borderBottomWidth: 1,
     borderColor: COLORS.tripBoxBorder,
-    paddingHorizontal: '5%'
+    paddingHorizontal: "5%"
   },
   infoDiv: {
     width: 40,
     height: 40,
     borderRadius: 40,
     backgroundColor: COLORS.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2
@@ -728,39 +728,39 @@ const styles = StyleSheet.create({
     elevation: 5
   },
   headerText: {
-    width: '80%',
+    width: "80%",
     fontFamily: FONT1REGULAR,
     fontSize: hp(2),
     color: COLORS.darkBlack
   },
   imgStyle: {
-    width: '100%',
+    width: "100%",
     height: 200,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20
   },
   viewAll: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: hp(2),
     color: COLORS.primary,
-    textDecorationLine: 'underline',
+    textDecorationLine: "underline",
     fontFamily: FONT1REGULAR
   },
   timetext: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: hp(1.8),
     color: COLORS.darkGrey,
     fontFamily: FONT1REGULAR
   },
   pricetext: {
-    width: '80%',
+    width: "80%",
     fontSize: hp(2.8),
     color: COLORS.darkBlack,
     fontFamily: FONT1REGULAR
   },
   slide: {
-    width: '90%',
-    justifyContent: 'space-between',
+    width: "90%",
+    justifyContent: "space-between",
     height: 220,
     borderRadius: 22
   },
@@ -769,28 +769,28 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50
   },
-  row: { flexDirection: 'row', alignItems: 'center' },
+  row: { flexDirection: "row", alignItems: "center" },
   tabs: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginTop: 20,
-    paddingHorizontal: '5%',
+    paddingHorizontal: "5%",
     height: hp(7),
     marginBottom: 20
   },
   tab: {
-    width: '50%',
-    alignItems: 'center'
+    width: "50%",
+    alignItems: "center"
   },
   activeTab: {
     backgroundColor: COLORS.lightblue,
     borderRadius: 12,
     paddingHorizontal: 8,
-    justifyContent: 'center',
+    justifyContent: "center",
     height: hp(5),
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
     borderColor: COLORS.primary
   },
@@ -807,9 +807,9 @@ const styles = StyleSheet.create({
   },
   inavtive: {
     paddingHorizontal: 8,
-    justifyContent: 'center',
+    justifyContent: "center",
     height: hp(5),
-    alignItems: 'center'
+    alignItems: "center"
   },
   active: {
     borderWidth: 0,

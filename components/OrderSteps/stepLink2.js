@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 import {
   ScrollView,
   TouchableOpacity,
@@ -6,26 +6,26 @@ import {
   View,
   StyleSheet,
   Image
-} from 'react-native'
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
-import { SvgXml } from 'react-native-svg'
+} from "react-native"
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
+import { SvgXml } from "react-native-svg"
 import {
   COLORS,
   FONT1LIGHT,
   FONT1MEDIUM,
   FONT1REGULAR,
   times
-} from '../../constants'
-import location from '../../assets/svg/location.svg'
-import globe from '../../assets/svg/globe.svg'
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
-import AppButton from '../AppButton'
-import { useNavigation } from '@react-navigation/native'
-import pinBlack from '../../assets/svg/pinBlack.svg'
-import cardReward from '../../assets/svg/cardReward.svg'
-import AppInput from '../AppInput'
+} from "../../constants"
+import location from "../../assets/svg/location.svg"
+import globe from "../../assets/svg/globe.svg"
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete"
+import AppButton from "../AppButton"
+import { useNavigation } from "@react-navigation/native"
+import pinBlack from "../../assets/svg/pinBlack.svg"
+import cardReward from "../../assets/svg/cardReward.svg"
+import AppInput from "../AppInput"
 
-export default function StepLink2 ({
+export default function StepLink2({
   handleChange,
   handleSearch,
   pickup_address_country,
@@ -40,14 +40,14 @@ export default function StepLink2 ({
   return (
     <ScrollView
       style={styles.container}
-      keyboardShouldPersistTaps={'handled'}
+      keyboardShouldPersistTaps={"handled"}
       showsVerticalScrollIndicator={false}
     >
       <View
         style={{
-          justifyContent: 'center',
-          flexDirection: 'row',
-          width: '100%',
+          justifyContent: "center",
+          flexDirection: "row",
+          width: "100%",
           marginVertical: 10,
           borderRadius: 10,
           borderWidth: 1,
@@ -58,10 +58,10 @@ export default function StepLink2 ({
         <SvgXml
           xml={globe}
           fillOpacity={0.6}
-          style={{ marginLeft: 10, marginTop: hp(2) }}
+          style={{ marginLeft: 10, marginTop: 12 }}
         />
         <GooglePlacesAutocomplete
-          placeholder={'Pickup Country'}
+          placeholder={pickup_address_country || "Pickup Country"}
           fetchDetails={true}
           onPress={(data, details) => {
             // 'details' is provided when fetchDetails = true
@@ -69,20 +69,22 @@ export default function StepLink2 ({
             handleSearch(data, details)
           }}
           textInputProps={{
-            placeholderTextColor: COLORS.placeholder,
-            value: pickup_address_country,
-            onFocus: () => handleChange('isFocus', true),
-            onBlur: () => handleChange('isFocus', false),
-            onChangeText: text => handleChange('pickup_address_country', text)
+            placeholderTextColor: pickup_address_country
+              ? COLORS.darkGrey
+              : COLORS.placeholder,
+            // value: pickup_address_country,
+            onFocus: () => handleChange("isFocus", true),
+            onBlur: () => handleChange("isFocus", false)
+            // onChangeText: text => handleChange("pickup_address_country", text)
           }}
           styles={{
             // container: styles.textInput,
             textInput: {
               // flex: 1,
               fontSize: hp(1.8),
-              backgroundColor: 'transparent',
+              backgroundColor: "transparent",
               // width: '85%',
-              height: '100%',
+              height: "100%",
               color: COLORS.darkBlack,
               fontFamily: FONT1MEDIUM
             },
@@ -90,31 +92,31 @@ export default function StepLink2 ({
             row: { backgroundColor: COLORS.white }
           }}
           query={{
-            key: 'AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU',
-            language: 'en'
+            key: "AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU",
+            language: "en"
           }}
           GooglePlacesDetailsQuery={{
-            fields: 'geometry'
+            fields: "geometry"
           }}
-          filterReverseGeocodingByTypes={['country']}
-          keyboardShouldPersistTaps={'handled'}
+          filterReverseGeocodingByTypes={["country"]}
+          keyboardShouldPersistTaps={"handled"}
           listViewDisplayed={false}
           renderRow={data => (
-            <View style={{ width: '100%' }}>
+            <View style={{ width: "100%" }}>
               <Text style={{ color: COLORS.black }}>{data.description}</Text>
             </View>
           )}
           debounce={200}
           currentLocation={false}
-          currentLocationLabel='Current location'
-          nearbyPlacesAPI='GooglePlacesSearch'
+          currentLocationLabel="Current location"
+          nearbyPlacesAPI="GooglePlacesSearch"
         />
       </View>
       <View
         style={{
-          justifyContent: 'center',
-          flexDirection: 'row',
-          width: '100%',
+          justifyContent: "center",
+          flexDirection: "row",
+          width: "100%",
           marginVertical: 10,
           borderRadius: 10,
           borderWidth: 1,
@@ -125,10 +127,10 @@ export default function StepLink2 ({
         <SvgXml
           xml={globe}
           fillOpacity={0.6}
-          style={{ marginLeft: 10, marginTop: hp(2) }}
+          style={{ marginLeft: 10, marginTop: 12 }}
         />
         <GooglePlacesAutocomplete
-          placeholder={'Delivery Country'}
+          placeholder={arrival_address_country || "Delivery Country"}
           fetchDetails={true}
           onPress={(data, details) => {
             // 'details' is provided when fetchDetails = true
@@ -136,20 +138,22 @@ export default function StepLink2 ({
             handleSearch1(data, details)
           }}
           textInputProps={{
-            placeholderTextColor: COLORS.placeholder,
-            value: arrival_address_country,
-            onFocus: () => handleChange('isFocus', true),
-            onBlur: () => handleChange('isFocus', false),
-            onChangeText: text => handleChange('arrival_address_country', text)
+            placeholderTextColor: arrival_address_country
+              ? COLORS.darkGrey
+              : COLORS.placeholder,
+            // value: arrival_address_country,
+            onFocus: () => handleChange("isFocus", true),
+            onBlur: () => handleChange("isFocus", false)
+            // onChangeText: text => handleChange("arrival_address_country", text)
           }}
           styles={{
             // container: styles.textInput,
             textInput: {
               // flex: 1,
               fontSize: hp(1.8),
-              backgroundColor: 'transparent',
+              backgroundColor: "transparent",
               // width: '85%',
-              height: '100%',
+              height: "100%",
               color: COLORS.darkBlack,
               fontFamily: FONT1MEDIUM
             },
@@ -157,31 +161,31 @@ export default function StepLink2 ({
             row: { backgroundColor: COLORS.white }
           }}
           query={{
-            key: 'AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU',
-            language: 'en'
+            key: "AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU",
+            language: "en"
           }}
           GooglePlacesDetailsQuery={{
-            fields: 'geometry'
+            fields: "geometry"
           }}
-          filterReverseGeocodingByTypes={['country']}
-          keyboardShouldPersistTaps={'handled'}
+          filterReverseGeocodingByTypes={["country"]}
+          keyboardShouldPersistTaps={"handled"}
           listViewDisplayed={false}
           renderRow={data => (
-            <View style={{ width: '100%' }}>
+            <View style={{ width: "100%" }}>
               <Text style={{ color: COLORS.black }}>{data.description}</Text>
             </View>
           )}
           debounce={200}
           currentLocation={false}
-          currentLocationLabel='Current location'
-          nearbyPlacesAPI='GooglePlacesSearch'
+          currentLocationLabel="Current location"
+          nearbyPlacesAPI="GooglePlacesSearch"
         />
       </View>
       <AppInput
-        placeholder={'Carrier Reward'}
+        placeholder={"Carrier Reward"}
         value={carrier_reward}
-        name={'carrier_reward'}
-        keyboardType={'number-pad'}
+        name={"carrier_reward"}
+        keyboardType={"number-pad"}
         onChange={handleChange}
         borderColor={COLORS.grey}
         prefix={
@@ -197,14 +201,14 @@ export default function StepLink2 ({
       {pickup_address ? (
         <View
           style={{
-            width: '100%',
-            height: 50,
+            width: "100%",
+            paddingVertical: 10,
             marginTop: 20,
             backgroundColor: COLORS.lightblue,
             borderRadius: 12,
-            alignItems: 'center',
+            alignItems: "center",
             paddingHorizontal: 10,
-            flexDirection: 'row'
+            flexDirection: "row"
           }}
         >
           <View
@@ -214,8 +218,8 @@ export default function StepLink2 ({
               borderRadius: 30,
               backgroundColor: COLORS.white,
               marginRight: 10,
-              alignItems: 'center',
-              justifyContent: 'center'
+              alignItems: "center",
+              justifyContent: "center"
             }}
           >
             <SvgXml xml={pinBlack} />
@@ -224,13 +228,13 @@ export default function StepLink2 ({
             style={{
               color: COLORS.black,
               fontFamily: FONT1REGULAR,
-              width: '70%'
+              width: "65%"
             }}
           >
             {pickup_address?.pickup_address_street_one}
           </Text>
           <TouchableOpacity
-            onPress={() => navigation.navigate('PickupLocation')}
+            onPress={() => navigation.navigate("PickupLocation")}
           >
             <Text
               style={{
@@ -246,8 +250,8 @@ export default function StepLink2 ({
         </View>
       ) : (
         <AppButton
-          title={'Choose Pickup Address'}
-          onPress={() => navigation.navigate('PickupLocation')}
+          title={"Choose Pickup Address"}
+          onPress={() => navigation.navigate("PickupLocation")}
           outlined
           backgroundColor={COLORS.white}
           prefix={<SvgXml xml={location} style={{ marginRight: 15 }} />}
@@ -256,14 +260,15 @@ export default function StepLink2 ({
       {arrival_address ? (
         <View
           style={{
-            width: '100%',
-            height: 50,
+            width: "100%",
+            // height: 50,
+            paddingVertical: 10,
             marginTop: 20,
             backgroundColor: COLORS.lightblue,
             borderRadius: 12,
-            alignItems: 'center',
+            alignItems: "center",
             paddingHorizontal: 10,
-            flexDirection: 'row'
+            flexDirection: "row"
           }}
         >
           <View
@@ -273,8 +278,8 @@ export default function StepLink2 ({
               borderRadius: 30,
               backgroundColor: COLORS.white,
               marginRight: 10,
-              alignItems: 'center',
-              justifyContent: 'center'
+              alignItems: "center",
+              justifyContent: "center"
             }}
           >
             <SvgXml xml={pinBlack} />
@@ -283,13 +288,13 @@ export default function StepLink2 ({
             style={{
               color: COLORS.black,
               fontFamily: FONT1REGULAR,
-              width: '70%'
+              width: "65%"
             }}
           >
             {arrival_address?.arrival_address_street_one}
           </Text>
           <TouchableOpacity
-            onPress={() => navigation.navigate('ArrivalLocation')}
+            onPress={() => navigation.navigate("ArrivalLocation")}
           >
             <Text
               style={{
@@ -305,8 +310,8 @@ export default function StepLink2 ({
         </View>
       ) : (
         <AppButton
-          title={'Choose Delivery Address'}
-          onPress={() => navigation.navigate('ArrivalLocation')}
+          title={"Choose Delivery Address"}
+          onPress={() => navigation.navigate("ArrivalLocation")}
           outlined
           backgroundColor={COLORS.white}
           prefix={<SvgXml xml={location} style={{ marginRight: 15 }} />}
@@ -316,12 +321,12 @@ export default function StepLink2 ({
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={{ width: '100%' }}
+        style={{ width: "100%" }}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           {times.map((time, index) => (
             <TouchableOpacity
-              onPress={() => handleChange('expected_wait_time', time.value)}
+              onPress={() => handleChange("expected_wait_time", time.value)}
               key={index}
               style={
                 expected_wait_time === time.value
@@ -348,8 +353,8 @@ export default function StepLink2 ({
 
 const styles = StyleSheet.create({
   container: {
-    width: '90%',
-    height: '60%',
+    width: "90%",
+    height: "60%",
     marginTop: 20
   },
   activeTab: {
@@ -357,9 +362,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 8,
     marginRight: 10,
-    justifyContent: 'center',
+    justifyContent: "center",
     height: hp(5),
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: 10,
     borderWidth: 1,
     borderColor: COLORS.primary
@@ -370,23 +375,23 @@ const styles = StyleSheet.create({
     fontFamily: FONT1MEDIUM
   },
   menuTrigger: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
   },
   billingType: {
-    width: '100%',
+    width: "100%",
     borderRadius: 12,
     borderWidth: 1,
     borderColor: COLORS.borderColor,
     backgroundColor: COLORS.white,
     height: hp(6),
     paddingHorizontal: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: hp('1%'),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: hp("1%"),
     marginTop: 5
   },
   activeTabText: {
@@ -413,9 +418,9 @@ const styles = StyleSheet.create({
     borderColor: COLORS.grey,
     borderRadius: 12,
     paddingHorizontal: 8,
-    justifyContent: 'center',
+    justifyContent: "center",
     height: hp(5),
-    alignItems: 'center'
+    alignItems: "center"
   },
   active: {
     borderWidth: 0,
@@ -426,20 +431,20 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   profileIcon: {
-    width: '40%',
+    width: "40%",
     height: 150,
     borderRadius: 12,
     marginBottom: 20,
-    resizeMode: 'cover'
+    resizeMode: "cover"
   },
   activeTab: {
     backgroundColor: COLORS.lightblue,
     borderRadius: 12,
     paddingHorizontal: 8,
     marginRight: 10,
-    justifyContent: 'center',
+    justifyContent: "center",
     height: hp(5),
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: 10,
     borderWidth: 1,
     borderColor: COLORS.primary
@@ -462,9 +467,9 @@ const styles = StyleSheet.create({
     borderColor: COLORS.grey,
     borderRadius: 12,
     paddingHorizontal: 8,
-    justifyContent: 'center',
+    justifyContent: "center",
     height: hp(5),
-    alignItems: 'center'
+    alignItems: "center"
   },
   active: {
     borderWidth: 0,

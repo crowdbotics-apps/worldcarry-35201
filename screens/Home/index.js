@@ -242,12 +242,13 @@ function Home({ navigation }) {
                     : active === 1 && activeSlide === 2
                     ? "50%"
                     : "60%",
-                height: !active && activeSlide === 2 ? 140 : 120,
+                height: !active && activeSlide === 2 ? 140 : 110,
                 marginTop: active === 1 && activeSlide === 2 ? -10 : 0,
                 marginRight: active === 1 && activeSlide === 2 ? -10 : 0,
                 marginBottom: !active && activeSlide === 2 ? -30 : 0,
-                resizeMode: "center"
+                resizeMode: "contain"
               }}
+              resizeMode="contain"
             />
           </View>
           <View style={{ marginTop: -50, width: "60%", marginLeft: "5%" }}>
@@ -405,7 +406,11 @@ function Home({ navigation }) {
             ]}
           >
             <Text style={styles.recentText}>Recently Completed</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Journey")}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("Journey", { completed: true })
+              }
+            >
               <Text style={styles.viewAll}>View All</Text>
             </TouchableOpacity>
           </View>
@@ -837,12 +842,12 @@ const styles = StyleSheet.create({
   },
   titleText: {
     color: COLORS.white,
-    fontSize: hp(2.2),
+    fontSize: hp(2),
     fontFamily: FONT1BOLD
   },
   descText: {
     color: COLORS.white,
-    fontSize: hp(1.8),
+    fontSize: hp(1.6),
     fontFamily: FONT1LIGHT
   },
   activeTabText: {

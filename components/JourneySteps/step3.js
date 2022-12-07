@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
   },
   success: {
     fontFamily: FONT1REGULAR,
-    fontSize: hp(2.2),
+    fontSize: hp(1.8),
     textAlign: 'center',
     color: COLORS.successBGBorder
   },

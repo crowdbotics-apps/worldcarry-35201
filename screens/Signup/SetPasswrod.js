@@ -1,26 +1,26 @@
-import React, { useContext, useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import React, { useContext, useState } from "react"
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
-} from 'react-native-responsive-screen'
-import { SvgXml } from 'react-native-svg'
-import { Icon } from 'react-native-elements'
-import { COLORS, FONT1BOLD, FONT1REGULAR } from '../../constants'
-import { AppButton, AppInput } from '../../components'
-import { setPassword } from '../../api/auth'
-import Toast from 'react-native-simple-toast'
-import AppContext from '../../store/Context'
+} from "react-native-responsive-screen"
+import { SvgXml } from "react-native-svg"
+import { Icon } from "react-native-elements"
+import { COLORS, FONT1BOLD, FONT1REGULAR } from "../../constants"
+import { AppButton, AppInput } from "../../components"
+import { setPassword } from "../../api/auth"
+import Toast from "react-native-simple-toast"
+import AppContext from "../../store/Context"
 
-function SetPasswrod ({ navigation, route }) {
+function SetPasswrod({ navigation, route }) {
   // Context
   const context = useContext(AppContext)
   const { isForgot, setIsForgot } = context
 
   // State
   const [state, setState] = useState({
-    password: '',
-    confirm_password: '',
+    password: "",
+    confirm_password: "",
     loading: false,
     showPassword: false,
     showConfirmPassword: false,
@@ -43,41 +43,42 @@ function SetPasswrod ({ navigation, route }) {
   const handlePassword = async () => {
     try {
       const token = route?.params?.token
-      handleChange('loading', true)
+      handleChange("loading", true)
       const payload = {
         password_1: password,
         password_2: confirm_password
       }
       const res = await setPassword(payload, token)
       if (res?.status === 200) {
-        handleChange('loading', false)
-        navigation.navigate('LoginScreen')
+        handleChange("loading", false)
+        navigation.navigate("LoginScreen")
         if (isForgot) {
           setIsForgot(false)
         }
         Toast.show(res?.data?.detail)
       } else {
-        console.warn('else res', res)
-        handleChange('loading', false)
-        Toast.show('Something went wrong!')
+        console.warn("else res", res)
+        handleChange("loading", false)
+        Toast.show("Something went wrong!")
       }
     } catch (error) {
-      handleChange('loading', false)
-      console.warn('err', error)
+      handleChange("loading", false)
+      console.warn("err", error)
       Toast.show(`Error: ${error.message}`)
     }
   }
 
   const checkPass = () => {
-    const regex = /^.{6,}$/
+    const regex =
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/
     if (regex.test(password)) {
-      if (password != '') {
-        handleChange('invalidPass', false)
+      if (password != "") {
+        handleChange("invalidPass", false)
       } else {
-        handleChange('password', '')
+        handleChange("password", "")
       }
     } else {
-      handleChange('invalidPass', true)
+      handleChange("invalidPass", true)
     }
   }
 
@@ -90,71 +91,75 @@ function SetPasswrod ({ navigation, route }) {
       <View style={styles.top}>
         <View style={styles.backContainer}>
           <TouchableOpacity onPress={goBack}>
-            <Icon name='arrow-back' type='material' />
+            <Icon name="arrow-back" type="material" />
           </TouchableOpacity>
         </View>
         <Text style={styles.loginText}>Reset Password</Text>
         <View style={styles.textInputContainer}>
           <AppInput
-            label={'Password'}
-            placeholder={'New Password'}
-            name={'password'}
+            label={"Password"}
+            placeholder={"New Password"}
+            name={"password"}
             value={password}
             prefixBGTransparent
             onBlur={checkPass}
             postfix={
               <TouchableOpacity
-                onPress={() => handleChange('showPassword', !showPassword)}
+                onPress={() => handleChange("showPassword", !showPassword)}
               >
                 {showPassword ? (
-                  <Icon name={'eye-outline'} type={'ionicon'} size={20} />
+                  <Icon name={"eye-outline"} type={"ionicon"} size={20} />
                 ) : (
                   <Icon
-                    name={'eye-off-outline'}
+                    name={"eye-off-outline"}
                     color={COLORS.black}
-                    type={'ionicon'}
+                    type={"ionicon"}
                     size={20}
                   />
                 )}
               </TouchableOpacity>
             }
             onChange={handleChange}
-            secureTextEntry={!showPassword && password != ''}
+            secureTextEntry={!showPassword && password != ""}
             // secureTextEntry={!showPassword}
           />
         </View>
         {invalidPass && (
           <View style={styles.textFieldContainer}>
-            <Text style={styles.errorText}>Password at least 6 characters</Text>
+            <Text style={styles.errorText}>
+              Password at least 8 characters which contain at least one
+              lowercase letter, one uppercase letter, one numeric digit, and one
+              special character
+            </Text>
           </View>
         )}
         <View style={styles.textInputContainer}>
           <AppInput
-            label={'Password'}
-            placeholder={'Confirm New Password'}
+            label={"Password"}
+            placeholder={"Confirm New Password"}
             prefixBGTransparent
             postfix={
               <TouchableOpacity
                 onPress={() =>
-                  handleChange('showConfirmPassword', !showConfirmPassword)
+                  handleChange("showConfirmPassword", !showConfirmPassword)
                 }
               >
                 {showConfirmPassword ? (
-                  <Icon name={'eye-outline'} type={'ionicon'} size={20} />
+                  <Icon name={"eye-outline"} type={"ionicon"} size={20} />
                 ) : (
                   <Icon
-                    name={'eye-off-outline'}
+                    name={"eye-off-outline"}
                     color={COLORS.black}
-                    type={'ionicon'}
+                    type={"ionicon"}
                     size={20}
                   />
                 )}
               </TouchableOpacity>
             }
-            name={'confirm_password'}
+            name={"confirm_password"}
             value={confirm_password}
             onChange={handleChange}
-            secureTextEntry={!showConfirmPassword && confirm_password != ''}
+            secureTextEntry={!showConfirmPassword && confirm_password != ""}
           />
         </View>
         {confirm_password && password !== confirm_password ? (
@@ -165,7 +170,7 @@ function SetPasswrod ({ navigation, route }) {
       </View>
       <View style={styles.buttonWidth}>
         <AppButton
-          title={'Update'}
+          title={"Update"}
           loading={loading}
           disabled={!password || !confirm_password}
           onPress={handlePassword}
@@ -177,51 +182,51 @@ function SetPasswrod ({ navigation, route }) {
 
 const styles = StyleSheet.create({
   container: {
-    width: wp('100%'),
+    width: wp("100%"),
     backgroundColor: COLORS.white,
-    height: '100%',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    height: "100%",
+    justifyContent: "space-between",
+    alignItems: "center"
   },
   top: {
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     marginTop: 20
   },
-  backContainer: { width: '90%', alignItems: 'flex-start', marginBottom: 30 },
+  backContainer: { width: "90%", alignItems: "flex-start", marginBottom: 30 },
 
-  textFieldContainer: { width: '90%', marginBottom: 10 },
+  textFieldContainer: { width: "90%", marginBottom: 10 },
   underlineStyleHighLighted: {
-    borderColor: '#03DAC6'
+    borderColor: "#03DAC6"
   },
-  resendView: { width: '80%' },
-  buttonWidth: { width: '90%', marginBottom: 20 },
-  row: { flexDirection: 'row', alignItems: 'center' },
+  resendView: { width: "80%" },
+  buttonWidth: { width: "90%", marginBottom: 20 },
+  row: { flexDirection: "row", alignItems: "center" },
   hLine: { height: 1, width: 100, backgroundColor: COLORS.grey },
-  textInputContainer: { marginBottom: hp('2%'), width: '90%' },
+  textInputContainer: { marginBottom: hp("2%"), width: "90%" },
   loginText: {
     color: COLORS.black,
-    width: '90%',
-    fontSize: hp('4%'),
+    width: "90%",
+    fontSize: hp("4%"),
     fontFamily: FONT1BOLD
   },
   dontacount: { color: COLORS.darkGrey },
   checkedBox: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     marginBottom: -10,
     borderWidth: 0,
-    width: '100%'
+    width: "100%"
   },
   lightText: {
     color: COLORS.black,
-    textAlign: 'center',
-    width: '80%',
+    textAlign: "center",
+    width: "80%",
     marginBottom: 20,
     lineHeight: 22,
     opacity: 0.5,
     fontFamily: FONT1REGULAR
   },
-  signUp: { color: COLORS.darkBlack, textDecorationLine: 'underline' },
+  signUp: { color: COLORS.darkBlack, textDecorationLine: "underline" },
   errorText: {
     fontFamily: FONT1REGULAR,
     color: COLORS.alertButon
