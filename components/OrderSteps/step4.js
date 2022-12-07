@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 import {
   ScrollView,
   TouchableOpacity,
@@ -6,30 +6,38 @@ import {
   View,
   StyleSheet,
   FlatList
-} from 'react-native'
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
-import { COLORS, FONT1LIGHT, FONT1MEDIUM, FONT1REGULAR } from '../../constants'
-import BouncyCheckbox from 'react-native-bouncy-checkbox'
-import AppButton from '../AppButton'
-import CustomModel from '../Modal/CustomModel'
-import Header from '../Header'
-import { useState } from 'react'
-import mastercardWhite from '../../assets/svg/mastercardWhite.svg'
-import { SvgXml } from 'react-native-svg'
+} from "react-native"
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
+import { COLORS, FONT1LIGHT, FONT1MEDIUM, FONT1REGULAR } from "../../constants"
+import BouncyCheckbox from "react-native-bouncy-checkbox"
+import AppButton from "../AppButton"
+import CustomModel from "../Modal/CustomModel"
+import Header from "../Header"
+import { useState } from "react"
+import mastercardWhite from "../../assets/svg/mastercardWhite.svg"
+import { SvgXml } from "react-native-svg"
+import { useFocusEffect } from "@react-navigation/native"
+import { useCallback } from "react"
 
-export default function Step4 ({
+export default function Step4({
   handleChange,
   product_price,
   carrier_reward,
   isChecked,
   navigation,
   paymethods,
+  _getPayMethod,
   payment_method_id,
   _removePayMethod
 }) {
   const [state, setState] = useState({
     openPayMethod: false
   })
+  useFocusEffect(
+    useCallback(() => {
+      _getPayMethod()
+    }, [])
+  )
   const { openPayMethod } = state
   const handleChangeLocal = (key, value) => {
     setState(pre => ({ ...pre, [key]: value }))
@@ -41,7 +49,7 @@ export default function Step4 ({
     <ScrollView
       style={styles.container}
       nestedScrollEnabled
-      keyboardShouldPersistTaps={'handled'}
+      keyboardShouldPersistTaps={"handled"}
       showsVerticalScrollIndicator={false}
     >
       <Text style={styles.summary}>Summary</Text>
@@ -67,10 +75,10 @@ export default function Step4 ({
         <Text style={styles.totalvalue}>${total.toFixed(2)}</Text>
       </View>
       <AppButton
-        title={'Select Payment Method'}
-        backgroundColor={'transparent'}
+        title={"Select Payment Method"}
+        backgroundColor={"transparent"}
         color={COLORS.primary}
-        onPress={() => handleChangeLocal('openPayMethod', true)}
+        onPress={() => handleChangeLocal("openPayMethod", true)}
       />
       {/* <View
         style={{
@@ -103,46 +111,46 @@ export default function Step4 ({
         </TouchableOpacity>
       </View> */}
       <CustomModel
-        height={'100%'}
-        width={'100%'}
+        height={"100%"}
+        width={"100%"}
         visible={openPayMethod}
         isNotBar
-        onClose={() => handleChangeLocal('openPayMethod', false)}
+        onClose={() => handleChangeLocal("openPayMethod", false)}
       >
         <Header
-          title={'Payment Method'}
+          title={"Payment Method"}
           rightItem={
             <TouchableOpacity
               onPress={() => {
-                handleChangeLocal('openPayMethod', false)
-                navigation.navigate('PaymentMethod')
+                handleChangeLocal("openPayMethod", false)
+                navigation.navigate("PaymentMethod")
               }}
             >
-              <Text style={styles.activeTabText}>{'Add'}</Text>
+              <Text style={styles.activeTabText}>{"Add"}</Text>
             </TouchableOpacity>
           }
           color={COLORS.darkBlack}
           back
-          backPress={() => handleChangeLocal('openPayMethod', false)}
+          backPress={() => handleChangeLocal("openPayMethod", false)}
         />
         <FlatList
           data={paymethods}
           nestedScrollEnabled
           showsVerticalScrollIndicator={false}
           renderItem={({ item, index }) => (
-            <View style={{ width: '100%', alignItems: 'center' }}>
+            <View style={{ width: "100%", alignItems: "center" }}>
               <View
                 style={{
-                  width: '90%',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
+                  width: "90%",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center"
                 }}
               >
                 <View
                   style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
+                    flexDirection: "row",
+                    alignItems: "center",
                     marginTop: 20
                   }}
                 >
@@ -150,7 +158,7 @@ export default function Step4 ({
                     size={20}
                     fillColor={COLORS.primary}
                     unfillColor={COLORS.white}
-                    text=''
+                    text=""
                     iconStyle={{ borderColor: COLORS.primary, borderRadius: 8 }}
                     textStyle={{
                       fontFamily: FONT1REGULAR,
@@ -161,9 +169,9 @@ export default function Step4 ({
                     isChecked={payment_method_id === item?.id}
                     onPress={() => {
                       if (payment_method_id === item?.id) {
-                        handleChange('payment_method_id', '')
+                        handleChange("payment_method_id", "")
                       } else {
-                        handleChange('payment_method_id', item?.id)
+                        handleChange("payment_method_id", item?.id)
                       }
                     }}
                   />
@@ -172,10 +180,10 @@ export default function Step4 ({
                 {payment_method_id !== item?.id && (
                   <View style={{ marginRight: -20, marginTop: 10 }}>
                     <AppButton
-                      title={'Remove'}
+                      title={"Remove"}
                       color={COLORS.primary}
                       onPress={() => _removePayMethod(item?.id)}
-                      backgroundColor={'transparent'}
+                      backgroundColor={"transparent"}
                       minWidth={120}
                     />
                   </View>
@@ -185,11 +193,11 @@ export default function Step4 ({
                 key={index}
                 style={{
                   backgroundColor: COLORS.blueBG,
-                  width: '90%',
+                  width: "90%",
                   padding: 20,
                   marginVertical: 20,
                   borderRadius: 10,
-                  shadowColor: '#000',
+                  shadowColor: "#000",
                   shadowOffset: {
                     width: 0,
                     height: 2
@@ -215,7 +223,7 @@ export default function Step4 ({
                   <View>
                     <Text style={styles.cardText}>Expiry Date</Text>
                     <Text style={styles.holder}>
-                      {item?.card?.exp_month + '/' + item?.card?.exp_year}
+                      {item?.card?.exp_month + "/" + item?.card?.exp_year}
                     </Text>
                   </View>
                 </View>
@@ -230,15 +238,15 @@ export default function Step4 ({
 
 const styles = StyleSheet.create({
   container: {
-    width: '90%',
-    height: '60%',
+    width: "90%",
+    height: "60%",
     marginTop: 20
   },
   rowBetween: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
     marginTop: 10
   },
   type: {
@@ -269,7 +277,7 @@ const styles = StyleSheet.create({
   },
   hline: {
     marginTop: 20,
-    width: '100%',
+    width: "100%",
     height: 1,
     backgroundColor: COLORS.grey
   },
@@ -289,8 +297,8 @@ const styles = StyleSheet.create({
     fontSize: hp(2)
   },
   head: {
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     marginTop: 20,
     marginBottom: 30
   },
@@ -312,19 +320,19 @@ const styles = StyleSheet.create({
     fontSize: hp(2)
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center'
+    flexDirection: "row",
+    alignItems: "center"
   },
   rowBetween: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    justifyContent: 'space-between'
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    justifyContent: "space-between"
   },
   detailsBox: {
     borderRadius: 10,
     padding: 10,
     backgroundColor: COLORS.primaryLight,
-    width: '90%'
+    width: "90%"
   }
 })

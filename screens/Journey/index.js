@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from "react"
 import {
   View,
   StyleSheet,
@@ -7,34 +7,36 @@ import {
   FlatList,
   Image,
   ActivityIndicator
-} from 'react-native'
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
-import { SvgXml } from 'react-native-svg'
-import NoOrder from '../../assets/svg/NoOrder.svg'
-import planIcon from '../../assets/svg/plan.svg'
-import OngoingIcon from '../../assets/svg/Ongoing.svg'
-import UpcomingIcon from '../../assets/svg/Upcoming.svg'
-import menuJourney from '../../assets/svg/menuJourney.svg'
-import usersIcon from '../../assets/images/users.png'
-import { AppButton, Header } from '../../components'
-import { COLORS, FONT1LIGHT, FONT1MEDIUM, FONT1REGULAR } from '../../constants'
-import AppContext from '../../store/Context'
-import moment from 'moment'
-import momenttimezone from 'moment-timezone'
+} from "react-native"
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
+import { SvgXml } from "react-native-svg"
+import NoOrder from "../../assets/svg/NoOrder.svg"
+import planIcon from "../../assets/svg/plan.svg"
+import OngoingIcon from "../../assets/svg/Ongoing.svg"
+import UpcomingIcon from "../../assets/svg/Upcoming.svg"
+import menuJourney from "../../assets/svg/menuJourney.svg"
+import usersIcon from "../../assets/images/users.png"
+import { AppButton, Header } from "../../components"
+import { COLORS, FONT1LIGHT, FONT1MEDIUM, FONT1REGULAR } from "../../constants"
+import AppContext from "../../store/Context"
+import moment from "moment"
+import momenttimezone from "moment-timezone"
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger
-} from 'react-native-popup-menu'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import Toast from 'react-native-simple-toast'
-import { deleteJourney } from '../../api/journey'
+} from "react-native-popup-menu"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import Toast from "react-native-simple-toast"
+import { deleteJourney } from "../../api/journey"
+import { useFocusEffect } from "@react-navigation/native"
 
-function Journey ({ navigation }) {
+function Journey({ navigation, route }) {
+  const completed = route?.params?.completed
   const [state, setState] = useState({
     loading: false,
-    active: 'Ongoing'
+    active: completed ? "Completed" : "Ongoing"
   })
 
   // Context
@@ -46,18 +48,26 @@ function Journey ({ navigation }) {
     _getMyJourneys()
   }, [])
 
+  useFocusEffect(
+    useCallback(() => {
+      if (completed) {
+        handleChange("active", "Completed")
+      }
+    }, [completed])
+  )
+
   const handleChange = (name, value) => {
     setState(pre => ({ ...pre, [name]: value }))
   }
 
   const tabs = [
-    { title: 'Ongoing', value: '' },
-    { title: 'Upcoming', value: 'upcoming' },
-    { title: 'Completed' }
+    { title: "Ongoing", value: "" },
+    { title: "Upcoming", value: "upcoming" },
+    { title: "Completed" }
   ]
 
-  function convertLocalDateToUTCDate (time, toLocal) {
-    const todayDate = moment(new Date()).format('YYYY-MM-DD')
+  function convertLocalDateToUTCDate(time, toLocal) {
+    const todayDate = moment(new Date()).format("YYYY-MM-DD")
     if (toLocal) {
       const today = momenttimezone.tz.guess()
       const timeUTC = momenttimezone.tz(time, today).format()
@@ -78,23 +88,23 @@ function Journey ({ navigation }) {
       const todayDate1 = momenttimezone
         .tz(`${todayDate} ${time}`, today)
         .format()
-      const utcTime = moment.utc(todayDate1).format('YYYY-MM-DDTHH:mm')
+      const utcTime = moment.utc(todayDate1).format("YYYY-MM-DDTHH:mm")
       return utcTime
     }
   }
   const handleDelete = async id => {
     try {
-      handleChange('loading', true)
-      const token = await AsyncStorage.getItem('token')
+      handleChange("loading", true)
+      const token = await AsyncStorage.getItem("token")
       await deleteJourney(id, token)
-      _getJourneys('')
+      _getJourneys("")
       _getMyJourneys()
-      handleChange('loading', false)
-      Toast.show('Journey Deleted Successfully!')
+      handleChange("loading", false)
+      Toast.show("Journey Deleted Successfully!")
     } catch (error) {
-      console.warn('error', error)
-      handleChange('loading', false)
-      console.warn('error?.response?.data', error?.response?.data)
+      console.warn("error", error)
+      handleChange("loading", false)
+      console.warn("error?.response?.data", error?.response?.data)
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText[0]}`)
     }
@@ -108,29 +118,29 @@ function Journey ({ navigation }) {
   }
 
   const getOrderType = status => {
-    console.warn('status', status)
-    if (status === 'ongoing') {
+    console.warn("status", status)
+    if (status === "ongoing") {
       // const filtered = journeys?.filter(e => e.status === status)
       return myjourneys?.ongoing || []
-    } else if (status === 'upcoming') {
+    } else if (status === "upcoming") {
       return myjourneys?.upcoming || []
     } else return myjourneys?.completed || []
   }
 
-  console.warn('myJourneys', myjourneys?.upcoming)
+  console.warn("myJourneys", myjourneys?.upcoming)
 
   return (
     <View style={styles.container}>
       <Header
-        title={'Journeys'}
+        title={"Journeys"}
         color={COLORS.darkBlack}
         rightItem={
           <AppButton
             width={hp(15)}
             height={hp(5)}
             marginTop={1}
-            title={'+ Add'}
-            onPress={() => navigation.navigate('CreateJourney')}
+            title={"+ Add"}
+            onPress={() => navigation.navigate("CreateJourney")}
           />
         }
       />
@@ -138,7 +148,7 @@ function Journey ({ navigation }) {
         {tabs.map((tab, index) => (
           <TouchableOpacity
             onPress={() => {
-              handleChange('active', tab?.title)
+              handleChange("active", tab?.title)
             }}
             key={index}
             style={active === tab.title ? styles.activeTab : styles.inavtive}
@@ -153,24 +163,24 @@ function Journey ({ navigation }) {
           </TouchableOpacity>
         ))}
       </View>
-      {loading && <ActivityIndicator color={COLORS.primary} size={'small'} />}
+      {loading && <ActivityIndicator color={COLORS.primary} size={"small"} />}
       <FlatList
         data={getOrderType(active?.toLocaleLowerCase())}
         showsVerticalScrollIndicator={false}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: "100%", height: "100%" }}
         renderItem={({ item, index }) => (
           <View
             key={index}
-            style={{ width: '100%', alignItems: 'center', marginBottom: 20 }}
+            style={{ width: "100%", alignItems: "center", marginBottom: 20 }}
           >
             <View style={styles.paper}>
-              <View style={[styles.rowBetween, { width: '100%' }]}>
+              <View style={[styles.rowBetween, { width: "100%" }]}>
                 <View
                   style={[
                     styles.ongoingBox,
                     {
                       backgroundColor:
-                        item?.status === 'upcoming'
+                        item?.status === "upcoming"
                           ? COLORS.upcoming
                           : COLORS.ongoing
                     }
@@ -178,7 +188,7 @@ function Journey ({ navigation }) {
                 >
                   <SvgXml
                     xml={
-                      item?.status === 'upcoming' ? UpcomingIcon : OngoingIcon
+                      item?.status === "upcoming" ? UpcomingIcon : OngoingIcon
                     }
                     style={{ marginLeft: -10, marginTop: 8 }}
                   />
@@ -188,17 +198,17 @@ function Journey ({ navigation }) {
                       {
                         fontFamily: FONT1LIGHT,
                         fontSize: hp(1.8),
-                        textTransform: 'capitalize'
+                        textTransform: "capitalize"
                       }
                     ]}
                   >
                     {item?.status}
                   </Text>
                 </View>
-                {item?.status === 'upcoming' && (
+                {item?.status === "upcoming" && (
                   <Menu
                     rendererProps={{
-                      placement: 'bottom'
+                      placement: "bottom"
                     }}
                   >
                     <MenuTrigger>
@@ -206,10 +216,10 @@ function Journey ({ navigation }) {
                     </MenuTrigger>
                     <MenuOptions
                       optionsContainerStyle={{
-                        width: '30%'
+                        width: "30%"
                       }}
                     >
-                      {['Delete'].map(el => (
+                      {["Delete"].map(el => (
                         <MenuOption
                           key={el}
                           onSelect={() => handleDelete(item?.id)}
@@ -221,11 +231,11 @@ function Journey ({ navigation }) {
                   </Menu>
                 )}
               </View>
-              <View style={[styles.row, { width: '90%' }]}>
+              <View style={[styles.row, { width: "90%" }]}>
                 <Text
                   style={[
                     styles.nameText,
-                    { color: COLORS.primary, maxWidth: '40%' }
+                    { color: COLORS.primary, maxWidth: "40%" }
                   ]}
                 >
                   {item?.departure_country}
@@ -234,7 +244,7 @@ function Journey ({ navigation }) {
                 <Text
                   style={[
                     styles.nameText,
-                    { color: COLORS.primary, maxWidth: '60%' }
+                    { color: COLORS.primary, maxWidth: "60%" }
                   ]}
                 >
                   {item?.arrival_country}
@@ -254,8 +264,8 @@ function Journey ({ navigation }) {
                       borderRadius: 50,
                       borderWidth: 1,
                       marginBottom: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      alignItems: "center",
+                      justifyContent: "center",
                       borderColor: COLORS.grey
                     }}
                   >
@@ -275,7 +285,7 @@ function Journey ({ navigation }) {
               <View style={styles.rowBetween}>
                 <Text style={[styles.postedText]}>Journey Date</Text>
                 <Text style={styles.nameText}>
-                  {moment(item?.date_of_journey).format('DD / MM / YYYY')}
+                  {moment(item?.date_of_journey).format("DD / MM / YYYY")}
                 </Text>
               </View>
               <View style={[styles.rowBetween, { marginTop: 10 }]}>
@@ -287,7 +297,7 @@ function Journey ({ navigation }) {
                 <Text style={[styles.postedText]}>To Deliver</Text>
                 <Text style={styles.nameText}>
                   {moment(item?.date_of_return || item?.date_of_journey).format(
-                    'DD / MM / YYYY'
+                    "DD / MM / YYYY"
                   )}
                 </Text>
               </View>
@@ -295,13 +305,13 @@ function Journey ({ navigation }) {
                 <Text style={[styles.postedText]}>Reward</Text>
                 <Text style={styles.nameText}>{item?.total_weight}</Text>
               </View> */}
-              {item?.status === 'upcoming' && (
+              {item?.status === "upcoming" && (
                 <AppButton
                   title={`View all ${item?.offers} offers`}
                   backgroundColor={COLORS.upcoming}
                   color={COLORS.upcomingDark}
                   onPress={() =>
-                    navigation.navigate('JourneyDetails', { item })
+                    navigation.navigate("JourneyDetails", { item })
                   }
                   prefix={
                     <Image source={usersIcon} style={{ marginRight: 10 }} />
@@ -312,12 +322,12 @@ function Journey ({ navigation }) {
           </View>
         )}
         ListEmptyComponent={() => (
-          <View style={{ width: '100%', alignItems: 'center' }}>
+          <View style={{ width: "100%", alignItems: "center" }}>
             <SvgXml xml={NoOrder} />
             <Text style={styles.timetext}>You don’t have new journey</Text>
             <AppButton
-              title={'Create Journey'}
-              onPress={() => navigation.navigate('CreateJourney')}
+              title={"Create Journey"}
+              onPress={() => navigation.navigate("CreateJourney")}
               width={200}
               color={COLORS.primary}
               backgroundColor={COLORS.lightblue}
@@ -332,38 +342,38 @@ function Journey ({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.backgroud,
-    width: '100%',
-    height: '100%',
-    alignItems: 'center'
+    width: "100%",
+    height: "100%",
+    alignItems: "center"
   },
   hline: {
-    width: '100%',
+    width: "100%",
     height: 1,
     marginVertical: 10,
     backgroundColor: COLORS.tripBoxBorder
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center'
+    flexDirection: "row",
+    alignItems: "center"
   },
   rowBetween: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
   },
   ongoingBox: {
     height: 30,
     borderRadius: 30,
     paddingHorizontal: 10,
-    flexDirection: 'row',
-    alignItems: 'center'
+    flexDirection: "row",
+    alignItems: "center"
   },
   paper: {
     backgroundColor: COLORS.white,
-    width: '90%',
+    width: "90%",
     borderRadius: 20,
     padding: 15,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2
@@ -373,8 +383,8 @@ const styles = StyleSheet.create({
     elevation: 5
   },
   bgImage: {
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     height: 200,
     paddingTop: 20,
     borderBottomRightRadius: 20,
@@ -382,50 +392,50 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 50,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     backgroundColor: COLORS.white,
     borderBottomWidth: 1,
     borderColor: COLORS.tripBoxBorder,
-    paddingHorizontal: '5%'
+    paddingHorizontal: "5%"
   },
   headerText: {
-    width: '80%',
+    width: "80%",
     fontFamily: FONT1REGULAR,
     fontSize: hp(2),
     color: COLORS.darkBlack
   },
   imgStyle: {
-    width: '100%',
+    width: "100%",
     height: 200,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20
   },
   viewAll: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: hp(2),
     color: COLORS.primary,
-    textDecorationLine: 'underline',
+    textDecorationLine: "underline",
     fontFamily: FONT1REGULAR
   },
   timetext: {
-    width: '40%',
-    textAlign: 'center',
+    width: "40%",
+    textAlign: "center",
     fontSize: hp(2),
     color: COLORS.darkGrey,
     fontFamily: FONT1REGULAR
   },
   pricetext: {
-    width: '80%',
+    width: "80%",
     fontSize: hp(2.8),
     color: COLORS.darkBlack,
     fontFamily: FONT1REGULAR
   },
   slide: {
-    width: '90%',
-    justifyContent: 'space-between',
+    width: "90%",
+    justifyContent: "space-between",
     height: 220,
     borderRadius: 22
   },
@@ -435,25 +445,25 @@ const styles = StyleSheet.create({
     width: 50
   },
   tabs: {
-    width: '90%',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    alignItems: 'center',
+    width: "90%",
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 20,
     height: hp(7),
     marginBottom: 20
   },
   tab: {
-    width: '50%',
-    alignItems: 'center'
+    width: "50%",
+    alignItems: "center"
   },
   activeTab: {
     backgroundColor: COLORS.lightblue,
     borderRadius: 12,
     paddingHorizontal: 8,
-    justifyContent: 'center',
+    justifyContent: "center",
     height: hp(5),
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
     borderColor: COLORS.primary
   },
@@ -480,9 +490,9 @@ const styles = StyleSheet.create({
   },
   inavtive: {
     paddingHorizontal: 8,
-    justifyContent: 'center',
+    justifyContent: "center",
     height: hp(5),
-    alignItems: 'center'
+    alignItems: "center"
   },
   active: {
     borderWidth: 0,
@@ -493,12 +503,12 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   product_image: {
-    width: '48%',
+    width: "48%",
     marginTop: 10,
     marginBottom: 10,
     height: 130,
     borderRadius: 10,
-    resizeMode: 'cover'
+    resizeMode: "cover"
   }
 })
 

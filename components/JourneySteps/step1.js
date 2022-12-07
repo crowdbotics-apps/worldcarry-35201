@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from "react"
 import {
   ScrollView,
   TouchableOpacity,
@@ -6,22 +6,22 @@ import {
   View,
   StyleSheet,
   Modal
-} from 'react-native'
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
-import { SvgXml } from 'react-native-svg'
-import { COLORS, FONT1LIGHT, FONT1MEDIUM, FONT1REGULAR } from '../../constants'
-import pinBlack from '../../assets/svg/pinBlack.svg'
-import pinBlue from '../../assets/svg/pinBlue.svg'
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
-import pickupPlan from '../../assets/svg/pickupPlan.svg'
-import arrivalPlan from '../../assets/svg/arrivalPlan.svg'
-import calendarLight from '../../assets/svg/calendarLight.svg'
-import { Calendar } from 'react-native-calendars'
-import moment from 'moment'
-import AppButton from '../AppButton'
-import Toast from 'react-native-simple-toast'
+} from "react-native"
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
+import { SvgXml } from "react-native-svg"
+import { COLORS, FONT1LIGHT, FONT1MEDIUM, FONT1REGULAR } from "../../constants"
+import pinBlack from "../../assets/svg/pinBlack.svg"
+import pinBlue from "../../assets/svg/pinBlue.svg"
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete"
+import pickupPlan from "../../assets/svg/pickupPlan.svg"
+import arrivalPlan from "../../assets/svg/arrivalPlan.svg"
+import calendarLight from "../../assets/svg/calendarLight.svg"
+import { Calendar } from "react-native-calendars"
+import moment from "moment"
+import AppButton from "../AppButton"
+import Toast from "react-native-simple-toast"
 
-export default function JourneyStep1 ({
+export default function JourneyStep1({
   handleChange,
   departureCityState,
   arrival_city_state,
@@ -36,7 +36,7 @@ export default function JourneyStep1 ({
   handleOpen,
   getCurrentLocation
 }) {
-  console.warn('departureCityState', departureCityState)
+  console.warn("departureCityState", departureCityState)
   const [modalVisible, setModalVisible] = useState(false)
   const [showReturnCalendar, setShowReturnCalendar] = useState(false)
   const [markedDates, setMarkedDates] = useState({})
@@ -45,8 +45,8 @@ export default function JourneyStep1 ({
     let markedDates = {}
     markedDates[date] = {
       selected: true,
-      color: '#00B0BF',
-      textColor: '#FFFFFF',
+      color: "#00B0BF",
+      textColor: "#FFFFFF",
       customStyles: {
         container: {
           borderRadius: 5
@@ -54,16 +54,16 @@ export default function JourneyStep1 ({
       }
     }
     let serviceDate = moment(date)
-    serviceDate = serviceDate.format('YYYY-MM-DD')
-    handleChange('date_of_journey', serviceDate)
+    serviceDate = serviceDate.format("YYYY-MM-DD")
+    handleChange("date_of_journey", serviceDate)
     setMarkedDates(markedDates)
   }
   const getSelectedDayEvents1 = date => {
     let markedDates = {}
     markedDates[date] = {
       selected: true,
-      color: '#00B0BF',
-      textColor: '#FFFFFF',
+      color: "#00B0BF",
+      textColor: "#FFFFFF",
       customStyles: {
         container: {
           borderRadius: 5
@@ -71,21 +71,21 @@ export default function JourneyStep1 ({
       }
     }
     let serviceDate = moment(date)
-    serviceDate = serviceDate.format('YYYY-MM-DD')
-    handleChange('date_of_return', serviceDate)
+    serviceDate = serviceDate.format("YYYY-MM-DD")
+    handleChange("date_of_return", serviceDate)
     setMarkedDates1(markedDates)
   }
   return (
     <ScrollView
-      keyboardShouldPersistTaps={'handled'}
+      keyboardShouldPersistTaps={"handled"}
       style={styles.container}
       showsVerticalScrollIndicator={false}
     >
       <View
         style={{
-          justifyContent: 'center',
-          flexDirection: 'row',
-          width: '100%',
+          justifyContent: "center",
+          flexDirection: "row",
+          width: "100%",
           marginVertical: 10,
           borderRadius: 10,
           borderWidth: 1,
@@ -96,14 +96,14 @@ export default function JourneyStep1 ({
         <SvgXml
           xml={pickupPlan}
           fillOpacity={0.6}
-          style={{ marginLeft: 10, marginTop: hp(2) }}
+          style={{ marginLeft: 10, marginTop: 10 }}
         />
-        <View style={{ width: '90%' }}>
+        <View style={{ width: "90%" }}>
           <GooglePlacesAutocomplete
-            placeholder={departureCityState || 'Departure City'}
+            placeholder={departureCityState || "Departure City"}
             fetchDetails={true}
             currentLocation={true}
-            currentLocationLabel='Current location'
+            currentLocationLabel="Current location"
             onPress={(data, details) => {
               // 'details' is provided when fetchDetails = true
               console.log(data, details)
@@ -115,13 +115,13 @@ export default function JourneyStep1 ({
                 : COLORS.placeholder,
               value: departureCityState,
               onFocus: () => {
-                handleChange('isFocus', true)
-                handleChange('isPrevious', false)
+                handleChange("isFocus", true)
+                handleChange("isPrevious", false)
               },
-              onBlur: () => handleChange('isFocus', false),
+              onBlur: () => handleChange("isFocus", false),
               onChangeText: text => {
                 if (!isPrevious) {
-                  handleChange('departureCityState', text)
+                  handleChange("departureCityState", text)
                 }
               }
             }}
@@ -130,9 +130,9 @@ export default function JourneyStep1 ({
               textInput: {
                 // flex: 1,
                 fontSize: hp(1.8),
-                backgroundColor: 'transparent',
+                backgroundColor: "transparent",
                 // width: '85%',
-                height: '100%',
+                height: "100%",
                 color: COLORS.darkBlack,
                 fontFamily: FONT1REGULAR
               },
@@ -140,14 +140,14 @@ export default function JourneyStep1 ({
               row: { backgroundColor: COLORS.white }
             }}
             query={{
-              key: 'AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU',
-              language: 'en'
+              key: "AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU",
+              language: "en"
             }}
             GooglePlacesDetailsQuery={{
-              fields: 'geometry'
+              fields: "geometry"
             }}
-            filterReverseGeocodingByTypes={['locality']}
-            keyboardShouldPersistTaps={'handled'}
+            filterReverseGeocodingByTypes={["locality"]}
+            keyboardShouldPersistTaps={"handled"}
             listViewDisplayed={false}
             enablePoweredByContainer={false}
             renderRow={(data, index) => {
@@ -156,7 +156,7 @@ export default function JourneyStep1 ({
                   <>
                     <TouchableOpacity
                       onPress={() => getCurrentLocation()}
-                      style={{ width: '100%', flexDirection: 'row' }}
+                      style={{ width: "100%", flexDirection: "row" }}
                     >
                       <View
                         style={{
@@ -165,8 +165,8 @@ export default function JourneyStep1 ({
                           borderRadius: 30,
                           backgroundColor: COLORS.grey,
                           marginRight: 10,
-                          alignItems: 'center',
-                          justifyContent: 'center'
+                          alignItems: "center",
+                          justifyContent: "center"
                         }}
                       >
                         <SvgXml xml={pinBlue} />
@@ -180,7 +180,7 @@ export default function JourneyStep1 ({
                         Use my current location
                       </Text>
                     </TouchableOpacity>
-                    <View style={{ width: '100%', flexDirection: 'row' }}>
+                    <View style={{ width: "100%", flexDirection: "row" }}>
                       <View
                         style={{
                           width: 30,
@@ -188,8 +188,8 @@ export default function JourneyStep1 ({
                           borderRadius: 30,
                           backgroundColor: COLORS.grey,
                           marginRight: 10,
-                          alignItems: 'center',
-                          justifyContent: 'center'
+                          alignItems: "center",
+                          justifyContent: "center"
                         }}
                       >
                         <SvgXml xml={pinBlack} />
@@ -207,7 +207,7 @@ export default function JourneyStep1 ({
                 )
               } else {
                 return (
-                  <View style={{ width: '100%', flexDirection: 'row' }}>
+                  <View style={{ width: "100%", flexDirection: "row" }}>
                     <View
                       style={{
                         width: 30,
@@ -215,8 +215,8 @@ export default function JourneyStep1 ({
                         borderRadius: 30,
                         backgroundColor: COLORS.grey,
                         marginRight: 10,
-                        alignItems: 'center',
-                        justifyContent: 'center'
+                        alignItems: "center",
+                        justifyContent: "center"
                       }}
                     >
                       <SvgXml xml={pinBlack} />
@@ -231,12 +231,12 @@ export default function JourneyStep1 ({
               }
             }}
             debounce={200}
-            nearbyPlacesAPI='GooglePlacesSearch'
+            nearbyPlacesAPI="GooglePlacesSearch"
           />
           {isFocus && (
             <TouchableOpacity
-              onPress={() => handleOpen('departure')}
-              style={{ width: '90%', marginBottom: 10, alignItems: 'center' }}
+              onPress={() => handleOpen("departure")}
+              style={{ width: "90%", marginBottom: 10, alignItems: "center" }}
             >
               <Text style={{ fontFamily: FONT1REGULAR, color: COLORS.primary }}>
                 Choose from Address
@@ -247,9 +247,9 @@ export default function JourneyStep1 ({
       </View>
       <View
         style={{
-          justifyContent: 'center',
-          flexDirection: 'row',
-          width: '100%',
+          justifyContent: "center",
+          flexDirection: "row",
+          width: "100%",
           marginVertical: 10,
           borderRadius: 10,
           borderWidth: 1,
@@ -260,11 +260,11 @@ export default function JourneyStep1 ({
         <SvgXml
           xml={arrivalPlan}
           fillOpacity={0.6}
-          style={{ marginLeft: 10, marginTop: hp(2) }}
+          style={{ marginLeft: 10, marginTop: 10 }}
         />
-        <View style={{ width: '90%' }}>
+        <View style={{ width: "90%" }}>
           <GooglePlacesAutocomplete
-            placeholder={arrival_city_state || 'Arrival City'}
+            placeholder={arrival_city_state || "Arrival City"}
             fetchDetails={true}
             onPress={(data, details) => {
               // 'details' is provided when fetchDetails = true
@@ -277,13 +277,13 @@ export default function JourneyStep1 ({
                 : COLORS.placeholder,
               value: arrival_city_state,
               onFocus: () => {
-                handleChange('isFocus', true)
-                handleChange('isPrevious', false)
+                handleChange("isFocus1", true)
+                handleChange("isPrevious", false)
               },
-              onBlur: () => handleChange('isFocus1', false),
+              onBlur: () => handleChange("isFocus1", false),
               onChangeText: text => {
                 if (!isPrevious) {
-                  handleChange('arrival_city_state', text)
+                  handleChange("arrival_city_state", text)
                 }
               }
             }}
@@ -292,9 +292,9 @@ export default function JourneyStep1 ({
               textInput: {
                 // flex: 1,
                 fontSize: hp(1.8),
-                backgroundColor: 'transparent',
+                backgroundColor: "transparent",
                 // width: '85%',
-                height: '100%',
+                height: "100%",
                 color: COLORS.darkBlack,
                 fontFamily: FONT1REGULAR
               },
@@ -302,17 +302,17 @@ export default function JourneyStep1 ({
               row: { backgroundColor: COLORS.white }
             }}
             query={{
-              key: 'AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU',
-              language: 'en'
+              key: "AIzaSyCR6w9b59vHgXUpZUhHKu8FW7NG34RiHSU",
+              language: "en"
             }}
             GooglePlacesDetailsQuery={{
-              fields: 'geometry'
+              fields: "geometry"
             }}
-            filterReverseGeocodingByTypes={['locality']}
-            keyboardShouldPersistTaps={'handled'}
+            filterReverseGeocodingByTypes={["locality"]}
+            keyboardShouldPersistTaps={"handled"}
             listViewDisplayed={false}
             renderRow={data => (
-              <View style={{ width: '100%', flexDirection: 'row' }}>
+              <View style={{ width: "100%", flexDirection: "row" }}>
                 <View
                   style={{
                     width: 30,
@@ -320,8 +320,8 @@ export default function JourneyStep1 ({
                     borderRadius: 30,
                     backgroundColor: COLORS.grey,
                     marginRight: 10,
-                    alignItems: 'center',
-                    justifyContent: 'center'
+                    alignItems: "center",
+                    justifyContent: "center"
                   }}
                 >
                   <SvgXml xml={pinBlack} />
@@ -333,13 +333,13 @@ export default function JourneyStep1 ({
             )}
             debounce={200}
             currentLocation={false}
-            currentLocationLabel='Current location'
-            nearbyPlacesAPI='GooglePlacesSearch'
+            currentLocationLabel="Current location"
+            nearbyPlacesAPI="GooglePlacesSearch"
           />
           {isFocus1 && (
             <TouchableOpacity
-              onPress={() => handleOpen('')}
-              style={{ width: '90%', marginBottom: 10, alignItems: 'center' }}
+              onPress={() => handleOpen("")}
+              style={{ width: "90%", marginBottom: 10, alignItems: "center" }}
             >
               <Text style={{ fontFamily: FONT1REGULAR, color: COLORS.primary }}>
                 Choose from Address
@@ -351,10 +351,10 @@ export default function JourneyStep1 ({
       <TouchableOpacity
         onPress={() => setModalVisible(true)}
         style={{
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          flexDirection: 'row',
-          width: '100%',
+          justifyContent: "flex-start",
+          alignItems: "center",
+          flexDirection: "row",
+          width: "100%",
           height: hp(7),
           marginVertical: 10,
           borderRadius: 10,
@@ -376,11 +376,11 @@ export default function JourneyStep1 ({
             color: date_of_journey ? COLORS.black : COLORS.grey
           }}
         >
-          {date_of_journey || 'Date of Journey'}
+          {date_of_journey || "Date of Journey"}
         </Text>
       </TouchableOpacity>
       <Modal
-        animationType='slide'
+        animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
@@ -392,10 +392,10 @@ export default function JourneyStep1 ({
             {activeRound ? (
               <View
                 style={{
-                  flexDirection: 'row',
-                  width: '100%',
-                  alignItems: 'center',
-                  justifyContent: 'space-between'
+                  flexDirection: "row",
+                  width: "100%",
+                  alignItems: "center",
+                  justifyContent: "space-between"
                 }}
               >
                 <TouchableOpacity
@@ -445,12 +445,12 @@ export default function JourneyStep1 ({
                     ? getSelectedDayEvents1(day.dateString)
                     : getSelectedDayEvents(day.dateString)
                 }}
-                style={{ width: '100%' }}
-                monthFormat={'MMMM yyyy'}
+                style={{ width: "100%" }}
+                monthFormat={"MMMM yyyy"}
                 theme={{
                   calendarBackground: COLORS.backgroundColor,
                   arrowColor: COLORS.darkBlack,
-                  todayTextColor: '#fff',
+                  todayTextColor: "#fff",
                   todayBackgroundColor: COLORS.primary
                 }}
                 minDate={
@@ -460,7 +460,7 @@ export default function JourneyStep1 ({
                       : new Date()
                     : new Date()
                 }
-                markingType={'custom'}
+                markingType={"custom"}
                 enableSwipeMonths={true}
                 firstDay={1}
               />
@@ -468,22 +468,22 @@ export default function JourneyStep1 ({
             <View style={styles.hline} />
             <View style={styles.rowButton}>
               <AppButton
-                title={'Cancel'}
-                width={'48%'}
+                title={"Cancel"}
+                width={"48%"}
                 onPress={() => setModalVisible(false)}
                 backgroundColor={COLORS.white}
                 titleLight
                 color={COLORS.grey}
               />
               <AppButton
-                title={activeRound && !showReturnCalendar ? 'Next' : 'Done'}
+                title={activeRound && !showReturnCalendar ? "Next" : "Done"}
                 onPress={() => {
                   if (showReturnCalendar) {
                     if (date_of_return) {
                       setShowReturnCalendar(false)
                       setModalVisible(false)
                     } else {
-                      Toast.show('Select Return Date First!')
+                      Toast.show("Select Return Date First!")
                     }
                   }
                   if (date_of_journey) {
@@ -493,10 +493,10 @@ export default function JourneyStep1 ({
                       setModalVisible(false)
                     }
                   } else {
-                    Toast.show('Select Date First!')
+                    Toast.show("Select Date First!")
                   }
                 }}
-                width={'48%'}
+                width={"48%"}
                 backgroundColor={COLORS.white}
                 titleLight
                 color={COLORS.primary}
@@ -511,18 +511,18 @@ export default function JourneyStep1 ({
 
 const styles = StyleSheet.create({
   container: {
-    width: '90%',
-    height: '60%',
+    width: "90%",
+    height: "60%",
     marginTop: 20
   },
   rowButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%'
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%"
   },
   hline: {
     height: 1,
-    width: '100%',
+    width: "100%",
     backgroundColor: COLORS.borderColor,
     opacity: 0.4,
     marginTop: 10
@@ -535,11 +535,11 @@ const styles = StyleSheet.create({
   activeTab: {
     backgroundColor: COLORS.lightblue,
     borderRadius: 12,
-    width: '45%',
+    width: "45%",
     marginRight: 10,
-    justifyContent: 'center',
+    justifyContent: "center",
     height: hp(5),
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: 10,
     borderWidth: 1,
     borderColor: COLORS.primary
@@ -550,23 +550,23 @@ const styles = StyleSheet.create({
     fontFamily: FONT1MEDIUM
   },
   menuTrigger: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
   },
   billingType: {
-    width: '100%',
+    width: "100%",
     borderRadius: 12,
     borderWidth: 1,
     borderColor: COLORS.borderColor,
     backgroundColor: COLORS.white,
     height: hp(6),
     paddingHorizontal: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: hp('1%'),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: hp("1%"),
     marginTop: 5
   },
   activeTabText: {
@@ -591,10 +591,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.grey,
     borderRadius: 12,
-    width: '45%',
-    justifyContent: 'center',
+    width: "45%",
+    justifyContent: "center",
     height: hp(5),
-    alignItems: 'center'
+    alignItems: "center"
   },
   active: {
     borderWidth: 0,
@@ -605,25 +605,25 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   profileIcon: {
-    width: '40%',
+    width: "40%",
     height: 150,
     borderRadius: 12,
     marginBottom: 20,
-    resizeMode: 'cover'
+    resizeMode: "cover"
   },
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: COLORS.modalBG
   },
   modalView: {
-    width: '90%',
-    backgroundColor: 'white',
+    width: "90%",
+    backgroundColor: "white",
     borderRadius: 20,
     padding: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2

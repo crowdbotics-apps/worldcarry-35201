@@ -160,8 +160,6 @@ function App () {
     const token = await messaging().getToken()
     const tokenA = await AsyncStorage.getItem('token')
     const registered = await messaging().registerDeviceForRemoteMessages()
-    console.warn('token', token)
-    console.warn('registered', registered)
     const payload = {
       name: user?.name,
       registration_id: token,

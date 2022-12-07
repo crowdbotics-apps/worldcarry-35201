@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useState } from "react"
 import {
   View,
   Text,
@@ -6,8 +6,8 @@ import {
   ScrollView,
   Modal,
   TouchableOpacity
-} from 'react-native'
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
+} from "react-native"
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 import {
   COLORS,
   FONT1BOLD,
@@ -15,37 +15,37 @@ import {
   FONT1MEDIUM,
   FONT1SEMIBOLD,
   FONT2REGULAR
-} from '../../constants'
-import { AppButton, AppInput, Header } from '../../components'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Icon } from 'react-native-elements'
-import { AddPayMethod } from '../../api/business'
-import { useFocusEffect } from '@react-navigation/native'
-import Toast from 'react-native-simple-toast'
-import stripeIcon from '../../assets/svg/stripe.svg'
-import { SvgXml } from 'react-native-svg'
-import { useStripe, CardField } from '@stripe/stripe-react-native'
+} from "../../constants"
+import { AppButton, AppInput, Header } from "../../components"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import { Icon } from "react-native-elements"
+import { AddPayMethod } from "../../api/business"
+import { useFocusEffect } from "@react-navigation/native"
+import Toast from "react-native-simple-toast"
+import stripeIcon from "../../assets/svg/stripe.svg"
+import { SvgXml } from "react-native-svg"
+import { useStripe, CardField } from "@stripe/stripe-react-native"
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger
-} from 'react-native-popup-menu'
+} from "react-native-popup-menu"
 
-function AddPaymentMethod ({ navigation }) {
+function AddPaymentMethod({ navigation }) {
   const stripe = useStripe()
   // State
   const [state, setState] = useState({
     loading: false,
     modalVisible: false,
-    country: '',
+    country: "",
     paymethods: [],
-    email: '',
-    name: '',
-    cvc: '',
-    zip: '',
-    date: '',
-    cardNumber: '',
+    email: "",
+    name: "",
+    cvc: "",
+    zip: "",
+    date: "",
+    cardNumber: "",
     cardDetails: null
   })
 
@@ -74,13 +74,13 @@ function AddPaymentMethod ({ navigation }) {
 
   const handlePayment = async () => {
     try {
-      handleChange('loading', true)
-      console.warn('cardDetails', cardDetails)
+      handleChange("loading", true)
+      console.warn("cardDetails", cardDetails)
       stripe
         .createPaymentMethod({
-          type: 'Card',
+          type: "Card",
           card: cardDetails,
-          paymentMethodType:'Card',
+          paymentMethodType: "Card",
           billing_details: {
             name: name,
             email: email,
@@ -89,17 +89,17 @@ function AddPaymentMethod ({ navigation }) {
           }
         })
         .then(result => {
-          console.warn('result', result?.paymentMethod?.id)
+          console.warn("result", result?.paymentMethod?.id)
           if (result?.paymentMethod?.id) {
             _AddPayMethod(result?.paymentMethod?.id)
           } else {
             alert(result.error.message)
-            handleChange('loading', false)
+            handleChange("loading", false)
           }
         })
     } catch (error) {
-      handleChange('loading', false)
-      console.warn('error', error)
+      handleChange("loading", false)
+      console.warn("error", error)
       // const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${JSON.stringify(error)}`)
     }
@@ -110,14 +110,14 @@ function AddPaymentMethod ({ navigation }) {
       const payload = {
         payment_method
       }
-      const token = await AsyncStorage.getItem('token')
+      const token = await AsyncStorage.getItem("token")
       const res = await AddPayMethod(payload, token)
-      handleChange('loading', false)
-      console.warn('res?.data', res?.data)
+      handleChange("loading", false)
+      console.warn("res?.data", res?.data)
       Toast.show(`Card has been added!`)
-      handleChange('modalVisible', true)
+      handleChange("modalVisible", true)
     } catch (error) {
-      handleChange('loading', false)
+      handleChange("loading", false)
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText}`)
     }
@@ -126,59 +126,59 @@ function AddPaymentMethod ({ navigation }) {
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={{ alignItems: 'center' }}
+      contentContainerStyle={{ alignItems: "center" }}
     >
       <Header
-        title={'Add Payment Method'}
+        title={"Add Payment Method"}
         color={COLORS.darkBlack}
         cross
         rightEmpty
       />
       <View style={styles.mainBody}>
         <AppInput
-          placeholder={'Mail ID'}
+          placeholder={"Mail ID"}
           borderColor={COLORS.borderColor1}
-          inputLabel={'Email'}
+          inputLabel={"Email"}
           value={email}
-          name={'email'}
+          name={"email"}
           onChange={handleChange}
           marginBottom={20}
         />
         <View
           style={{
-            width: '100%',
+            width: "100%",
             borderRadius: 12,
             borderWidth: 1,
             borderColor: COLORS.borderColor1,
             backgroundColor: COLORS.white,
             height: hp(6),
             paddingHorizontal: 5,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: hp('1%'),
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: hp("1%"),
             marginTop: -10
           }}
         >
           <CardField
             postalCodeEnabled={false}
             placeholder={{
-              number: '4242 4242 4242 4242'
+              number: "4242 4242 4242 4242"
             }}
             cardStyle={{
-              backgroundColor: '#FFFFFF',
-              textColor: '#000000'
+              backgroundColor: "#FFFFFF",
+              textColor: "#000000"
             }}
             style={{
-              width: '100%',
+              width: "100%",
               height: hp(5.8)
             }}
             onCardChange={cardDetails => {
               // console.log('cardDetails', cardDetails)
-              handleChange('cardDetails', cardDetails)
+              handleChange("cardDetails", cardDetails)
             }}
             onFocus={focusedField => {
-              console.log('focusField', focusedField)
+              console.log("focusField", focusedField)
             }}
           />
         </View>
@@ -213,37 +213,37 @@ function AddPaymentMethod ({ navigation }) {
         </View> */}
         <View style={styles.billingType}>
           <Menu
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
             rendererProps={{
-              placement: 'bottom'
+              placement: "bottom"
             }}
           >
             <MenuTrigger>
               <View style={styles.menuTrigger}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Text style={styles.menuTriggerText}>
-                    {country || 'Choose Country'}
+                    {country || "Choose Country"}
                   </Text>
                 </View>
-                <Icon name='down' type='antdesign' size={10} />
+                <Icon name="down" type="antdesign" size={10} />
               </View>
             </MenuTrigger>
             <MenuOptions
               optionsContainerStyle={{
-                width: '85%'
+                width: "85%"
               }}
             >
               {[
-                'United State',
-                'Egypt',
-                'Maxico',
-                'United Kingdom',
-                'Dubai',
-                'Pakistan'
+                "United State",
+                "Egypt",
+                "Maxico",
+                "United Kingdom",
+                "Dubai",
+                "Pakistan"
               ].map(el => (
                 <MenuOption
                   key={el}
-                  onSelect={() => handleChange('country', el)}
+                  onSelect={() => handleChange("country", el)}
                 >
                   <Text style={{ fontFamily: FONT1LIGHT }}>{el}</Text>
                 </MenuOption>
@@ -253,28 +253,28 @@ function AddPaymentMethod ({ navigation }) {
         </View>
         <AppInput
           marginBottom={20}
-          placeholder={'Enter ZIP'}
+          placeholder={"Enter ZIP"}
           value={zip}
-          name={'zip'}
+          name={"zip"}
           onChange={handleChange}
           borderColor={COLORS.borderColor1}
         />
         <AppInput
           marginBottom={20}
-          placeholder={'Enter name'}
-          inputLabel={'Name on Card'}
+          placeholder={"Enter name"}
+          inputLabel={"Name on Card"}
           value={name}
-          name={'name'}
+          name={"name"}
           onChange={handleChange}
           borderColor={COLORS.borderColor1}
         />
         <AppButton
-          title={'Add card'}
+          title={"Add card"}
           onPress={handlePayment}
           loading={loading}
           disabled={!cardDetails || !country || !name || !zip || !email}
         />
-        <View style={{ width: '100%', alignItems: 'center' }}>
+        <View style={{ width: "100%", alignItems: "center" }}>
           <View style={[styles.row, { marginTop: 10 }]}>
             <Text style={styles.text1}>Powered by</Text>
             <SvgXml xml={stripeIcon} />
@@ -290,7 +290,7 @@ function AddPaymentMethod ({ navigation }) {
         </View>
       </View>
       <Modal
-        animationType='slide'
+        animationType="slide"
         transparent={true}
         visible={modalVisible}
         // onRequestClose={() => {
@@ -306,10 +306,19 @@ function AddPaymentMethod ({ navigation }) {
               <Text style={styles.textBold}>Credit card</Text>
               <Text style={styles.textBold}>added Successfully</Text>
               <AppButton
-                title={'Done'}
+                title={"Done"}
                 onPress={() => {
-                  handleChange('modalVisible', false)
-                  navigation.navigate('MyPaymentMethod')
+                  handleChange("modalVisible", false)
+                  navigation.navigate("MyPaymentMethod", {
+                    card: {
+                      card: {
+                        last4: cardDetails?.last4,
+                        exp_month: cardDetails?.expiryMonth,
+                        exp_year: cardDetails?.expiryYear,
+                      },
+                      billing_details: { name }
+                    }
+                  })
                 }}
               />
             </View>
@@ -323,11 +332,11 @@ function AddPaymentMethod ({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.white,
-    width: '100%',
-    height: '100%'
+    width: "100%",
+    height: "100%"
   },
   mainBody: {
-    width: '90%',
+    width: "90%",
     marginTop: 20
   },
   name: {
@@ -336,8 +345,8 @@ const styles = StyleSheet.create({
     fontSize: hp(2.5)
   },
   head: {
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     marginTop: 20,
     marginBottom: 30
   },
@@ -348,25 +357,25 @@ const styles = StyleSheet.create({
     marginLeft: 10
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center'
+    flexDirection: "row",
+    alignItems: "center"
   },
   textView: {
-    width: '90%',
-    alignItems: 'center',
+    width: "90%",
+    alignItems: "center",
     marginTop: 20
   },
   textBold: {
     fontFamily: FONT1SEMIBOLD,
     color: COLORS.darkBlack,
     fontSize: hp(2.5),
-    textAlign: 'center'
+    textAlign: "center"
   },
   rowBetween: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    justifyContent: 'space-between'
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    justifyContent: "space-between"
   },
   text1: {
     color: COLORS.grey,
@@ -378,12 +387,12 @@ const styles = StyleSheet.create({
     color: COLORS.grey,
     fontFamily: FONT2REGULAR,
     fontSize: hp(2),
-    textDecorationLine: 'underline'
+    textDecorationLine: "underline"
   },
   loading: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center"
   },
   menuTriggerText: {
     color: COLORS.darkGrey,
@@ -391,42 +400,42 @@ const styles = StyleSheet.create({
     fontFamily: FONT1LIGHT
   },
   menuTrigger: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
   },
   billingType: {
-    width: '100%',
+    width: "100%",
     borderRadius: 12,
     borderWidth: 1,
     borderColor: COLORS.borderColor1,
     backgroundColor: COLORS.white,
     height: hp(6),
     paddingHorizontal: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: hp('1%'),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: hp("1%"),
     marginTop: 5
   },
   centeredView: {
     flex: 1,
     backgroundColor: COLORS.modalBG,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: "center",
+    alignItems: "center"
   },
   imageView: {
-    width: '100%',
-    alignItems: 'center'
+    width: "100%",
+    alignItems: "center"
   },
   modalView: {
-    width: '90%',
+    width: "90%",
     backgroundColor: COLORS.backgroud,
     borderRadius: 20,
     padding: 30,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2
