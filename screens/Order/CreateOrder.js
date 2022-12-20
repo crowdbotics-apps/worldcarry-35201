@@ -693,6 +693,7 @@ function CreateOrder({ navigation }) {
                     avatarSourceURL={avatarSourceURL}
                     product_name={product_name}
                     paymethods={paymethods}
+                    _getPayMethod={_getPayMethod}
                     payment_method_id={payment_method_id}
                     navigation={navigation}
                     product_price={product_price}
