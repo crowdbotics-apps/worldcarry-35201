@@ -1,10 +1,10 @@
-import './App.css'
-import { Route, Routes, useNavigate } from 'react-router-dom'
+import "./App.css"
+import { Route, Routes, useNavigate } from "react-router-dom"
 // import { PrivateRoute, Loader } from './components'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { createTheme, ThemeProvider } from "@mui/material/styles"
 
 //ROUTES
-import * as ROUTES from './constants/routes'
+import * as ROUTES from "./constants/routes"
 
 //CONTAINERS
 import {
@@ -14,20 +14,21 @@ import {
   ZipCodes,
   FeedBack,
   Request,
-  RequestDetails
-} from './containers'
-import AppContext from './Context'
+  RequestDetails,
+  Orders
+} from "./containers"
+import AppContext from "./Context"
 import {
   getAllUsers,
   getDashboard,
   getFeedbacks,
   getOrders,
   getZipcodes
-} from './api/admin'
-import { useState } from 'react'
+} from "./api/admin"
+import { useState } from "react"
 
 const theme = createTheme()
-function App () {
+function App() {
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
   const [dashboard, setDashboard] = useState(null)
@@ -38,9 +39,9 @@ function App () {
 
   const _getDashboard = async () => {
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem("token")
       if (!token) {
-        navigate('/')
+        navigate("/")
         return
       }
       const res = await getDashboard(token)
@@ -53,8 +54,8 @@ function App () {
 
   const _getAllUsers = async () => {
     try {
-      const token = localStorage.getItem('token')
-      const res = await getAllUsers('', token)
+      const token = localStorage.getItem("token")
+      const res = await getAllUsers("", token)
       setAllUsers(res?.data)
     } catch (error) {
       const errorText = Object.values(error?.response?.data)
@@ -64,8 +65,8 @@ function App () {
 
   const _getZipcodes = async () => {
     try {
-      const token = localStorage.getItem('token')
-      const res = await getZipcodes('', token)
+      const token = localStorage.getItem("token")
+      const res = await getZipcodes("", token)
       setZipcodes(res?.data)
     } catch (error) {
       const errorText = Object.values(error?.response?.data)
@@ -75,8 +76,8 @@ function App () {
 
   const _getOrders = async () => {
     try {
-      const token = localStorage.getItem('token')
-      const res = await getOrders('', token)
+      const token = localStorage.getItem("token")
+      const res = await getOrders("", token)
       setOrders(res?.data)
     } catch (error) {
       const errorText = Object.values(error?.response?.data)
@@ -86,8 +87,8 @@ function App () {
 
   const _getFeedbacks = async () => {
     try {
-      const token = localStorage.getItem('token')
-      const res = await getFeedbacks('', token)
+      const token = localStorage.getItem("token")
+      const res = await getFeedbacks("", token)
       setFeedbacks(res?.data)
     } catch (error) {
       const errorText = Object.values(error?.response?.data)
@@ -117,6 +118,7 @@ function App () {
           <Route path={ROUTES.MAIN} element={<Login />} />
           <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
           <Route path={ROUTES.USER} element={<Users />} />
+          <Route path={ROUTES.ORDERS} element={<Orders />} />
           <Route path={ROUTES.ZIPCODES} element={<ZipCodes />} />
           <Route path={ROUTES.FEEDBACK} element={<FeedBack />} />
           <Route path={ROUTES.REQUEST} element={<Request />} />

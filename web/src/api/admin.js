@@ -1,4 +1,4 @@
-import { API } from './'
+import { API } from "./"
 
 export const getDashboard = token => {
   return API.get(`api/v1/admin/dashboard/`, token)
@@ -24,8 +24,12 @@ export const deleteZipcodes = (id, token) => {
   return API.delete(`api/v1/admin/zipcodes/${id}/`, {}, token)
 }
 
+export const updateOrder = (id, payload, token) => {
+  return API.patch(`api/v1/orders/${id}/`, payload, token)
+}
+
 export const deleteOrder = (id, token) => {
-  return API.delete(`api/v1/admin/orders/${id}/`, {}, token)
+  return API.delete(`api/v1/orders/${id}/`, {}, token)
 }
 
 export const deleteUser = (id, token) => {
@@ -37,7 +41,7 @@ export const addZipcodes = (payload, token) => {
 }
 
 export const getOrders = (payload, token) => {
-  return API.get(`api/v1/admin/orders/${payload}`, token)
+  return API.get(`api/v1/orders/${payload}`, token)
 }
 
 export const getOrderDetails = (id, token) => {
