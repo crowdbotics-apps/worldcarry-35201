@@ -35,7 +35,7 @@ class Order(UUIDModel):
         blank=True
     )
     product_link = models.CharField(
-        max_length=1000,
+        max_length=2000,
         blank=True
     )
     product_price = models.DecimalField(
