@@ -350,19 +350,21 @@ TWILIO_ACCOUNT_ID = env.str("TWILIO_ACCOUNT_ID", "")
 TWILIO_TOKEN = env.str("TWILIO_TOKEN", "")
 TWILIO_DEFAULT_NUMBER = env.str("TWILIO_DEFAULT_NUMBER", "")
 
-FCM_DJANGO_SETTINGS = {
-    # default: _('FCM Django')
-    "APP_VERBOSE_NAME": "World Carry",
-    # Your firebase API KEY
-    "FCM_SERVER_KEY": env.str("FCM_SERVER_KEY", "FCM_SERVER_KEY"),
-    # true if you want to have only one active device per registered user at a time
-    # default: False
-    "ONE_DEVICE_PER_USER": False,
-    # devices to which notifications cannot be sent,
-    # are deleted upon receiving error response from FCM
-    # default: False
-    "DELETE_INACTIVE_DEVICES": False,
-}
+FCM_SERVER_KEY = env.str("FCM_SERVER_KEY", "FCM_SERVER_KEY"),
+
+# FCM_DJANGO_SETTINGS = {
+#     # default: _('FCM Django')
+#     "APP_VERBOSE_NAME": "World Carry",
+#     # Your firebase API KEY
+#     "FCM_SERVER_KEY": env.str("FCM_SERVER_KEY", "FCM_SERVER_KEY"),
+#     # true if you want to have only one active device per registered user at a time
+#     # default: False
+#     "ONE_DEVICE_PER_USER": False,
+#     # devices to which notifications cannot be sent,
+#     # are deleted upon receiving error response from FCM
+#     # default: False
+#     "DELETE_INACTIVE_DEVICES": False,
+# }
 
 PASSPORT_VERIFICATION_KEY = env.str("PASSPORT_VERIFICATION_KEY", "")
 
