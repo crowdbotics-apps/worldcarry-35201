@@ -11,7 +11,7 @@ def create_notification(data:dict) -> Notification:
     )
     if notification.user.profile.send_notification:
         send_notification(
-            user_id=notification.user,
+            user=notification.user,
             title=notification.name,
             message=notification.description,
             data={
