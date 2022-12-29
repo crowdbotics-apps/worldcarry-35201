@@ -207,7 +207,6 @@ function FAQ({ navigation, route }) {
       const token = await AsyncStorage.getItem("token")
       const res = await getFAQ(token)
       handleChange("loading", false)
-      console.warn("getFAQ", res?.data)
       handleChange("FAQs", res?.data)
       handleChange("filteredList", res?.data)
     } catch (error) {

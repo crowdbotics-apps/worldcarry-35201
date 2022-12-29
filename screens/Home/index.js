@@ -287,7 +287,6 @@ function Home({ navigation }) {
       const token = await AsyncStorage.getItem("token")
       const res = await getFAQ(token)
       handleChange("loading", false)
-      console.warn("getFAQ", res?.data)
       handleChange("filteredList", res?.data)
     } catch (error) {
       handleChange("loading", false)
@@ -296,7 +295,6 @@ function Home({ navigation }) {
     }
   }
 
-  console.warn("completedOrders", completedOrders)
 
   return (
     <ScrollView

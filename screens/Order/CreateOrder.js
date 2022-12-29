@@ -146,7 +146,11 @@ function CreateOrder({ navigation }) {
       console.warn("getProductDetails", res?.data?.data)
       handleChange("loadingLink", false)
       handleChange("product_name", res?.data?.data?.title)
-      handleChange("product_price", res?.data?.data?.price?.replace(/\$/g, ""))
+      let p1 = res?.data?.data?.price?.replace(/\$/g, "")
+      if (p1.indexOf(",") > -1) {
+        p1 = p1.replace(",", "")
+      }
+      handleChange("product_price", p1)
       handleChange("product_type", res?.data?.data?.category)
       // handleChange('avatarSourceURL', [res?.data?.data?.image_url])
       getFileFromUrl(res?.data?.data?.image_url)
@@ -292,6 +296,10 @@ function CreateOrder({ navigation }) {
     }
   }
 
+  function get_url_extension(url) {
+    return url.split(/[#?]/)[0].split(".").pop().trim()
+  }
+
   const _uploadImage = async type => {
     handleChange("uploading", true)
     let OpenImagePicker =
@@ -317,10 +325,11 @@ function CreateOrder({ navigation }) {
             const element = response[i]
             const uri = element.path
             const uploadUri =
-              Platform.OS === "ios" ? uri.replace("file://", "") : uri
+            Platform.OS === "ios" ? uri.replace("file://", "") : uri
+            console.warn("element", get_url_extension(uploadUri))
             const photo = {
               uri: uploadUri,
-              name: `userimage${i}.png`,
+              name: `userimage${i}.` + get_url_extension(uploadUri),
               type: element.mime
             }
             photos.push(photo)
@@ -447,19 +456,21 @@ function CreateOrder({ navigation }) {
         color={COLORS.darkBlack}
         back
         rightItem={
-          <TouchableOpacity
-            onPress={() =>
-              step === 4
-                ? navigation.navigate("Orders")
-                : active === 0
-                ? clearForm()
-                : clearForm1()
-            }
-          >
-            <Text style={styles.activeTabText}>
-              {step === 4 ? "Done" : "Clear Form"}
-            </Text>
-          </TouchableOpacity>
+          (step === 4 || (stepLink !== 2 && step !== 3)) && (
+            <TouchableOpacity
+              onPress={() =>
+                stepLink === 3 || step === 4
+                  ? navigation.navigate("Orders")
+                  : active === 0
+                  ? clearForm()
+                  : clearForm1()
+              }
+            >
+              <Text style={styles.activeTabText}>
+                {stepLink === 3 || step === 4 ? "Done" : "Clear Form"}
+              </Text>
+            </TouchableOpacity>
+          )
         }
       />
       <ScrollView
@@ -492,9 +503,10 @@ function CreateOrder({ navigation }) {
                   Add Product Link
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.infoDiv}>
+              <View style={{ width: 50 }} />
+              {/* <TouchableOpacity style={styles.infoDiv}>
                 <SvgXml xml={InfoCircle} />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
             {active === 0 ? (
               <>

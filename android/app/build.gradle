@@ -195,6 +195,8 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation platform('com.google.firebase:firebase-bom:30.3.2')
     implementation 'com.google.firebase:firebase-analytics'
+    implementation "com.google.firebase:firebase-messaging:21.0.1"
+    implementation project(':react-native-push-notification')
 
     implementation 'com.facebook.android:facebook-android-sdk:latest.release'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'

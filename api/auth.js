@@ -51,7 +51,6 @@ export const getProfile = (id, token) => {
 }
 
 export const getMyReviews = (payload, token) => {
-  console.warn('payload',payload);
   return API.get(`api/v1/reviews/${payload}`, token)
 }
 

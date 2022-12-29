@@ -231,7 +231,6 @@ function Chat ({ navigation, route }) {
               ? user?.id
               : state.messageData?.receiverId
         }
-        console.warn('payload',payload);
         _createNotification(payload)
         setState(prevState => ({
           ...prevState,

@@ -100,9 +100,7 @@ function PassportVerification ({ navigation }) {
       //   'meeting_datetime',
       //   moment(schedule_video_date).format('YYYY-MM-DD ') + schedule_video_time
       // )
-      console.warn('payload', payload)
       const res = await validatePassort(payload, token)
-      console.warn('res', res?.data?.success)
       handleChange('loading', false)
       if (res?.data?.success) {
         handleChange('modalVisible', true)

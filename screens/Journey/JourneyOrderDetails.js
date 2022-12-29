@@ -186,7 +186,6 @@ function JourneyOrderDetails({ navigation, route }) {
         added_by: user?.id,
         target_user: order?.carrier?.id
       }
-      console.warn("payload", payload)
       await addReview(payload, token)
       Toast.show(`You have successfully reviewed to the sender`)
       handleChange("loadingReview", false)
