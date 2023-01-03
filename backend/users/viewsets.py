@@ -30,6 +30,7 @@ class UserViewSet(ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         token, created = Token.objects.get_or_create(user=serializer.instance)
+        print(token)
         return Response({'token': token.key, 'user': serializer.data}, status=status.HTTP_201_CREATED, headers=headers) 
 
     # Update Profile
