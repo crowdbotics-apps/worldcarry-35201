@@ -142,12 +142,14 @@ class UpdateOrderStatus(APIView):
 
 
 class TestNotification(APIView):
-    serializer_class = UpdateOrderStatusSerializer
-    permission_classes = (IsAuthenticated,)
-    authentication_classes = [ExpiringTokenAuthentication]
-
+    # serializer_class = UpdateOrderStatusSerializer
+    # permission_classes = (IsAuthenticated,)
+    # authentication_classes = [ExpiringTokenAuthentication]
+    permission_classes = []
     def post(self, request):
+        from users.models import User
+        user = User.objects.filter(email=request.data['email']).first()
         create_notification({"name": "test notification", "description": "Order has been moved to transit",
-                             "user": request.user})
+                             "user": user})
 
         return Response({"message": "notification sent"}, status=status.HTTP_200_OK)
