@@ -26,7 +26,7 @@ import {
 } from 'react-native-popup-menu'
 import { Icon } from 'react-native-elements'
 
-export default function Step1 ({
+export default function Step1({
   handleChange,
   expected_wait_time,
   product_type,
@@ -104,7 +104,8 @@ export default function Step1 ({
       <AppInput
         placeholder={'Product Price'}
         value={product_price}
-        keyboardType={'number-pad'}
+        keyboardType={'numeric'}
+        returnKeyType="done"
         name={'product_price'}
         onChange={handleChange}
         borderColor={COLORS.grey}
@@ -122,7 +123,8 @@ export default function Step1 ({
         placeholder={'Carrier Reward'}
         value={carrier_reward}
         name={'carrier_reward'}
-        keyboardType={'number-pad'}
+        keyboardType={'numeric'}
+        returnKeyType="done"
         onChange={handleChange}
         borderColor={COLORS.grey}
         prefix={
@@ -179,7 +181,7 @@ export default function Step1 ({
             xml={descriptionIcon}
             fillOpacity={0.6}
             width={20}
-            style={{ marginRight: 10, marginLeft: 5 }}
+            style={{ marginRight: 10, marginLeft: 5, marginTop: hp(1.5) }}
           />
         }
         marginBottom={10}

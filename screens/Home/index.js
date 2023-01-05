@@ -228,25 +228,27 @@ function Home({ navigation }) {
 
   const _renderItem = ({ item, index }) => {
     return (
-      <View key={index} style={[{ width: "100%", alignItems: "center" }]}>
-        <View style={[styles.slide, { backgroundColor: item.color }]}>
-          <View style={{ width: "100%", alignItems: "flex-end" }}>
+      <View key={index} style={[{ width: "100%",height:250, zIndex:999,alignItems: "center",justifyContent:'flex-end' }]}>
+        <View style={[styles.slide, { backgroundColor: item.color,zIndex:999, }]}>
+          <View style={{ width: "100%",zIndex:999, alignItems: "flex-end" }}>
             <Image
               source={item.image}
               style={{
                 width:
                   !active && activeSlide === 2
-                    ? "70%"
+                    ? "60%"
                     : !active && activeSlide === 1
                     ? "40%"
                     : active === 1 && activeSlide === 2
                     ? "50%"
                     : "60%",
                 height: !active && activeSlide === 2 ? 140 : 110,
-                marginTop: active === 1 && activeSlide === 2 ? -10 : 0,
+                marginTop: active === 0 && activeSlide === 2 ? 0 : -20,
+                zIndex:99999999,
                 marginRight: active === 1 && activeSlide === 2 ? -10 : 0,
                 marginBottom: !active && activeSlide === 2 ? -30 : 0,
-                resizeMode: "contain"
+                resizeMode: "contain",
+                // position:'absolute'
               }}
               resizeMode="contain"
             />
@@ -348,6 +350,7 @@ function Home({ navigation }) {
         windowSize={3}
         data={active ? entries1 : entries}
         // data={entries1}
+        style={{zIndex:999}}
         renderItem={_renderItem}
         sliderWidth={sliderWidth}
         itemWidth={sliderWidth}

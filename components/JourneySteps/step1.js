@@ -87,6 +87,7 @@ export default function JourneyStep1({
           flexDirection: "row",
           width: "100%",
           marginVertical: 10,
+          minHeight:hp(7),
           borderRadius: 10,
           borderWidth: 1,
           borderColor: COLORS.borderColor,
@@ -96,7 +97,7 @@ export default function JourneyStep1({
         <SvgXml
           xml={pickupPlan}
           fillOpacity={0.6}
-          style={{ marginLeft: 10, marginTop: 10 }}
+          style={{ marginLeft: 10, marginTop: hp(1.5) }}
         />
         <View style={{ width: "90%" }}>
           <GooglePlacesAutocomplete
@@ -133,6 +134,7 @@ export default function JourneyStep1({
                 backgroundColor: "transparent",
                 // width: '85%',
                 height: "100%",
+                marginTop:5,
                 color: COLORS.darkBlack,
                 fontFamily: FONT1REGULAR
               },
@@ -250,6 +252,7 @@ export default function JourneyStep1({
           justifyContent: "center",
           flexDirection: "row",
           width: "100%",
+          minHeight:hp(7),
           marginVertical: 10,
           borderRadius: 10,
           borderWidth: 1,
@@ -260,7 +263,7 @@ export default function JourneyStep1({
         <SvgXml
           xml={arrivalPlan}
           fillOpacity={0.6}
-          style={{ marginLeft: 10, marginTop: 10 }}
+          style={{ marginLeft: 10, marginTop: hp(1.5) }}
         />
         <View style={{ width: "90%" }}>
           <GooglePlacesAutocomplete
@@ -294,6 +297,7 @@ export default function JourneyStep1({
                 fontSize: hp(1.8),
                 backgroundColor: "transparent",
                 // width: '85%',
+                marginTop:5,
                 height: "100%",
                 color: COLORS.darkBlack,
                 fontFamily: FONT1REGULAR

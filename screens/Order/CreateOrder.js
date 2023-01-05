@@ -32,6 +32,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { createOrder, getProductDetails } from "../../api/order"
 import { getPayMethod, removePayMethod } from "../../api/business"
 import RNFetchBlob from "rn-fetch-blob"
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 
 function CreateOrder({ navigation }) {
   const [state, setState] = useState({
@@ -295,7 +296,7 @@ function CreateOrder({ navigation }) {
       Toast.show(`Error: ${JSON.stringify(errorText[0])}`)
     }
   }
-
+  console.warn(photos);
   function get_url_extension(url) {
     return url.split(/[#?]/)[0].split(".").pop().trim()
   }
@@ -306,8 +307,8 @@ function CreateOrder({ navigation }) {
       type == "camera"
         ? ImagePicker.openCamera
         : type == ""
-        ? ImagePicker.openPicker
-        : ImagePicker.openPicker
+          ? ImagePicker.openPicker
+          : ImagePicker.openPicker
 
     OpenImagePicker({
       width: 300,
@@ -325,11 +326,12 @@ function CreateOrder({ navigation }) {
             const element = response[i]
             const uri = element.path
             const uploadUri =
-            Platform.OS === "ios" ? uri.replace("file://", "") : uri
+              Platform.OS === "ios" ? uri.replace("file://", "") : uri
             console.warn("element", get_url_extension(uploadUri))
             const photo = {
               uri: uploadUri,
               name: `userimage${i}.` + get_url_extension(uploadUri),
+              // type: element.mime === "image/heic" ? 'image/jpg' : element.mime
               type: element.mime
             }
             photos.push(photo)
@@ -418,35 +420,35 @@ function CreateOrder({ navigation }) {
   const disabled =
     step === 0
       ? !product_name ||
-        !product_price ||
-        !product_type ||
-        !carrier_reward ||
-        !expected_wait_time ||
-        !description ||
-        avatarSourceURL.length === 0
+      !product_price ||
+      !product_type ||
+      !carrier_reward ||
+      !expected_wait_time ||
+      !description ||
+      avatarSourceURL.length === 0
       : step === 1
-      ? !pickup_address_country || !pickup_address
-      : step === 2
-      ? !arrival_address || !arrival_address_country
-      : // !isChecked ||
-        !payment_method_id
+        ? !pickup_address_country || !pickup_address
+        : step === 2
+          ? !arrival_address || !arrival_address_country
+          : // !isChecked ||
+          !payment_method_id
   const disabled1 =
     stepLink === 0
       ? !product_name ||
-        !product_price ||
-        !product_type ||
-        !linkVerified ||
-        !product_link ||
-        !description ||
-        avatarSourceURL.length === 0
+      !product_price ||
+      !product_type ||
+      !linkVerified ||
+      !product_link ||
+      !description ||
+      avatarSourceURL.length === 0
       : stepLink === 1
-      ? !pickup_address_country ||
+        ? !pickup_address_country ||
         !pickup_address ||
         !arrival_address ||
         !carrier_reward ||
         !expected_wait_time ||
         !arrival_address_country
-      : // !isChecked ||
+        : // !isChecked ||
         !payment_method_id
 
   return (
@@ -462,8 +464,8 @@ function CreateOrder({ navigation }) {
                 stepLink === 3 || step === 4
                   ? navigation.navigate("Orders")
                   : active === 0
-                  ? clearForm()
-                  : clearForm1()
+                    ? clearForm()
+                    : clearForm1()
               }
             >
               <Text style={styles.activeTabText}>
@@ -473,7 +475,7 @@ function CreateOrder({ navigation }) {
           )
         }
       />
-      <ScrollView
+      <KeyboardAwareScrollView
         style={styles.container}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps={"handled"}
@@ -719,7 +721,7 @@ function CreateOrder({ navigation }) {
             )}
           </>
         )}
-      </ScrollView>
+      </KeyboardAwareScrollView>
       {step < 4 && (
         <>
           {active ? (

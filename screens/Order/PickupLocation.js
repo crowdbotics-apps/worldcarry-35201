@@ -209,6 +209,7 @@ function PickupLocation({ navigation }) {
                 flexDirection: 'row',
                 width: '80%',
                 marginVertical: 10,
+                minHeight:hp(6),
                 borderRadius: 10,
                 backgroundColor: COLORS.backgroud
               }}
@@ -218,7 +219,7 @@ function PickupLocation({ navigation }) {
                   width: 50,
                   borderRightWidth: 1,
                   height: 22,
-                  marginTop: 11
+                  marginTop: hp(1)
                 }}
               >
                 <SvgXml
@@ -253,6 +254,7 @@ function PickupLocation({ navigation }) {
                     fontSize: hp(1.8),
                     backgroundColor: 'transparent',
                     // width: '85%',
+                    marginTop:2,
                     height: '100%',
                     color: COLORS.darkGrey,
                     fontFamily: FONT1REGULAR

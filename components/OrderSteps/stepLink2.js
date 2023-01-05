@@ -50,6 +50,7 @@ export default function StepLink2({
           width: "100%",
           marginVertical: 10,
           borderRadius: 10,
+          minHeight: hp(6),
           borderWidth: 1,
           borderColor: COLORS.borderColor,
           backgroundColor: COLORS.white
@@ -58,7 +59,7 @@ export default function StepLink2({
         <SvgXml
           xml={globe}
           fillOpacity={0.6}
-          style={{ marginLeft: 10, marginTop: 12 }}
+          style={{ marginLeft: 10, marginTop: hp(1.5) }}
         />
         <GooglePlacesAutocomplete
           placeholder={pickup_address_country || "Pickup Country"}
@@ -84,6 +85,7 @@ export default function StepLink2({
               fontSize: hp(1.8),
               backgroundColor: "transparent",
               // width: '85%',
+              marginTop: hp(0.5),
               height: "100%",
               color: COLORS.darkBlack,
               fontFamily: FONT1MEDIUM
@@ -119,6 +121,7 @@ export default function StepLink2({
           width: "100%",
           marginVertical: 10,
           borderRadius: 10,
+          minHeight: hp(6),
           borderWidth: 1,
           borderColor: COLORS.borderColor,
           backgroundColor: COLORS.white
@@ -127,7 +130,7 @@ export default function StepLink2({
         <SvgXml
           xml={globe}
           fillOpacity={0.6}
-          style={{ marginLeft: 10, marginTop: 12 }}
+          style={{ marginLeft: 10, marginTop: hp(1.5) }}
         />
         <GooglePlacesAutocomplete
           placeholder={arrival_address_country || "Delivery Country"}
@@ -153,6 +156,7 @@ export default function StepLink2({
               fontSize: hp(1.8),
               backgroundColor: "transparent",
               // width: '85%',
+              marginTop: hp(0.5),
               height: "100%",
               color: COLORS.darkBlack,
               fontFamily: FONT1MEDIUM
@@ -185,7 +189,8 @@ export default function StepLink2({
         placeholder={"Carrier Reward"}
         value={carrier_reward}
         name={"carrier_reward"}
-        keyboardType={"number-pad"}
+        keyboardType={'numeric'}
+        returnKeyType="done"
         onChange={handleChange}
         borderColor={COLORS.grey}
         prefix={

@@ -132,7 +132,7 @@ export default function JourneyStep2 ({
           value={total_weight}
           onBlur={checkWeight}
           name={'total_weight'}
-          keyboardType={'number-pad'}
+          keyboardType={'numeric'}
           maxLength={3}
           onChange={handleChange}
           returnKeyType={'done'}

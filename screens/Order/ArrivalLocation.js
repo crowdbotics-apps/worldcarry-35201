@@ -207,6 +207,7 @@ function ArrivalLocation ({ navigation }) {
                 justifyContent: 'center',
                 flexDirection: 'row',
                 width: '80%',
+                minHeight:hp(6),
                 marginVertical: 10,
                 borderRadius: 10,
                 backgroundColor: COLORS.backgroud
@@ -217,7 +218,7 @@ function ArrivalLocation ({ navigation }) {
                   width: 50,
                   borderRightWidth: 1,
                   height: 22,
-                  marginTop: 11
+                  marginTop: hp(1)
                 }}
               >
                 <SvgXml
@@ -252,6 +253,7 @@ function ArrivalLocation ({ navigation }) {
                     fontSize: hp(1.8),
                     backgroundColor: 'transparent',
                     // width: '85%',
+                    marginTop:2,
                     height: '100%',
                     color: COLORS.darkGrey,
                     fontFamily: FONT1REGULAR

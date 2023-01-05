@@ -145,12 +145,49 @@ function App() {
     }
   }
 
+
+
+  async function registerAppWithFCM(active) {
+    await messaging().deleteToken()
+    const token = await messaging().getToken()
+    console.warn('token', token);
+    const tokenA = await AsyncStorage.getItem("token")
+    const registered = await messaging().registerDeviceForRemoteMessages()
+    console.warn('registered', registered);
+    const payload = {
+      name: user?.name,
+      registration_id: token,
+      device_id: getDeviceId(),
+      active: active,
+      type: Platform.OS
+    }
+    await registerDevice(payload, tokenA)
+  }
+
+  async function requestUserPermission(active) {
+    const authStatus = await messaging().requestPermission()
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL
+
+    if (enabled) {
+      console.warn("Authorization status:", authStatus)
+      registerAppWithFCM(active)
+      setOnMessage()
+    }
+  }
+
   useEffect(() => {
+    requestUserPermission()
     PushNotification.createChannel({
       channelId: "com.worldcarry_35201",
       channelName: "com.worldcarry_35201"
     })
-    // requestUserPermission()
+
+
+  }, [])
+
+  const setOnMessage = async () => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       var localNotification = {
         id: 0, // (optional) Valid unique 32 bit integer specified as string.
@@ -187,40 +224,28 @@ function App() {
       })
       // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage))
     })
-
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log(
+        'Notification caused app to open from background state:',
+        remoteMessage.notification,
+      );
+    });
+  
+    // Quiet and Background State -> Check whether an initial notification is available
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log(
+            'Notification caused app to open from quit state:',
+            remoteMessage.notification,
+          );
+        }
+      })
+      .catch(error => console.log('failed', error));
     messaging().setBackgroundMessageHandler(async remoteMessage => {
       console.log("Message handled in the background!", remoteMessage)
     })
-
-    return unsubscribe
-  }, [])
-
-  async function registerAppWithFCM(active) {
-    await messaging().deleteToken()
-    const token = await messaging().getToken()
-    console.warn('token',token);
-    const tokenA = await AsyncStorage.getItem("token")
-    const registered = await messaging().registerDeviceForRemoteMessages()
-    const payload = {
-      name: user?.name,
-      registration_id: token,
-      device_id: getDeviceId(),
-      active: active,
-      type: Platform.OS
-    }
-    const res = await registerDevice(payload, tokenA)
-  }
-
-  async function requestUserPermission(active) {
-    const authStatus = await messaging().requestPermission()
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL
-
-    if (enabled) {
-      console.warn("Authorization status:", authStatus)
-      registerAppWithFCM(active)
-    }
   }
 
   return (

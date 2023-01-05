@@ -9,7 +9,7 @@ import {
 import { COLORS, FONT1REGULAR } from '../../constants'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { Icon } from 'react-native-elements'
-export default function AppInput ({
+export default function AppInput({
   prefix,
   placeholder,
   name,
@@ -103,7 +103,7 @@ export default function AppInput ({
                 style={[
                   styles.textInput,
                   {
-                    marginTop: multiline ? -10 : 0,
+                    marginTop: multiline ? 10 : 0,
                     textAlignVertical: multiline ? 'top' : 'center',
                     opacity: focused ? 1 : 0.7
                   }
@@ -160,11 +160,13 @@ const styles = StyleSheet.create({
   },
   left: {
     width: '80%',
+    height: '100%',
     flexDirection: 'row'
   },
   textInput: {
     color: COLORS.inputText,
     width: '100%',
+    height: '100%',
     fontFamily: FONT1REGULAR,
     fontSize: hp(1.6)
   },

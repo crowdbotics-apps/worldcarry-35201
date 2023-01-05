@@ -22,8 +22,9 @@ import ShieldDone from '../../assets/svg/shieldDoneBLue.svg'
 import photoIcon from '../../assets/svg/photo.svg'
 import productType from '../../assets/svg/productType.svg'
 import descriptionIcon from '../../assets/svg/description.svg'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-export default function StepLink1 ({
+export default function StepLink1({
   handleChange,
   website_name,
   product_link,
@@ -37,7 +38,7 @@ export default function StepLink1 ({
   description
 }) {
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <KeyboardAwareScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {falseLink ? (
         <View style={{ width: '100%', alignItems: 'center' }}>
           <SvgXml xml={linkFalse} style={{ marginBottom: 30, marginTop: 20 }} />
@@ -195,7 +196,8 @@ export default function StepLink1 ({
               <AppInput
                 placeholder={'Product Price'}
                 value={product_price}
-                keyboardType={'number-pad'}
+                keyboardType={'numeric'}
+                returnKeyType="done"
                 name={'product_price'}
                 onChange={handleChange}
                 borderColor={COLORS.grey}
@@ -223,7 +225,7 @@ export default function StepLink1 ({
                     xml={descriptionIcon}
                     fillOpacity={0.6}
                     width={20}
-                    style={{ marginRight: 10, marginLeft: 5 }}
+                    style={{ marginRight: 10, marginLeft: 5, marginTop: hp(1.5) }}
                   />
                 }
                 marginBottom={10}
@@ -232,7 +234,7 @@ export default function StepLink1 ({
           )}
         </>
       )}
-    </ScrollView>
+    </KeyboardAwareScrollView>
   )
 }
 

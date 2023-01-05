@@ -17,7 +17,7 @@ import AppButton from '../AppButton'
 import { useNavigation } from '@react-navigation/native'
 import pinBlack from '../../assets/svg/pinBlack.svg'
 
-export default function Step3 ({
+export default function Step3({
   handleChange,
   handleSearch,
   arrival_address_country,
@@ -37,6 +37,7 @@ export default function Step3 ({
           width: '100%',
           marginVertical: 10,
           borderRadius: 10,
+          minHeight: hp(7),
           borderWidth: 1,
           borderColor: COLORS.borderColor,
           backgroundColor: COLORS.white
@@ -71,6 +72,7 @@ export default function Step3 ({
               fontSize: hp(1.8),
               backgroundColor: 'transparent',
               // width: '85%',
+              marginTop: 5,
               height: '100%',
               color: COLORS.darkGrey,
               fontFamily: FONT1REGULAR
