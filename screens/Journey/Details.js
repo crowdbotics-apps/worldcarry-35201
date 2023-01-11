@@ -43,6 +43,9 @@ import { Rating } from "react-native-ratings"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
 import database from "@react-native-firebase/database"
 import { Icon } from "react-native-elements"
+import { Platform } from "react-native"
+import { Linking } from "react-native"
+import { Alert } from "react-native"
 
 function JourneyDetails({ navigation, route }) {
   const item = route?.params?.item
@@ -355,6 +358,22 @@ function JourneyDetails({ navigation, route }) {
       .catch(err => {
         Toast.show("Something went wrong!")
       })
+  }
+  const openMap = async item => {
+    const latitude = "40.7127753"
+    const longitude = "-74.0059728"
+    const label = "New York, NY, USA"
+
+    const url = Platform.select({
+      ios: "maps:" + latitude + "," + longitude + "?q=" + label,
+      android: "geo:" + latitude + "," + longitude + "?q=" + label
+    })
+    const supported = await Linking.canOpenURL(url)
+    if (supported) {
+      await Linking.openURL(url)
+    } else {
+      Alert.alert(`Don't know how to open this URL: ${url}`)
+    }
   }
 
   if (loading) {
@@ -773,7 +792,7 @@ function JourneyDetails({ navigation, route }) {
                       prefix={
                         <SvgXml xml={locateIcon} style={{ marginRight: 8 }} />
                       }
-                      // onPress={() => _makeOffer(item?.id)}
+                      onPress={() => openMap(item?.id)}
                     />
                   </View>
                   <AppButton
