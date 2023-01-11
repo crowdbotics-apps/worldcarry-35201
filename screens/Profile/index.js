@@ -483,12 +483,12 @@ function Profile({ navigation }) {
                   >
                     {item.right}
                   </Text>
-                  <Icon
+                  {/* <Icon
                     name="right"
                     type="antdesign"
                     color={COLORS.darkGrey}
                     size={12}
-                  />
+                  /> */}
                 </View>
               </View>
             ))}
@@ -542,12 +542,12 @@ function Profile({ navigation }) {
                   >
                     {item.right}
                   </Text>
-                  <Icon
+                  {/* <Icon
                     name="right"
                     type="antdesign"
                     color={COLORS.darkGrey}
                     size={12}
-                  />
+                  /> */}
                 </View>
               </View>
             ))}

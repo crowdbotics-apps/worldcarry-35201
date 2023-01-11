@@ -134,7 +134,7 @@ export default function JourneyStep1({
                 backgroundColor: "transparent",
                 // width: '85%',
                 height: "100%",
-                marginTop:5,
+                // marginTop:5,
                 color: COLORS.darkBlack,
                 fontFamily: FONT1REGULAR
               },
@@ -297,7 +297,7 @@ export default function JourneyStep1({
                 fontSize: hp(1.8),
                 backgroundColor: "transparent",
                 // width: '85%',
-                marginTop:5,
+                // marginTop:5,
                 height: "100%",
                 color: COLORS.darkBlack,
                 fontFamily: FONT1REGULAR
