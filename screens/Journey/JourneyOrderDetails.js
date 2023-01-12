@@ -8,7 +8,10 @@ import {
   FlatList,
   Image,
   ActivityIndicator,
-  Modal
+  Modal,
+  Platform,
+  Linking,
+  Alert
 } from "react-native"
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 import { SvgXml } from "react-native-svg"
@@ -272,6 +275,24 @@ function JourneyOrderDetails({ navigation, route }) {
       })
   }
 
+  console.warn("item", item)
+  const openMap = async item => {
+    const latitude = "40.7127753"
+    const longitude = "-74.0059728"
+    const label = "New York, NY, USA"
+
+    const url = Platform.select({
+      ios: "maps:" + latitude + "," + longitude + "?q=" + label,
+      android: "geo:" + latitude + "," + longitude + "?q=" + label
+    })
+    const supported = await Linking.canOpenURL(url)
+    if (supported) {
+      await Linking.openURL(url)
+    } else {
+      Alert.alert(`Don't know how to open this URL: ${url}`)
+    }
+  }
+
   if (loading) {
     return (
       <View style={styles.loading}>
@@ -482,7 +503,7 @@ function JourneyOrderDetails({ navigation, route }) {
                   prefix={
                     <SvgXml xml={locateIcon} style={{ marginRight: 8 }} />
                   }
-                  // onPress={() => _makeOffer(item?.id)}
+                  onPress={() => openMap(item)}
                 />
               </View>
               <AppButton
