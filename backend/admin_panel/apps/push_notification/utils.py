@@ -18,20 +18,20 @@ def send_notification(user, title, message, data = {}):
     headers["Authorization"] = "key={}".format(FCM_SERVER_KEY)
     headers["Content-Type"] = "application/json"
     device = FCMDevice.objects.filter(user=user)
-    # try:
-    if device:
-        device = device.last()
-        payload = {
-                'to': device.device_id,
-                'notification': {
-                    "title": title,
-                    "text": message
-                },
-                'data': {
+    try:
+        if device:
+            device = device.last()
+            payload = {
+                    'to': device.device_id,
+                    'notification': {
+                        "title": title,
+                        "text": message
+                    },
+                    'data': {
+                    }
                 }
-            }
-        resp = requests.post(url, headers=headers, json=payload)
-    # except Exception as e:
-    #     print('-----------------------')
-    #     print(e)
-    #     print('-----------------------')
+            resp = requests.post(url, headers=headers, json=payload)
+    except Exception as e:
+        print('-----------------------')
+        print(e)
+        print('-----------------------')
