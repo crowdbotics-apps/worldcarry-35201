@@ -22,7 +22,7 @@ def send_notification(user, title, message, data = {}):
         if device:
             device = device.last()
             payload = {
-                    'to': device.device_id,
+                    'to': device.registration_id,
                     'notification': {
                         "title": title,
                         "text": message
