@@ -12,7 +12,7 @@ const buildRequest = request => {
     Authorization: token ? `Token ${token}` : '',
     'Content-Type': contentType
   }
-
+console.warn('headers',headers);
   const apiUrl = API_URL()
 
   const requestConfig = {

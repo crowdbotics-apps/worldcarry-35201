@@ -157,7 +157,7 @@ function App() {
     const payload = {
       name: user?.name,
       registration_id: token,
-      device_id: getDeviceId(),
+      device_id: token,
       active: active,
       type: Platform.OS
     }
