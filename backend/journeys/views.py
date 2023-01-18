@@ -70,8 +70,11 @@ class JourneyOrderRequest(APIView):
 
         jo_instance, _ = JourneyOrder.objects.update_or_create(order=order, journey=journey)
         if user == 'sender':
-            create_notification({"name": "Order Request", "description": "A Shipper requested you an an order",
-                                 "user": journey.user})
+            try:
+                create_notification({"name": "Order Request", "description": "A Shipper requested you an an order",
+                                     "user": journey.user})
+            except Exception as e:
+                print(e)
             jo_instance.allowed_by_sender = True
             jo_instance.save(update_fields=['allowed_by_sender'])
             order.status = "Requested"
@@ -79,8 +82,11 @@ class JourneyOrderRequest(APIView):
         elif user == 'carrier':
             if order.deliver_before_date < timezone.now().date():
                 return Response({"message": "You Can't Accept Past Order"}, status=status.HTTP_400_BAD_REQUEST)
-            create_notification({"name": "Order Request", "description": "A Carrier requested you for journey",
-                                 "user": order.user})
+            try:
+                create_notification({"name": "Order Request", "description": "A Carrier requested you for journey",
+                                     "user": order.user})
+            except Exception as e:
+                print(e)
             jo_instance.allowed_by_carrier = True
             jo_instance.save(update_fields=['allowed_by_carrier'])
 
