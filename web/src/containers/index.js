@@ -1,0 +1,8 @@
+export { default as Login } from "./Login"
+export { default as Dashboard } from "./Dashboard"
+export { default as Users } from "./Users"
+export { default as Notifications } from "./Notifications"
+export { default as Orders } from "./Orders"
+export { default as FeedBack } from "./FeedBack"
+export { default as Request } from "./Request"
+export { default as RequestDetails } from "./Request/Details"
