@@ -8,6 +8,7 @@ from allauth.account.adapter import get_adapter
 from allauth.account.utils import setup_user_email
 from rest_framework import serializers
 from rest_auth.serializers import PasswordResetSerializer
+from users.models import Profile
 
 
 User = get_user_model()
@@ -68,7 +69,13 @@ class SignupSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'name']
+        fields = '__all__'
+
+    def to_representation(self, data):
+        data = super(UserSerializer, self).to_representation(data)
+        profile = Profile.objects.filter(user__id=data['id'])
+        data['profile_picture'] = profile.first().photo.url if profile.first().photo else None
+        return data
 
 
 class PasswordSerializer(PasswordResetSerializer):

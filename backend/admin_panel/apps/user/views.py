@@ -24,3 +24,15 @@ class UserViewSet(ModelViewSet):
             User.objects.filter(id=user_id).update(is_active=True)
         except ObjectDoesNotExist:
             return Response({"message": "Error while activating users"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=False, methods=['post'])
+    def status(self, request):
+        try:
+            User.objects.filter(
+                id=request.data.get('user_id')
+            ).update(
+                is_active=request.data.get('status')
+            )
+            return Response({'message':"User status successfully updated."}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'message':"Error while updating user status."}, status=status.HTTP_400_BAD_REQUEST)
