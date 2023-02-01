@@ -74,7 +74,7 @@ class UserSerializer(serializers.ModelSerializer):
     def to_representation(self, data):
         data = super(UserSerializer, self).to_representation(data)
         profile = Profile.objects.filter(user__id=data['id'])
-        data['profile_picture'] = profile.first().photo.url if profile.first().photo else None
+        data['profile_picture'] = profile.first().photo.url if profile.exists() and profile.first().photo else None
         return data
 
 
