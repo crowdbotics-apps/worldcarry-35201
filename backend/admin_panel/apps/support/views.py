@@ -14,6 +14,7 @@ class FeedbackViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = FeedbackSerializer
     queryset = Feedback.objects.filter()
+    http_method_names = ['get', 'post', 'put', 'delete']
 
 
 class FeedbackAPIView(CreateAPIView):
