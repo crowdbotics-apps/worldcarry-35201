@@ -314,7 +314,9 @@ function CreateOrder({ navigation }) {
       width: 300,
       height: 300,
       cropping: true,
-      multiple: true
+      multiple: true,
+      mediaType: 'photo',
+      forceJpg: true
     })
       .then(async response => {
         if (!response.length) {
@@ -327,13 +329,13 @@ function CreateOrder({ navigation }) {
             const uri = element.path
             const uploadUri =
               Platform.OS === "ios" ? uri.replace("file://", "") : uri
-            console.warn("element", get_url_extension(uploadUri))
             const photo = {
               uri: uploadUri,
               name: `userimage${i}.` + get_url_extension(uploadUri),
               // type: element.mime === "image/heic" ? 'image/jpg' : element.mime
               type: element.mime
             }
+            console.warn("photo", photo)
             photos.push(photo)
             avatarSourceURLs.push(uploadUri)
           }

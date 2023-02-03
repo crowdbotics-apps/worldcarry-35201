@@ -81,7 +81,8 @@ function Account ({ navigation }) {
     OpenImagePicker({
       width: 300,
       height: 300,
-      cropping: true
+      cropping: true,
+      forceJpg: true
     })
       .then(async response => {
         if (!response.path) {

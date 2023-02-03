@@ -66,7 +66,8 @@ function Settings ({ navigation }) {
     OpenImagePicker({
       width: 300,
       height: 300,
-      cropping: true
+      cropping: true,
+      forceJpg: true
     })
       .then(async response => {
         if (!response.path) {
@@ -81,6 +82,7 @@ function Settings ({ navigation }) {
             name: 'userimage1.png',
             type: response.mime
           }
+          console.warn('photo',photo);
           handleChange('avatarSourceURL', uploadUri)
           handleProfile(photo)
           handleChange('uploading', false)
