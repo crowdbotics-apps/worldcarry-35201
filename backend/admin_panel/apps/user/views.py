@@ -6,7 +6,8 @@ from rest_framework.viewsets import ModelViewSet
 from home.api.v1.serializers import UserSerializer
 from home.permissions import IsAdmin
 from rest_framework.response import Response
-
+from payments.serializers import PaymentSerializer
+from payments.models import Payment
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -36,3 +37,20 @@ class UserViewSet(ModelViewSet):
             return Response({'message':"User status successfully updated."}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'message':"Error while updating user status."}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'])
+    def payments(self, request):
+        try:
+            queryset = Payment.objects.filter(user__id=self.request.query_params("user_id"))
+            PaymentSerializer
+            serializer = PaymentSerializer(
+                queryset,
+                many=True,
+            ).data
+            return Response(
+                serializer.data,
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return Response(e, status=status.HTTP_400_BAD_REQUEST)
+
