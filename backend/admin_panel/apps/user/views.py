@@ -38,7 +38,7 @@ class UserViewSet(ModelViewSet):
         except Exception as e:
             return Response({'message':"Error while updating user status."}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['get'])
     def payments(self, request):
         try:
             queryset = Payment.objects.filter(user__id=self.request.query_params("user_id"))
