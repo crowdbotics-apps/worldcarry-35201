@@ -46,7 +46,7 @@ class UserViewSet(ModelViewSet):
             serializer = PaymentSerializer(
                 queryset,
                 many=True,
-            ).data
+            )
             return Response(
                 data=serializer.data,
                 status=status.HTTP_200_OK,
