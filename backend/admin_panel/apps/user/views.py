@@ -42,7 +42,6 @@ class UserViewSet(ModelViewSet):
     def payments(self, request):
         try:
             queryset = Payment.objects.filter(user__id=self.request.query_params("user_id"))
-            PaymentSerializer
             serializer = PaymentSerializer(
                 queryset,
                 many=True,
