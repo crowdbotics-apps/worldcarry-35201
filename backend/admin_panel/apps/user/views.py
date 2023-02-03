@@ -48,7 +48,7 @@ class UserViewSet(ModelViewSet):
                 many=True,
             ).data
             return Response(
-                serializer.data,
+                data=serializer.data,
                 status=status.HTTP_200_OK,
             )
         except Exception as e:
