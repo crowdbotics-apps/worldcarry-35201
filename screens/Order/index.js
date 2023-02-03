@@ -1,5 +1,6 @@
 import React, {
   createRef,
+  useCallback,
   useContext,
   useEffect,
   useRef,
@@ -48,6 +49,7 @@ import { addReview } from "../../api/journey"
 import { Rating } from "react-native-ratings"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import database from "@react-native-firebase/database"
+import { useFocusEffect } from "@react-navigation/native"
 
 function Order({ navigation }) {
   const [state, setState] = useState({
@@ -96,9 +98,14 @@ function Order({ navigation }) {
     uid,
     order
   } = state
-  const { orders, user } = context
+  const { orders, _getOrders, user } = context
 
-  useEffect(() => {}, [])
+  useFocusEffect(
+    useCallback(() => {
+      _getOrders(`?user=${user?.id}`)
+      _getOrders(`?user=${user?.id}&status=Received`, true)
+    }, [])
+  )
 
   const handleChange = (name, value) => {
     setState(pre => ({ ...pre, [name]: value }))

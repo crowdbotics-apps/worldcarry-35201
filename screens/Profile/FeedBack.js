@@ -73,7 +73,8 @@ function FeedBack ({ navigation, route }) {
 
     OpenImagePicker({
       cropping: true,
-      multiple: true
+      multiple: true,
+      forceJpg: true
     })
       .then(async response => {
         if (!response.length) {

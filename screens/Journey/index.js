@@ -44,9 +44,12 @@ function Journey({ navigation, route }) {
   const { active, loading } = state
   const { journeys, _getJourneys, _getMyJourneys, myjourneys } = context
 
-  useEffect(() => {
-    _getMyJourneys()
-  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      _getJourneys("")
+      _getMyJourneys()
+    }, [])
+  )
 
   useFocusEffect(
     useCallback(() => {

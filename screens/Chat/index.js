@@ -157,7 +157,8 @@ function Chat ({ navigation, route }) {
         : ImagePicker.openPicker
 
     OpenImagePicker({
-      cropping: true
+      cropping: true,
+      forceJpg: true
     })
       .then(async response => {
         if (!response.path) {
