@@ -51,5 +51,5 @@ class UserViewSet(ModelViewSet):
                 status=status.HTTP_200_OK,
             )
         except Exception as e:
-            return Response({'message':"Error while getting user payments."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message':e}, status=status.HTTP_400_BAD_REQUEST)
 
