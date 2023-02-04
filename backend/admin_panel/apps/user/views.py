@@ -41,7 +41,7 @@ class UserViewSet(ModelViewSet):
     @action(detail=False, methods=['get'])
     def payments(self, request):
         try:
-            queryset = Payment.objects.filter(user__id=self.request.query_params("user_id"))
+            queryset = Payment.objects.filter(user__id=self.request.query_params.get("user_id"))
             serializer = PaymentSerializer(
                 queryset,
                 many=True,
@@ -51,5 +51,5 @@ class UserViewSet(ModelViewSet):
                 status=status.HTTP_200_OK,
             )
         except Exception as e:
-            return Response(e, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message':"Error while getting user payments."}, status=status.HTTP_400_BAD_REQUEST)
 
