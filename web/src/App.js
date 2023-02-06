@@ -55,7 +55,7 @@ function App() {
   const _getAllUsers = async () => {
     try {
       const token = localStorage.getItem("token")
-      const res = await getAllUsers("", token)
+      const res = await getAllUsers("?l=5000&o=0", token)
       setAllUsers(res?.data)
     } catch (error) {
       const errorText = Object.values(error?.response?.data)
@@ -66,7 +66,7 @@ function App() {
   const _getNotifications = async () => {
     try {
       const token = localStorage.getItem("token")
-      const res = await getNotifications("?l=5000&o=1", token)
+      const res = await getNotifications("?l=5000&o=0", token)
       setNotifications(res?.data)
     } catch (error) {
       const errorText = Object.values(error?.response?.data)
