@@ -7,6 +7,7 @@ from admin_panel.apps.support.models import FAQ, SupportRequest, Feedback
 from admin_panel.apps.support.serializers import FaqSerializer, FeedbackSerializer, SupportRequestSerializer
 from home.permissions import IsAdmin
 from rest_framework.generics import CreateAPIView, ListAPIView
+from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import rest_framework as filters
 
 
@@ -15,6 +16,8 @@ class FeedbackViewSet(ModelViewSet):
     serializer_class = FeedbackSerializer
     queryset = Feedback.objects.filter()
     http_method_names = ['get', 'post', 'put', 'delete']
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["is_read"]
 
 
 class FeedbackAPIView(CreateAPIView):

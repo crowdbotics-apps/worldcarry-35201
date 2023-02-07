@@ -52,4 +52,18 @@ class UserViewSet(ModelViewSet):
             )
         except Exception as e:
             return Response({'message':e}, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=False, methods=['get'])
+    def new_users(self, request):
+        try:
+            serializer = UserSerializer(
+                self.queryset.order_by("-date_joined"),
+                many=True,
+            )
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return Response({'message':e}, status=status.HTTP_400_BAD_REQUEST)
 

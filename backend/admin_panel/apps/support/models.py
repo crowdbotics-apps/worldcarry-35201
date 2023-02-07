@@ -17,6 +17,7 @@ class Feedback(models.Model):
     is_active = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    is_read = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "Feedback"

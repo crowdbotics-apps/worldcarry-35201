@@ -15,7 +15,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
         fields = (
             "id", "name", "email", "message", "reply", "is_visible",
             "is_active", "user", "user_details", "files",
-            "feedback_media"
+            "feedback_media", "is_read"
         )
 
     @staticmethod
