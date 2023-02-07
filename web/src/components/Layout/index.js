@@ -66,7 +66,7 @@ function LayoutContent({ children }) {
     _getAllUsers()
     _getNotifications()
     _getOrders()
-    // _getFeedbacks()
+    _getFeedbacks()
   }, [])
 
   const handleListItemClick = (route, index) => {

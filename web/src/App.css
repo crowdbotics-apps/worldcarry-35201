@@ -72,6 +72,12 @@
   height: 50px;
 }
 
+.textBreak {
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: initial;
+}
+
 .uprCircle {
   width: 30px;
   height: 30px;

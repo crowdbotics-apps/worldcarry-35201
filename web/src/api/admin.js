@@ -8,6 +8,14 @@ export const getAllUsers = (payload, token) => {
   return API.get(`api/v1/admin/user/${payload}`, token)
 }
 
+export const getUserPayment = (payload, token) => {
+  return API.get(`api/v1/admin/user/payments/${payload}`, token)
+}
+
+export const banUnbanUser = (payload, token) => {
+  return API.post(`api/v1/admin/user/status/`, payload, token)
+}
+
 export const createNotification = (payload, token) => {
   return API.post(`api/v1/admin/notification/`, payload, token)
 }
@@ -53,5 +61,9 @@ export const getOrderDetails = (id, token) => {
 }
 
 export const getFeedbacks = (payload, token) => {
-  return API.get(`api/v1/admin/feedbacks/${payload}`, token)
+  return API.get(`api/v1/admin/feedback/${payload}`, token)
+}
+
+export const replyFeedback = (id, payload, token) => {
+  return API.put(`api/v1/admin/feedback/${id}/`, payload, token)
 }

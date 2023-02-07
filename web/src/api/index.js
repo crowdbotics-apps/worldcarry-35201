@@ -1,16 +1,16 @@
-import { makeRequest } from './requestBuilder'
+import { makeRequest } from "./requestBuilder"
 
 export const API = {
   get: (url, token) =>
     makeRequest({
-      method: 'get',
+      method: "get",
       url,
       token
     }),
 
   post: (url, body, token) =>
     makeRequest({
-      method: 'post',
+      method: "post",
       body,
       url,
       token
@@ -18,22 +18,23 @@ export const API = {
 
   patch: (url, body, token) =>
     makeRequest({
-      method: 'patch',
+      method: "patch",
       body,
       url,
       token
     }),
 
-  put: (url, body) =>
+  put: (url, body, token) =>
     makeRequest({
-      method: 'put',
+      method: "put",
       body,
-      url
+      url,
+      token
     }),
 
   delete: (url, body, token) =>
     makeRequest({
-      method: 'delete',
+      method: "delete",
       url,
       body,
       token

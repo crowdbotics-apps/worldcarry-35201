@@ -72,6 +72,7 @@ function NotificationsContent() {
     {
       field: "user.name",
       numeric: false,
+      width: 200,
       disablePadding: false,
       disableColumnMenu: true,
       headerName: "USER NAME",
@@ -79,6 +80,21 @@ function NotificationsContent() {
         return (
           <div className="d-flex align-items-center">
             <div>{row?.row?.user_detail?.name}</div>
+          </div>
+        )
+      }
+    },
+    {
+      field: "user.email",
+      numeric: false,
+      width: 250,
+      disablePadding: false,
+      disableColumnMenu: true,
+      headerName: "USER EMAIL",
+      renderCell: row => {
+        return (
+          <div className="d-flex align-items-center">
+            <div>{row?.row?.user_detail?.email}</div>
           </div>
         )
       }
@@ -100,7 +116,7 @@ function NotificationsContent() {
     },
     {
       field: "is_read",
-      width: 250,
+      width: 150,
       numeric: false,
       disablePadding: false,
       disableColumnMenu: true,
@@ -115,7 +131,7 @@ function NotificationsContent() {
     },
     {
       field: "is_send_now",
-      width: 250,
+      width: 150,
       numeric: false,
       disablePadding: false,
       disableColumnMenu: true,
@@ -130,7 +146,7 @@ function NotificationsContent() {
     },
     {
       field: "is_sent",
-      width: 250,
+      width: 150,
       numeric: false,
       disablePadding: false,
       disableColumnMenu: true,
@@ -145,7 +161,7 @@ function NotificationsContent() {
     },
     {
       field: "is_paused",
-      width: 250,
+      width: 150,
       numeric: false,
       disablePadding: false,
       disableColumnMenu: true,
@@ -161,7 +177,7 @@ function NotificationsContent() {
 
     {
       field: "action",
-      width: 450,
+      width: 200,
       numeric: false,
       disablePadding: false,
       disableColumnMenu: true,
