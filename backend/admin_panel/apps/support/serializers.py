@@ -90,7 +90,7 @@ class DashboardSerializer(serializers.Serializer):
     active_users = serializers.IntegerField()
     inactive_users = serializers.IntegerField()
     total_orders = serializers.IntegerField()
-    revenue_amount = serializers.IntegerField()
+    revenue_amount = serializers.DecimalField(max_digits=10, decimal_places=2)
     feedback_emails = serializers.IntegerField()
     unread_feedbacks = serializers.IntegerField()
     read_feedbacks = serializers.IntegerField()
