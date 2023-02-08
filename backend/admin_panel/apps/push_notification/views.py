@@ -10,7 +10,7 @@ from rest_framework.response import Response
 class NotificationViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = NotificationSerializer
-    queryset = Notification.objects.filter()
+    queryset = Notification.objects.filter().order_by("-created_at")
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_fields = ['user', 'is_read']
 

@@ -1,8 +1,11 @@
+from orders.models import Order
 from rest_framework import serializers
 import itertools
 from admin_panel.apps.support.models import Feedback, FAQ, SupportRequest, FeedbackMedia, SupportRequestMedia
 from home.api.v1.serializers import UserSerializer
 from admin_panel.apps.support.services import create_feedback,create_support_request
+
+
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
@@ -80,3 +83,14 @@ class SupportRequestSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         support_request = create_support_request(validated_data)
         return support_request
+
+
+class DashboardSerializer(serializers.Serializer):
+    total_users = serializers.IntegerField()
+    active_users = serializers.IntegerField()
+    inactive_users = serializers.IntegerField()
+    total_orders = serializers.IntegerField()
+    revenue_amount = serializers.IntegerField()
+    feedback_emails = serializers.IntegerField()
+    unread_feedbacks = serializers.IntegerField()
+    read_feedbacks = serializers.IntegerField()
