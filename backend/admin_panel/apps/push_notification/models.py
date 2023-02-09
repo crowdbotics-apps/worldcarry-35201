@@ -2,6 +2,8 @@ from admin_panel.apps.push_notification.constant import Push_Notification_Repeat
 from django.utils.translation import ugettext_lazy as _
 from users.models import User
 from django.db import models
+from django.contrib.contenttypes import fields
+from django.contrib.contenttypes import models as generic_models
 
 
 class Template(models.Model):
@@ -66,6 +68,11 @@ class Notification(models.Model):
     send_date = models.DateTimeField(null=True, blank=True)
     group = models.ForeignKey(PushNotificationGroup, on_delete=models.CASCADE, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    content_type = models.ForeignKey(
+        generic_models.ContentType, on_delete=models.CASCADE, null=True, blank=True
+    )
+    content_feed = fields.GenericForeignKey("content_type", "object_id")
     is_sent = models.BooleanField(default=False)
     is_read = models.BooleanField(default=False)
     is_paused = models.BooleanField(default=False)

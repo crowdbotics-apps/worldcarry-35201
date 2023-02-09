@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from admin_panel.apps.push_notification.views import NotificationViewSet
+from admin_panel.apps.push_notification.views import NotificationViewSet, GetAllContenttypes
 
 from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
 
@@ -12,4 +12,5 @@ router.register('device', FCMDeviceAuthorizedViewSet),
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("models/", GetAllContenttypes.as_view(), name='content types')
 ]

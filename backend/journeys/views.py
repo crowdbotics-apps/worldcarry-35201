@@ -18,6 +18,8 @@ from users.authentication import ExpiringTokenAuthentication
 from admin_panel.apps.push_notification.services import create_notification
 
 from rest_framework.filters import OrderingFilter
+from django.contrib.contenttypes import models as generic_models
+
 
 
 class JourneyViewSet(ModelViewSet):
@@ -72,7 +74,7 @@ class JourneyOrderRequest(APIView):
         if user == 'sender':
             try:
                 create_notification({"name": "Order Request", "description": "A Shipper requested you an an order",
-                                     "user": journey.user})
+                                     "user": journey.user, "object_id":journey.id, "content_type": generic_models.ContentType.objects.get(model="journey")})
             except Exception as e:
                 print(e)
             jo_instance.allowed_by_sender = True
@@ -84,7 +86,7 @@ class JourneyOrderRequest(APIView):
                 return Response({"message": "You Can't Accept Past Order"}, status=status.HTTP_400_BAD_REQUEST)
             try:
                 create_notification({"name": "Order Request", "description": "A Carrier requested you for journey",
-                                     "user": order.user})
+                                     "user": order.user, "object_id":order.id, "content_type": generic_models.ContentType.objects.get(model="order")})
             except Exception as e:
                 print(e)
             jo_instance.allowed_by_carrier = True

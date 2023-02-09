@@ -17,6 +17,8 @@ from orders.utils import get_onround_orders
 from users.authentication import ExpiringTokenAuthentication
 from modules.scraper import get_product_details
 from admin_panel.apps.push_notification.services import create_notification
+from django.contrib.contenttypes import models as generic_models
+
 
 
 class OrderViewSet(ModelViewSet):
@@ -125,7 +127,7 @@ class UpdateOrderStatus(APIView):
                 order.save()
                 try:
                     create_notification({"name": "Order Status Updated", "description": "Order has been moved to transit",
-                                         "user": order.user})
+                                         "user": order.user, "object_id":order.id, "content_type": generic_models.ContentType.objects.get(model="order")})
                 except Exception as e:
                     print(e)
 
@@ -139,7 +141,8 @@ class UpdateOrderStatus(APIView):
                 create_notification({
                         "name": "Order Status Updated",
                         "description": "Order has been received",
-                        "user": order.user
+                        "user": order.user,
+                        "object_id":order.id, "content_type": generic_models.ContentType.objects.get(model="order")
                     }
                 )
             except Exception as e:
@@ -157,6 +160,6 @@ class TestNotification(APIView):
         user = User.objects.filter(email=request.data['email']).first()
 
         create_notification({"name": "test notification", "description": "Order has been moved to transit",
-                             "user": user})
+                             "user": user, "object_id":1, "content_type": generic_models.ContentType.objects.get(model="order")})
 
         return Response({"message": "notification sent"}, status=status.HTTP_200_OK)
