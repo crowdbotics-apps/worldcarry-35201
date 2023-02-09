@@ -59,6 +59,21 @@ function FeedbackContent() {
       headerName: "REPLY"
     },
     {
+      field: "is_read",
+      width: 300,
+      numeric: false,
+      disablePadding: false,
+      disableColumnMenu: true,
+      headerName: "Read",
+      renderCell: row => {
+        return (
+          <div className="d-flex align-items-center">
+            <div>{row?.row?.is_read ? "Yes" : "No"}</div>
+          </div>
+        )
+      }
+    },
+    {
       field: "user_details.name",
       numeric: false,
       width: 200,

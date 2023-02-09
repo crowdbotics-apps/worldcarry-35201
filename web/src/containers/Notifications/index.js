@@ -407,7 +407,7 @@ function NotificationsContent() {
                 handleChange("selectedUser", newValue)
               }}
               // value={allUsers?.find(e => e?.id === selectedUser)}
-              getOptionLabel={option => option?.name}
+              getOptionLabel={option => option?.name + " (" + option?.email + ")"}
               renderOption={(props, option) => (
                 <Box
                   onClick={() => handleChange("selectedUser", option?.id)}
@@ -422,7 +422,7 @@ function NotificationsContent() {
                     srcSet={option?.image}
                     alt=""
                   />
-                  {option.name}
+                  {option?.name + " (" + option?.email + ")"}
                 </Box>
               )}
               renderInput={params => (
