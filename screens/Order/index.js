@@ -183,7 +183,8 @@ function Order({ navigation }) {
       handleChange("d2d_delivery", false)
       handleChange("review", 0)
       handleChange("content", "")
-      getData()
+      _getOrders(`?user=${user?.id}`)
+      _getOrders(`?user=${user?.id}&status=Received`, true)
     } catch (error) {
       handleChange("loadingReview", false)
       const errorText = Object.values(error?.response?.data)
@@ -210,6 +211,7 @@ function Order({ navigation }) {
     } else return []
   }
 
+  console.warn('getOrderType(activeStatus)',getOrderType(activeStatus));
   const createMessageList = item => {
     let value = {
       sender: item.carrier,

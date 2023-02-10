@@ -1,26 +1,26 @@
-import React, { useContext } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Share } from 'react-native'
-import { COLORS, FONT1BOLD, FONT1LIGHT, FONT1SEMIBOLD } from '../../constants'
-import { useNavigation } from '@react-navigation/native'
-import { Icon } from 'react-native-elements'
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
-import shareIcon from '../../assets/svg/share.svg'
-import logoutIcon from '../../assets/svg/logout.svg'
-import notificationIcon from '../../assets/svg/notification.svg'
-import menuIcon from '../../assets/svg/menuJourney.svg'
-import help from '../../assets/svg/profileIcon.svg'
-import feedback from '../../assets/svg/feedback.svg'
-import settingsIcon from '../../assets/svg/settingsIcon.svg'
-import { SvgXml } from 'react-native-svg'
+import React, { useCallback, useContext } from "react"
+import { View, Text, StyleSheet, TouchableOpacity, Share } from "react-native"
+import { COLORS, FONT1BOLD, FONT1LIGHT, FONT1SEMIBOLD } from "../../constants"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
+import { Icon } from "react-native-elements"
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
+import shareIcon from "../../assets/svg/share.svg"
+import logoutIcon from "../../assets/svg/logout.svg"
+import notificationIcon from "../../assets/svg/notification.svg"
+import menuIcon from "../../assets/svg/menuJourney.svg"
+import help from "../../assets/svg/profileIcon.svg"
+import feedback from "../../assets/svg/feedback.svg"
+import settingsIcon from "../../assets/svg/settingsIcon.svg"
+import { SvgXml } from "react-native-svg"
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger
-} from 'react-native-popup-menu'
-import AppContext from '../../store/Context'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-export default function Header ({
+} from "react-native-popup-menu"
+import AppContext from "../../store/Context"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+export default function Header({
   title,
   back,
   logo,
@@ -37,19 +37,34 @@ export default function Header ({
   const navigation = useNavigation()
   // Context
   const context = useContext(AppContext)
+  const user = context?.user
   const setUser = context?.setUser
+  const notifications = context?.notifications
+  const _getNotification = context?._getNotification
+
+  useFocusEffect(
+    useCallback(() => {
+      _getNotification(`?user=${user?.id}`)
+    }, [])
+  )
+
+  const getUnreadCount = () => {
+    const filtered = notifications?.filter(e => !e?.is_read)
+    return filtered || []
+  }
+
   const logout = async () => {
     setUser(null)
-    await AsyncStorage.removeItem('token')
-    await AsyncStorage.removeItem('user')
-    navigation.navigate('AuthLoading')
+    await AsyncStorage.removeItem("token")
+    await AsyncStorage.removeItem("user")
+    navigation.navigate("AuthLoading")
   }
 
   const onShare = async () => {
     try {
       const result = await Share.share({
         message:
-          'React Native | A framework for building native apps using React'
+          "React Native | A framework for building native apps using React"
       })
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
@@ -66,11 +81,11 @@ export default function Header ({
   }
 
   const menuSetting = [
-    { title: 'Settings', image: settingsIcon, route: 'Settings' },
-    { title: 'Share With Friends', image: shareIcon },
-    { title: 'Help & Support', image: help, route: 'FAQ' },
-    { title: 'Feedback', image: feedback, route: 'FeedBack' },
-    { title: 'Logout', image: logoutIcon, route: '' }
+    { title: "Settings", image: settingsIcon, route: "Settings" },
+    { title: "Share With Friends", image: shareIcon },
+    { title: "Help & Support", image: help, route: "FAQ" },
+    { title: "Feedback", image: feedback, route: "FeedBack" },
+    { title: "Logout", image: logoutIcon, route: "" }
   ]
 
   return (
@@ -78,21 +93,21 @@ export default function Header ({
       style={[
         styles.header,
         {
-          width: '100%',
-          paddingHorizontal: '5%',
-          alignItems: 'center',
+          width: "100%",
+          paddingHorizontal: "5%",
+          alignItems: "center",
           backgroundColor: backgroundColor || COLORS.white
         }
       ]}
     >
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
         {back && (
           <TouchableOpacity
             onPress={() => (backPress ? backPress() : navigation.goBack())}
           >
             <Icon
-              name='left'
-              type='antdesign'
+              name="left"
+              type="antdesign"
               color={color || COLORS.darkGrey}
               size={18}
               containerStyle={{ marginRight: 5, marginTop: 2 }}
@@ -104,8 +119,8 @@ export default function Header ({
             onPress={() => (backPress ? backPress() : navigation.goBack())}
           >
             <Icon
-              name='close'
-              type='antdesign'
+              name="close"
+              type="antdesign"
               color={color || COLORS.darkGrey}
               size={18}
               containerStyle={{ marginRight: 5, marginTop: 2 }}
@@ -121,26 +136,56 @@ export default function Header ({
       {rightEmpty && <View style={{ width: 50 }} />}
       {rightItem && rightItem}
       {notification && (
-        <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
+        <TouchableOpacity onPress={() => navigation.navigate("Notifications")}>
+          {getUnreadCount()?.length > 0 ? (
+            <View
+              style={{
+                width: 12,
+                zIndex: 8,
+                height: 12,
+                borderRadius: 20,
+                marginBottom: -10,
+                marginLeft: 12,
+                backgroundColor: COLORS.stepGreen
+              }}
+            />
+          ) : (
+            <View style={{ marginBottom: 3 }} />
+          )}
           <SvgXml xml={notificationIcon} height={60} />
         </TouchableOpacity>
       )}
       {menu && (
-        <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
+        <TouchableOpacity onPress={() => navigation.navigate("Notifications")}>
           <SvgXml xml={menuIcon} height={60} />
         </TouchableOpacity>
       )}
       {profile && (
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <TouchableOpacity
             style={{ marginRight: 10 }}
-            onPress={() => navigation.navigate('Notifications')}
+            onPress={() => navigation.navigate("Notifications")}
           >
-            <SvgXml xml={notificationIcon} height={60} />
+            {getUnreadCount()?.length > 0 ? (
+              <View
+                style={{
+                  width: 12,
+                  zIndex: 8,
+                  height: 12,
+                  borderRadius: 20,
+                  marginBottom: -10,
+                  marginLeft: 12,
+                  backgroundColor: COLORS.stepGreen
+                }}
+              />
+            ) : (
+              <View style={{ marginBottom: 3 }} />
+            )}
+            <SvgXml xml={notificationIcon} />
           </TouchableOpacity>
           <Menu
             rendererProps={{
-              placement: 'bottom'
+              placement: "bottom"
             }}
           >
             <MenuTrigger>
@@ -148,7 +193,7 @@ export default function Header ({
             </MenuTrigger>
             <MenuOptions
               optionsContainerStyle={{
-                width: '50%',
+                width: "50%",
                 backgroundColor: COLORS.menuBG
               }}
             >
@@ -156,18 +201,18 @@ export default function Header ({
                 <MenuOption
                   key={el}
                   style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
+                    flexDirection: "row",
+                    alignItems: "center",
                     marginBottom: 2
                   }}
                   onSelect={() =>
-                    el.title === 'Share With Friends'
+                    el.title === "Share With Friends"
                       ? onShare()
-                      : el.title === 'Logout'
+                      : el.title === "Logout"
                       ? logout()
                       : el.route
                       ? navigation.navigate(el.route)
-                      : alert('Coming Soon')
+                      : alert("Coming Soon")
                   }
                 >
                   <SvgXml xml={el.image} />
@@ -192,12 +237,12 @@ export default function Header ({
 
 const styles = StyleSheet.create({
   header: {
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
+    alignItems: "center",
+    justifyContent: "space-between",
+    flexDirection: "row",
     height: hp(9),
     backgroundColor: COLORS.white,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2
@@ -207,8 +252,8 @@ const styles = StyleSheet.create({
     elevation: 3
   },
   menuView: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 10,
     height: 45
   },
@@ -226,8 +271,8 @@ const styles = StyleSheet.create({
     width: 90,
     height: 65,
     borderTopLeftRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderBottomLeftRadius: 100,
     borderBottomRightRadius: 100
   },
@@ -236,8 +281,8 @@ const styles = StyleSheet.create({
     width: 60,
     height: 65,
     borderTopLeftRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderBottomRightRadius: 50
   }
 })
