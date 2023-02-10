@@ -18,7 +18,7 @@ import "jspdf-autotable"
 
 function OrdersContent() {
   const STATUSES = [
-    "Unpaid",
+    "Paid",
     "Requested",
     "Accepted",
     "In transit",

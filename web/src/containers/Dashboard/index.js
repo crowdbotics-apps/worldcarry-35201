@@ -201,13 +201,13 @@ function DashboardContent() {
                   <Doughnut data={data} />
                 </div>
                 <div>
-                  <div className="pickup">
+                  {/* <div className="pickup">
                     Feedback (
                     {dashboard?.read_feedbacks +
                       dashboard?.unread_feedbacks +
                       dashboard?.feedback_emails}
                     )
-                  </div>
+                  </div> */}
                   <div className="row">
                     <div className="greyBox" />
                     <div className="text_primary">
