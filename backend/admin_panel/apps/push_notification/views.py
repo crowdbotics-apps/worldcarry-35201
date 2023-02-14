@@ -38,16 +38,19 @@ class NotificationViewSet(ModelViewSet):
     def bulk_notification(self, request):
         users = User.objects.filter(is_active=True, is_superuser=False)
         for user in users:
-            create_notification(
-                {
-                    "name": request.data.get("name"), 
-                    "description": request.data.get("description"),
-                    "is_send_now": request.data.get("is_send_now"),
-                    "send_date": request.data.get("send_date"),
-                    "user": user
-                }
-            )
-        return Response({"message": "Notification status updated"}, status=status.HTTP_201_CREATED)
+            try:
+                create_notification(
+                    {
+                        "name": request.data.get("name"), 
+                        "description": request.data.get("description"),
+                        "is_send_now": request.data.get("is_send_now"),
+                        "send_date": request.data.get("send_date"),
+                        "user": user
+                    }
+                )
+            except Exception as e:
+                print(e)
+        return Response({"message": "All Notifications send."}, status=status.HTTP_201_CREATED)
 
 class GetAllContenttypes(APIView):
     permission_classes = [IsAuthenticated]
