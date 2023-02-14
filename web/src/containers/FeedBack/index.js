@@ -110,6 +110,17 @@ function FeedbackContent() {
             >
               Reply
             </Button>
+            <Button
+              variant="contained"
+              disabled={row?.row?.is_read || newLoading}
+              onClick={() => {
+                _readFeedback(row?.row?.id)
+              }}
+              style={{ backgroundColor: "#1387f3" }}
+              className="ml-2"
+            >
+              Seen
+            </Button>
           </div>
         )
       }
@@ -181,6 +192,26 @@ function FeedbackContent() {
       handleChange("newDialog", false)
       _getFeedbacks()
       alert(`Reply has been sent`)
+    } catch (error) {
+      handleChange("newLoading", false)
+      const errorText = Object.values(error?.response?.data)
+      alert(`Error: ${errorText[0]}`)
+    }
+  }
+
+  const _readFeedback = async id => {
+    try {
+      handleChange("newLoading", true)
+      const token = localStorage.getItem("token")
+      const payload = {
+        is_read: true
+      }
+      await replyFeedback(id, payload, token)
+      handleChange("newLoading", false)
+      handleChange("name", "")
+      handleChange("newDialog", false)
+      _getFeedbacks()
+      alert(`Feedback has been read`)
     } catch (error) {
       handleChange("newLoading", false)
       const errorText = Object.values(error?.response?.data)
