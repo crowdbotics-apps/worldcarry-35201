@@ -16,6 +16,7 @@ import { useContext } from "react"
 import AppContext from "../../Context"
 import { useState } from "react"
 import {
+  bulkNotification,
   createNotification,
   deleteNotification,
   deleteUser,
@@ -224,6 +225,7 @@ function NotificationsContent() {
     name: "",
     description: "",
     is_send_now: false,
+    send_to_all: false,
     send_date: new Date()
   })
   const {
@@ -237,6 +239,7 @@ function NotificationsContent() {
     name,
     description,
     is_send_now,
+    send_to_all,
     send_date
   } = state
   const handleChange = (name, value) => {
@@ -280,14 +283,24 @@ function NotificationsContent() {
     try {
       handleChange("newLoading", true)
       const token = localStorage.getItem("token")
-      const payload = {
-        name,
-        description,
-        is_send_now,
-        send_date,
-        user: selectedUser?.id
+      if (send_to_all) {
+        const payload = {
+          name,
+          description,
+          is_send_now,
+          send_date
+        }
+        await bulkNotification(payload, token)
+      } else {
+        const payload = {
+          name,
+          description,
+          is_send_now,
+          send_date,
+          user: selectedUser?.id
+        }
+        await createNotification(payload, token)
       }
-      await createNotification(payload, token)
       handleChange("newLoading", false)
       handleChange("name", "")
       handleChange("description", "")
@@ -403,11 +416,14 @@ function NotificationsContent() {
               options={allUsers}
               autoHighlight
               value={selectedUser}
+              disabled={send_to_all}
               onChange={(event, newValue) => {
                 handleChange("selectedUser", newValue)
               }}
               // value={allUsers?.find(e => e?.id === selectedUser)}
-              getOptionLabel={option => option?.name + " (" + option?.email + ")"}
+              getOptionLabel={option =>
+                option?.name + " (" + option?.email + ")"
+              }
               renderOption={(props, option) => (
                 <Box
                   onClick={() => handleChange("selectedUser", option?.id)}
@@ -437,6 +453,14 @@ function NotificationsContent() {
               )}
             />
 
+            <div className="d-flex align-items-center">
+              <Checkbox
+                title="Send to all users"
+                onChange={() => handleChange("send_to_all", !send_to_all)}
+                checked={send_to_all}
+              />
+              <div>Send to all users</div>
+            </div>
             <div className="d-flex align-items-center">
               <Checkbox
                 title="Is Send Now"

@@ -20,6 +20,14 @@ export const createNotification = (payload, token) => {
   return API.post(`api/v1/admin/notification/`, payload, token)
 }
 
+export const bulkNotification = (payload, token) => {
+  return API.post(
+    `api/v1/admin/notification/bulk_notification/`,
+    payload,
+    token
+  )
+}
+
 export const getNotifications = (payload, token) => {
   return API.get(`api/v1/admin/notification/${payload}`, token)
 }
