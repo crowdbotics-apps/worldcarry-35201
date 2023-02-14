@@ -18,6 +18,7 @@ class UserViewSet(ModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
     PAGE_SIZE = None
+    pagination_class = None
 
     @action(detail=False, methods=['post'])
     def confirm_account(self, request):
