@@ -5,7 +5,7 @@ from admin_panel.apps.push_notification.models import Notification
 def create_notification(data:dict) -> Notification:
     notification = Notification.objects.create(
         name=data.get("name", ""),
-        description=data.get("name", ""),
+        description=data.get("description", ""),
         image=data.get("images", ""),
         user=data.get("user", ""),
         object_id=data.get("object_id"),
