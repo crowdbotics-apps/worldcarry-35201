@@ -17,6 +17,7 @@ class UserViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
     queryset = User.objects.all()
+    PAGE_SIZE = None
 
     @action(detail=False, methods=['post'])
     def confirm_account(self, request):
