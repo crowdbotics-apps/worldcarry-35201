@@ -1,3 +1,4 @@
+from admin_panel.apps.push_notification.services import create_notification
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from admin_panel.apps.push_notification.models import Notification
@@ -8,6 +9,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.contenttypes import models as generic_models
+
+from users.models import User
 
 
 
@@ -29,6 +32,21 @@ class NotificationViewSet(ModelViewSet):
         Notification.objects.filter(
             id=request.GET.get("id")
         ).update(is_read=True)
+        return Response({"message": "Notification status updated"}, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=['POST'])
+    def bulk_notification(self, request):
+        users = User.objects.filter(is_active=True, is_superuser=False)
+        for user in users:
+            create_notification(
+                {
+                    "name": request.data.get("name"), 
+                    "description": request.data.get("description"),
+                    "is_send_now": request.data.get("is_send_now"),
+                    "send_date": request.data.get("send_date"),
+                    "user": user
+                }
+            )
         return Response({"message": "Notification status updated"}, status=status.HTTP_201_CREATED)
 
 class GetAllContenttypes(APIView):

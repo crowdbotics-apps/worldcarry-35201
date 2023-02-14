@@ -9,7 +9,9 @@ def create_notification(data:dict) -> Notification:
         image=data.get("images", ""),
         user=data.get("user", ""),
         object_id=data.get("object_id"),
-        content_type=data.get("content_type")
+        content_type=data.get("content_type"),
+        send_date=data.get("send_date"),
+        is_send_now=data.get("is_send_now")
         
     )
     if notification.user.profile.send_notification:
