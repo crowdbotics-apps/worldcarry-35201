@@ -20,6 +20,8 @@ class NotificationViewSet(ModelViewSet):
     queryset = Notification.objects.filter().order_by("-created_at")
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_fields = ['user', 'is_read']
+    pagination_class = None
+
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
