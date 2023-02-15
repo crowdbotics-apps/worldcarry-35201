@@ -73,8 +73,15 @@ class JourneyOrderRequest(APIView):
         jo_instance, _ = JourneyOrder.objects.update_or_create(order=order, journey=journey)
         if user == 'sender':
             try:
-                create_notification({"name": "Order Request", "description": "A Shipper requested you an an order",
-                                     "user": journey.user, "object_id":journey.id, "content_type": generic_models.ContentType.objects.get(model="journey")})
+                create_notification({
+                    "name": "Order Request",
+                    "description": "A Shipper requested you an an order",
+                    "user": journey.user,
+                    "object_id":journey.id,
+                    "content_type": generic_models.ContentType.objects.get(model="journey"),
+                    "type": "order_request"
+                }
+            )
             except Exception as e:
                 print(e)
             jo_instance.allowed_by_sender = True
@@ -86,7 +93,7 @@ class JourneyOrderRequest(APIView):
                 return Response({"message": "You Can't Accept Past Order"}, status=status.HTTP_400_BAD_REQUEST)
             try:
                 create_notification({"name": "Order Request", "description": "A Carrier requested you for journey",
-                                     "user": order.user, "object_id":order.id, "content_type": generic_models.ContentType.objects.get(model="order")})
+                                     "user": order.user, "object_id":order.id, "content_type": generic_models.ContentType.objects.get(model="order"),"type": "journey_request"})
             except Exception as e:
                 print(e)
             jo_instance.allowed_by_carrier = True

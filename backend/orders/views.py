@@ -126,8 +126,11 @@ class UpdateOrderStatus(APIView):
                 order.status = new_status
                 order.save()
                 try:
-                    create_notification({"name": "Order Status Updated", "description": "Order has been moved to transit",
-                                         "user": order.user, "object_id":order.id, "content_type": generic_models.ContentType.objects.get(model="order")})
+                    create_notification({
+                        "name": "Order Status Updated", "description": "Order has been moved to transit",
+                        "user": order.user, "object_id":order.id, "content_type": generic_models.ContentType.objects.get(model="order"),
+                        "type": "order_accepted_request"
+                    })
                 except Exception as e:
                     print(e)
 
@@ -142,7 +145,8 @@ class UpdateOrderStatus(APIView):
                         "name": "Order Status Updated",
                         "description": "Order has been received",
                         "user": order.user,
-                        "object_id":order.id, "content_type": generic_models.ContentType.objects.get(model="order")
+                        "object_id":order.id, "content_type": generic_models.ContentType.objects.get(model="order"),
+                        "type": "order_accepted_request"
                     }
                 )
             except Exception as e:
