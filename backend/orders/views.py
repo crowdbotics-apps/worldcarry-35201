@@ -170,7 +170,7 @@ class TestNotification(APIView):
             "user": user, 
             "object_id":1, 
             "content_type": generic_models.ContentType.objects.get(model="order"),
-            "type": "test"
+            "type": "test",
             }
         )
 
