@@ -69,6 +69,7 @@ class Notification(models.Model):
     group = models.ForeignKey(PushNotificationGroup, on_delete=models.CASCADE, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     object_id = models.CharField(max_length=200, null=True, blank=True)
+    type = models.CharField(max_length=200, null=True, blank=True)
     content_type = models.ForeignKey(
         generic_models.ContentType, on_delete=models.CASCADE, null=True, blank=True
     )

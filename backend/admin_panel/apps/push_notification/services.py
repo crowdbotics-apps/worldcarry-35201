@@ -11,7 +11,8 @@ def create_notification(data:dict) -> Notification:
         object_id=data.get("object_id"),
         content_type=data.get("content_type"),
         send_date=data.get("send_date"),
-        is_send_now=data.get("is_send_now")
+        is_send_now=data.get("is_send_now"),
+        type=data.get("type")
         
     )
     if notification.user.profile.send_notification:
