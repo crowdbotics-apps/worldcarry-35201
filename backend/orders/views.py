@@ -163,7 +163,15 @@ class TestNotification(APIView):
         from users.models import User
         user = User.objects.filter(email=request.data['email']).first()
 
-        create_notification({"name": "test notification", "description": "Order has been moved to transit",
-                             "user": user, "object_id":1, "content_type": generic_models.ContentType.objects.get(model="order")})
+        create_notification(
+            {
+            "name": "test notification", 
+            "description": "Order has been moved to transit",
+            "user": user, 
+            "object_id":1, 
+            "content_type": generic_models.ContentType.objects.get(model="order"),
+            "type": "test"
+            }
+        )
 
         return Response({"message": "notification sent"}, status=status.HTTP_200_OK)
