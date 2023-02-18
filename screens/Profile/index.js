@@ -76,6 +76,8 @@ function Profile({ navigation }) {
   const _getMyAddresses = context?._getMyAddresses
   const forMeReviews = context?.forMeReviews
   const byMeReviews = context?.byMeReviews
+  const _getByMeReviews = context?._getByMeReviews
+  const _getForMeReviews = context?._getForMeReviews
   const user = context?.user
   const logout = async () => {
     setUser(null)
@@ -100,6 +102,8 @@ function Profile({ navigation }) {
   useFocusEffect(
     useCallback(() => {
       _getPayMethod()
+      _getByMeReviews(user?.id)
+      _getForMeReviews(user?.id)
       requestGeolocationPermission()
     }, [])
   )
@@ -332,7 +336,6 @@ function Profile({ navigation }) {
     // }
   ]
 
-  console.warn("user", user)
   return (
     <View style={styles.container}>
       <Header title={"Profile"} profile color={COLORS.darkBlack} />
@@ -918,11 +921,12 @@ function Profile({ navigation }) {
             </View>
             <FlatList
               style={{ width: "100%" }}
-              data={isMyReview ? byMeReviews : forMeReviews}
+              data={!isMyReview ? byMeReviews : forMeReviews}
               renderItem={({ item, index }) => {
                 console.warn("item", item)
                 return (
                   <View
+                    key={index}
                     style={{
                       borderWidth: 1,
                       borderColor: COLORS.borderColor1,
@@ -986,7 +990,7 @@ function Profile({ navigation }) {
                               : item?.target_user?.name}
                           </Text>
                           <Text style={[styles.address, { marginLeft: 10 }]}>
-                            {moment(item?.created_at).fromNow()}
+                            {moment.utc(item?.created_at).local().fromNow()}
                           </Text>
                         </View>
                         <Rating
