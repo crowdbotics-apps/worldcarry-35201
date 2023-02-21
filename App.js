@@ -113,7 +113,7 @@ function App() {
   const _getForMeReviews = async id => {
     try {
       const token = await AsyncStorage.getItem("token")
-      const payload = `?target_user=${id}&order&journey`
+      const payload = `?target_user=${id}`
       const res = await getMyReviews(payload, token)
       console.warn("_getForMeReviews", res?.data)
       setForMeReviews(res?.data)
@@ -126,7 +126,7 @@ function App() {
   const _getByMeReviews = async id => {
     try {
       const token = await AsyncStorage.getItem("token")
-      const payload = `?added_by=${id}&order&journey`
+      const payload = `?added_by=${id}`
       const res = await getMyReviews(payload, token)
       setByMeReviews(res?.data)
     } catch (error) {
