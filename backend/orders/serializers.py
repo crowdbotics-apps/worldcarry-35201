@@ -58,7 +58,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_reviewed(obj):
-        return True if Review.objects.filter(order=obj).exists() else False
+        return True if Review.objects.filter(order=obj, review_flag=True).exists() else False
 
     def create(self, validated_data):
         user = self.context['request'].user

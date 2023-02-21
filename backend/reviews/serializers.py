@@ -25,6 +25,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
+        depth = 2
         exclude = ['id']
 
 
