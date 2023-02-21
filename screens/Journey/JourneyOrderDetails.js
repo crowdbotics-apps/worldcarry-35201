@@ -277,9 +277,13 @@ function JourneyOrderDetails({ navigation, route }) {
 
   console.warn("item", item)
   const openMap = async item => {
-    const latitude = "40.7127753"
-    const longitude = "-74.0059728"
-    const label = "New York, NY, USA"
+    const latitude =
+      (item?.arrival_coords?.length > 0 && item?.arrival_coords[0]) ||
+      "40.7127753"
+    const longitude =
+      (item?.arrival_coords?.length > 0 && item?.arrival_coords[1]) ||
+      "-74.0059728"
+    const label = item?.arrival_address_city || "New York, NY, USA"
 
     const url = Platform.select({
       ios: "maps:" + latitude + "," + longitude + "?q=" + label,

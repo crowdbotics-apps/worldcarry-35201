@@ -169,6 +169,7 @@ function Order({ navigation }) {
         d2d_delivery,
         no_additional_payment_asked,
         rating,
+        content,
         added_by: user?.id,
         target_user: uid
       }
@@ -483,19 +484,19 @@ function Order({ navigation }) {
                     outlined
                     backgroundColor={COLORS.white}
                     color={COLORS.darkBlack}
-                    disabled={item?.reviewed}
+                    // disabled={item?.reviewed}
                     titleLight
                     prefix={
                       <SvgXml xml={starBlack} style={{ marginRight: 8 }} />
                     }
                     onPress={() => {
-                      if (!item?.reviewed) {
+                      // if (!item?.reviewed) {
                         handleChange("writeReview", true)
                         handleChange("order", item)
                         handleChange("writeReview", true)
                         handleChange("oid", item?.id)
                         handleChange("uid", item?.carrier?.id)
-                      }
+                      // }
                     }}
                   />
                 </>
