@@ -20,6 +20,7 @@ class Review(UUIDModel):
     respectful_attitude = models.BooleanField(null=True)
     no_additional_payment_asked = models.BooleanField(null=True)
     d2d_delivery = models.BooleanField(null=True)
+    review_flag = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'reviews_review'
