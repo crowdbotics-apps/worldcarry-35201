@@ -18,3 +18,7 @@ class ReviewViewSet(ModelViewSet):
         serializer = ReviewListSerializer(queryset, many=True)
         return Response(serializer.data)
 
+    def retrieve(self, request, *args, **kwargs):
+        queryset = self.get_object()
+        serializer = ReviewListSerializer(queryset)
+        return Response(serializer.data)
