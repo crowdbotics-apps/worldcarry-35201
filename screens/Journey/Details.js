@@ -214,7 +214,7 @@ function JourneyDetails({ navigation, route }) {
         added_by: user?.id,
         target_user: order?.user?.id
       }
-      console.warn("payload", order)
+      console.warn("payload", payload)
       await addReview(payload, token)
       Toast.show(`You have successfully reviewed to the sender`)
       handleChange("loadingReview", false)
@@ -636,7 +636,12 @@ function JourneyDetails({ navigation, route }) {
                   >
                     DELIVER FROM
                   </Text>
-                  <Text style={[styles.nameText, { color: COLORS.darkBlack }]}>
+                  <Text
+                    style={[
+                      styles.nameText,
+                      { color: COLORS.darkBlack, width: "65%" }
+                    ]}
+                  >
                     {item?.pickup_address_city}, {item?.pickup_address_country}
                   </Text>
                   <Text
@@ -651,7 +656,12 @@ function JourneyDetails({ navigation, route }) {
                   >
                     DELIVER TO
                   </Text>
-                  <Text style={[styles.nameText, { color: COLORS.darkBlack }]}>
+                  <Text
+                    style={[
+                      styles.nameText,
+                      { color: COLORS.darkBlack, width: "65%" }
+                    ]}
+                  >
                     {item?.arrival_address_city},{" "}
                     {item?.arrival_address_country}
                   </Text>

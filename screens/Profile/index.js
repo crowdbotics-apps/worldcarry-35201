@@ -920,10 +920,9 @@ function Profile({ navigation }) {
               </TouchableOpacity>
             </View>
             <FlatList
-              style={{ width: "100%" }}
+              style={{ width: "100%", marginBottom: 20 }}
               data={!isMyReview ? byMeReviews : forMeReviews}
               renderItem={({ item, index }) => {
-                console.warn("item", item)
                 return (
                   <View
                     key={index}
@@ -959,7 +958,7 @@ function Profile({ navigation }) {
                           color: COLORS.primary
                         }}
                       >
-                        Buy me an iPhone 13 Pro max
+                        {item?.order?.product_name}
                       </Text>
                     </View>
                     <View

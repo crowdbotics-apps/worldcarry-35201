@@ -405,7 +405,12 @@ function JourneyOrderDetails({ navigation, route }) {
                 >
                   DELIVER FROM
                 </Text>
-                <Text style={[styles.nameText, { color: COLORS.darkBlack }]}>
+                <Text
+                  style={[
+                    styles.nameText,
+                    { color: COLORS.darkBlack, width: "65%" }
+                  ]}
+                >
                   {item?.pickup_address_city}, {item?.pickup_address_country}
                 </Text>
                 <Text
@@ -420,7 +425,12 @@ function JourneyOrderDetails({ navigation, route }) {
                 >
                   DELIVER TO
                 </Text>
-                <Text style={[styles.nameText, { color: COLORS.darkBlack }]}>
+                <Text
+                  style={[
+                    styles.nameText,
+                    { color: COLORS.darkBlack, width: "65%" }
+                  ]}
+                >
                   {item?.arrival_address_city}, {item?.arrival_address_country}
                 </Text>
               </View>

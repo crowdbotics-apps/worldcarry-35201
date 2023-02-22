@@ -254,6 +254,7 @@ function CreateOrder({ navigation }) {
     }
   }
 
+  console.warn("pickup_address", arrival_address)
   const handleCreate = async () => {
     try {
       handleChange("loading", true)
@@ -265,13 +266,17 @@ function CreateOrder({ navigation }) {
       formData.append("expected_wait_time", expected_wait_time)
       active === 0 && formData.append("product_type", product_type)
       formData.append("payment_method_id", payment_method_id)
-      // formData.append('pickup_address', pickup_address)
+      formData.append(
+        "pickup_address_city",
+        pickup_address?.pickup_address_street_one
+      )
       // formData.append('pickup_address_coordinates', pickup_address_coordinates)
       formData.append(
         "arrival_address_coordinates",
         arrival_address_coordinates
       )
       formData.append("arrival_address_country", arrival_address_country)
+      formData.append("arrival_address_city", arrival_address?.arrival_address_street_one)
       formData.append("product_name", product_name)
       formData.append("product_link", product_link)
       formData.append("product_price", product_price)
@@ -296,7 +301,7 @@ function CreateOrder({ navigation }) {
       Toast.show(`Error: ${JSON.stringify(errorText[0])}`)
     }
   }
-  console.warn(photos);
+  console.warn(photos)
   function get_url_extension(url) {
     return url.split(/[#?]/)[0].split(".").pop().trim()
   }
@@ -307,15 +312,15 @@ function CreateOrder({ navigation }) {
       type == "camera"
         ? ImagePicker.openCamera
         : type == ""
-          ? ImagePicker.openPicker
-          : ImagePicker.openPicker
+        ? ImagePicker.openPicker
+        : ImagePicker.openPicker
 
     OpenImagePicker({
       width: 300,
       height: 300,
       cropping: true,
       multiple: true,
-      mediaType: 'photo',
+      mediaType: "photo",
       forceJpg: true
     })
       .then(async response => {
@@ -422,35 +427,35 @@ function CreateOrder({ navigation }) {
   const disabled =
     step === 0
       ? !product_name ||
-      !product_price ||
-      !product_type ||
-      !carrier_reward ||
-      !expected_wait_time ||
-      !description ||
-      avatarSourceURL.length === 0
+        !product_price ||
+        !product_type ||
+        !carrier_reward ||
+        !expected_wait_time ||
+        !description ||
+        avatarSourceURL.length === 0
       : step === 1
-        ? !pickup_address_country || !pickup_address
-        : step === 2
-          ? !arrival_address || !arrival_address_country
-          : // !isChecked ||
-          !payment_method_id
+      ? !pickup_address_country || !pickup_address
+      : step === 2
+      ? !arrival_address || !arrival_address_country
+      : // !isChecked ||
+        !payment_method_id
   const disabled1 =
     stepLink === 0
       ? !product_name ||
-      !product_price ||
-      !product_type ||
-      !linkVerified ||
-      !product_link ||
-      !description ||
-      avatarSourceURL.length === 0
+        !product_price ||
+        !product_type ||
+        !linkVerified ||
+        !product_link ||
+        !description ||
+        avatarSourceURL.length === 0
       : stepLink === 1
-        ? !pickup_address_country ||
+      ? !pickup_address_country ||
         !pickup_address ||
         !arrival_address ||
         !carrier_reward ||
         !expected_wait_time ||
         !arrival_address_country
-        : // !isChecked ||
+      : // !isChecked ||
         !payment_method_id
 
   return (
@@ -466,8 +471,8 @@ function CreateOrder({ navigation }) {
                 stepLink === 3 || step === 4
                   ? navigation.navigate("Orders")
                   : active === 0
-                    ? clearForm()
-                    : clearForm1()
+                  ? clearForm()
+                  : clearForm1()
               }
             >
               <Text style={styles.activeTabText}>

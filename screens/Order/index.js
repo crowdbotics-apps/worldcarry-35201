@@ -171,7 +171,8 @@ function Order({ navigation }) {
         rating,
         content,
         added_by: user?.id,
-        target_user: uid
+        target_user: uid,
+        review_flag: true
       }
       await addReview(payload, token)
       Toast.show(`You have successfully reviewed to the sender`)
@@ -212,7 +213,7 @@ function Order({ navigation }) {
     } else return []
   }
 
-  console.warn('getOrderType(activeStatus)',getOrderType(activeStatus));
+  console.warn("getOrderType(activeStatus)", getOrderType(activeStatus))
   const createMessageList = item => {
     let value = {
       sender: item.carrier,
@@ -484,19 +485,19 @@ function Order({ navigation }) {
                     outlined
                     backgroundColor={COLORS.white}
                     color={COLORS.darkBlack}
-                    // disabled={item?.reviewed}
+                    disabled={item?.reviewed}
                     titleLight
                     prefix={
                       <SvgXml xml={starBlack} style={{ marginRight: 8 }} />
                     }
                     onPress={() => {
-                      // if (!item?.reviewed) {
+                      if (!item?.reviewed) {
                         handleChange("writeReview", true)
                         handleChange("order", item)
                         handleChange("writeReview", true)
                         handleChange("oid", item?.id)
                         handleChange("uid", item?.carrier?.id)
-                      // }
+                      }
                     }}
                   />
                 </>
