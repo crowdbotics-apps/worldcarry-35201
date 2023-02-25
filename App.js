@@ -181,6 +181,7 @@ function App() {
 
   const setOnMessage = async () => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
+      console.warn('onMessage',remoteMessage);
       var localNotification = {
         id: 0, // (optional) Valid unique 32 bit integer specified as string.
         title: remoteMessage.notification.title, // (optional)
@@ -199,6 +200,7 @@ function App() {
           console.log("TOKEN:", token)
         },
         onNotification: function (notification) {
+          console.warn('notification',notification);
           const { data, title } = notification
           notification.finish(PushNotificationIOS.FetchResult.NoData)
         },
@@ -217,6 +219,7 @@ function App() {
       // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage))
     })
     messaging().onNotificationOpenedApp(remoteMessage => {
+      console.warn('onNotificationOpenedApp',remoteMessage);
       console.log(
         "Notification caused app to open from background state:",
         remoteMessage.notification

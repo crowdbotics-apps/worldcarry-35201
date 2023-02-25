@@ -15,7 +15,7 @@ import {
   Dimensions,
   PermissionsAndroid,
   FlatList,
-  ImageBackground,
+  Keyboard,
   Image,
   Modal
 } from "react-native"
@@ -362,76 +362,76 @@ function Order({ navigation }) {
               )}
               {(item?.status === "Accepted" ||
                 item?.status === "In transit") && (
-                <>
-                  <View style={styles.hline} />
-                  <AppButton
-                    title={"Show QR Code"}
-                    outlined
-                    color={COLORS.darkBlack}
-                    backgroundColor={COLORS.white}
-                    titleLight
-                    prefix={
-                      <SvgXml xml={qrSymbol} style={{ marginRight: 5 }} />
-                    }
-                    onPress={() => {
-                      handleChange("showQR", true)
-                      handleChange("showQRImage", item?.qr_code)
-                      handleChange("product_name", item?.product_name)
-                      handleChange("product_id", item?.id)
-                      handleChange(
-                        "pickup_address_country",
-                        item?.pickup_address_country
-                      )
-                      handleChange(
-                        "arrival_address_country",
-                        item?.arrival_address_country
-                      )
-                    }}
-                  />
-                  <View
-                    style={[
-                      styles.rowBetween,
-                      { width: "100%", marginTop: 10 }
-                    ]}
-                  >
-                    <View style={[styles.row, { width: "40%" }]}>
-                      <Image
-                        style={{
-                          width: 50,
-                          height: 50,
-                          borderRadius: 50,
-                          marginRight: 10
-                        }}
-                        source={
-                          item?.carrier?.profile?.photo
-                            ? { uri: item?.carrier?.profile?.photo }
-                            : userProfile
-                        }
-                      />
-                      <View>
-                        <Text style={styles.nameText}>
-                          {item?.carrier?.name}
-                        </Text>
-                        <Text style={styles.postedText}>Order Carrier</Text>
+                  <>
+                    <View style={styles.hline} />
+                    <AppButton
+                      title={"Show QR Code"}
+                      outlined
+                      color={COLORS.darkBlack}
+                      backgroundColor={COLORS.white}
+                      titleLight
+                      prefix={
+                        <SvgXml xml={qrSymbol} style={{ marginRight: 5 }} />
+                      }
+                      onPress={() => {
+                        handleChange("showQR", true)
+                        handleChange("showQRImage", item?.qr_code)
+                        handleChange("product_name", item?.product_name)
+                        handleChange("product_id", item?.id)
+                        handleChange(
+                          "pickup_address_country",
+                          item?.pickup_address_country
+                        )
+                        handleChange(
+                          "arrival_address_country",
+                          item?.arrival_address_country
+                        )
+                      }}
+                    />
+                    <View
+                      style={[
+                        styles.rowBetween,
+                        { width: "100%", marginTop: 10 }
+                      ]}
+                    >
+                      <View style={[styles.row, { width: "40%" }]}>
+                        <Image
+                          style={{
+                            width: 50,
+                            height: 50,
+                            borderRadius: 50,
+                            marginRight: 10
+                          }}
+                          source={
+                            item?.carrier?.profile?.photo
+                              ? { uri: item?.carrier?.profile?.photo }
+                              : userProfile
+                          }
+                        />
+                        <View>
+                          <Text style={styles.nameText}>
+                            {item?.carrier?.name}
+                          </Text>
+                          <Text style={styles.postedText}>Order Carrier</Text>
+                        </View>
+                      </View>
+                      <View style={{ alignItems: "flex-end" }}>
+                        <AppButton
+                          title={"Chat"}
+                          outlined
+                          width={"60%"}
+                          backgroundColor={COLORS.white}
+                          color={COLORS.darkBlack}
+                          titleLight
+                          prefix={
+                            <SvgXml xml={chatIcon} style={{ marginRight: 8 }} />
+                          }
+                          onPress={() => createMessageList(item)}
+                        />
                       </View>
                     </View>
-                    <View style={{ alignItems: "flex-end" }}>
-                      <AppButton
-                        title={"Chat"}
-                        outlined
-                        width={"60%"}
-                        backgroundColor={COLORS.white}
-                        color={COLORS.darkBlack}
-                        titleLight
-                        prefix={
-                          <SvgXml xml={chatIcon} style={{ marginRight: 8 }} />
-                        }
-                        onPress={() => createMessageList(item)}
-                      />
-                    </View>
-                  </View>
-                </>
-              )}
+                  </>
+                )}
               {item?.status === "Received" && (
                 <>
                   <View style={[styles.row, { width: "40%" }]}>
@@ -604,10 +604,12 @@ function Order({ navigation }) {
             <AppInput
               placeholder={"write review"}
               value={content}
+              returnKeyType="done"
               borderColor={COLORS.grey}
               name={"content"}
               onChange={handleChange}
               multiline
+              onSubmitEditing={() => Keyboard.dismiss()}
               height={100}
             />
             <View style={{ width: "100%" }}>

@@ -8,7 +8,8 @@ import {
   FlatList,
   Image,
   ActivityIndicator,
-  Modal
+  Modal,
+  Keyboard
 } from "react-native"
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 import { SvgXml } from "react-native-svg"
@@ -989,6 +990,7 @@ function JourneyDetails({ navigation, route }) {
               placeholder={"write review"}
               value={content}
               borderColor={COLORS.grey}
+              onSubmitEditing={() => Keyboard.dismiss()}
               name={"content"}
               onChange={handleChange}
               multiline
