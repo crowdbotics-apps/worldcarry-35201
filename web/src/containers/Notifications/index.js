@@ -297,7 +297,7 @@ function NotificationsContent() {
           description,
           is_send_now,
           send_date,
-          user: selectedUser?.id
+          users: [selectedUser?.id]
         }
         await createNotification(payload, token)
       }
