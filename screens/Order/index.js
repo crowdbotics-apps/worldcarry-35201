@@ -213,7 +213,6 @@ function Order({ navigation }) {
     } else return []
   }
 
-  console.warn("getOrderType(activeStatus)", getOrderType(activeStatus))
   const createMessageList = item => {
     let value = {
       sender: item.carrier,
@@ -237,7 +236,6 @@ function Order({ navigation }) {
       })
   }
 
-  console.warn("orders", orders)
 
   return (
     <View style={styles.container}>

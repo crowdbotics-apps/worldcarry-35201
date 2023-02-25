@@ -88,7 +88,6 @@ function Account ({ navigation }) {
         if (!response.path) {
           handleChange('uploading', false)
         } else {
-          console.warn('response', response)
           const uri = response.path
           const uploadUri =
             Platform.OS === 'ios' ? uri.replace('file://', '') : uri
@@ -129,7 +128,6 @@ function Account ({ navigation }) {
       formData.append('phone', phone)
       formData.append('username', username)
       const res = await updateProfile(formData, user_id, token)
-      console.warn('else res', res)
       if (res?.status === 200) {
         context?.setUser(res?.data)
         await AsyncStorage.setItem('user', JSON.stringify(res?.data))
@@ -141,7 +139,6 @@ function Account ({ navigation }) {
       }
     } catch (error) {
       handleChange('loading', false)
-      console.warn('err', error)
       const showWError = Object.values(error.response?.data)
       Toast.show(`Error: ${showWError[0]}`)
     }

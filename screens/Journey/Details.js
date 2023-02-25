@@ -49,7 +49,6 @@ import { Alert } from "react-native"
 
 function JourneyDetails({ navigation, route }) {
   const item = route?.params?.item
-  console.warn("item", item)
   const successDelivered = route?.params?.successDelivered
   const order = route?.params?.order
   const [state, setState] = useState({
@@ -214,7 +213,6 @@ function JourneyDetails({ navigation, route }) {
         added_by: user?.id,
         target_user: order?.user?.id
       }
-      console.warn("payload", payload)
       await addReview(payload, token)
       Toast.show(`You have successfully reviewed to the sender`)
       handleChange("loadingReview", false)
@@ -362,7 +360,6 @@ function JourneyDetails({ navigation, route }) {
       })
   }
   const openMap = async item => {
-    console.warn("item", item)
     const latitude =
       (item?.arrival_coords?.length > 0 && item?.arrival_coords[0]) ||
       "40.7127753"

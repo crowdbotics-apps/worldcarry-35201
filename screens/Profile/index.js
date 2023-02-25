@@ -130,7 +130,7 @@ function Profile({ navigation }) {
         console.log("Geolocation permission denied")
       }
     } catch (err) {
-      console.warn(err)
+      console.log(err)
     }
   }
 
@@ -159,7 +159,7 @@ function Profile({ navigation }) {
               handleChange("userLocation", city + " " + country)
             }
           })
-          .catch(error => console.warn("Geocodererror", error))
+          .catch(error => console.log("Geocodererror", error))
       },
       error => console.log("Error", JSON.stringify(error)),
       {
@@ -190,7 +190,7 @@ function Profile({ navigation }) {
             handleChange("userLocation", city + " " + country)
           }
         })
-        .catch(error => console.warn("Geocodererror", error))
+        .catch(error => console.log("Geocodererror", error))
     })
   }
 

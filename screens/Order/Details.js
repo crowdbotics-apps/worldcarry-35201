@@ -218,7 +218,6 @@ function OrderDetails ({ navigation, route }) {
     text && text?.slice(0, count) + (text?.length > count ? '...' : '')
 
   const filterByRecent = offers => {
-    console.warn('offers', offers)
     if (filterSelected === 'Most Recent') {
       return offers?.sort(function (a, b) {
         // Turn your strings into dates, and then subtract them

@@ -58,7 +58,7 @@ function SetPassword({ navigation, route }) {
       Toast.show(res?.data?.detail)
     } catch (error) {
       handleChange("loading", false)
-      console.warn("err", error)
+      console.log("err", error)
       Toast.show(`Error: ${error.message}`)
     }
   }

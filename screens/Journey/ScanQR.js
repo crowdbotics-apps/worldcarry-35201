@@ -29,7 +29,6 @@ export default function ScanQR ({ route, navigation }) {
   useFocusEffect(useCallback(() => {}, []))
 
   const onSuccess = e => {
-    console.warn('e.data', e.data)
     handleChange('loading', true)
     if (e.data) {
       handleChange('scanID', e.data)

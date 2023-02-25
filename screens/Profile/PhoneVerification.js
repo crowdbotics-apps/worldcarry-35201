@@ -77,7 +77,6 @@ function PhoneVerification ({ navigation }) {
     } catch (error) {
       handleChange('loading', false)
       const errorText = Object.values(error?.response?.data)
-      console.warn('errorText', errorText)
       Toast.show(`Error: ${errorText}`)
     }
   }

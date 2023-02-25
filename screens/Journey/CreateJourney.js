@@ -108,7 +108,6 @@ function CreateJourney({ navigation, route }) {
     _getMyAddresses
   } = context
 
-  console.warn("departureCityState", departureCityState)
 
   useEffect(() => {
     if (mapLocationForPickup) {
@@ -222,9 +221,7 @@ function CreateJourney({ navigation, route }) {
       Toast.show("Journey Created Successfully!")
       // navigation.navigate('Orders')
     } catch (error) {
-      console.warn("error", error)
       handleChange("loading", false)
-      console.warn("error?.response?.data", error?.response?.data)
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText[0]}`)
     }
@@ -274,9 +271,7 @@ function CreateJourney({ navigation, route }) {
       navigation.navigate("Journey")
       Toast.show("Journey Deleted Successfully!")
     } catch (error) {
-      console.warn("error", error)
       handleChange("loading", false)
-      console.warn("error?.response?.data", error?.response?.data)
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText[0]}`)
     }

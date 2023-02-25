@@ -53,7 +53,6 @@ function App() {
       const token = await AsyncStorage.getItem("token")
       const payload = qs || ""
       const res = await getNotification(payload, token)
-      console.warn("getNotification", res?.data)
       setNotifications(res?.data)
     } catch (error) {
       const errorText = Object.values(error?.response?.data)
@@ -115,7 +114,6 @@ function App() {
       const token = await AsyncStorage.getItem("token")
       const payload = `?target_user=${id}`
       const res = await getMyReviews(payload, token)
-      console.warn("_getForMeReviews", res?.data)
       setForMeReviews(res?.data)
     } catch (error) {
       const errorText = Object.values(error?.response?.data)
@@ -157,6 +155,7 @@ function App() {
       active: active,
       type: Platform.OS
     }
+    console.warn('payload',payload);
     await registerDevice(payload, tokenA)
   }
 
@@ -167,7 +166,6 @@ function App() {
       authStatus === messaging.AuthorizationStatus.PROVISIONAL
 
     if (enabled) {
-      console.warn("Authorization status:", authStatus)
       registerAppWithFCM(active)
       setOnMessage()
     }

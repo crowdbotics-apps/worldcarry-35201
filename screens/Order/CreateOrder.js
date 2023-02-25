@@ -144,7 +144,6 @@ function CreateOrder({ navigation }) {
       const token = await AsyncStorage.getItem("token")
       const qs = `?url=${product_link}`
       const res = await getProductDetails(qs, token)
-      console.warn("getProductDetails", res?.data?.data)
       handleChange("loadingLink", false)
       handleChange("product_name", res?.data?.data?.title)
       let p1 = res?.data?.data?.price?.replace(/\$/g, "")
@@ -159,7 +158,6 @@ function CreateOrder({ navigation }) {
       handleChange("falseLink", false)
       handleChange("linkVerified", true)
     } catch (error) {
-      console.warn("error", error)
       handleChange("loadingLink", false)
       handleChange("linkVerified", false)
       handleChange("falseLink", true)
@@ -181,8 +179,6 @@ function CreateOrder({ navigation }) {
           // the conversion is done in native code
           let base64Str = res.base64()
           let uri = res.path()
-          console.warn("ressss.path()", res)
-          console.warn(".path()", res.path())
           const uploadUri =
             Platform.OS === "android" ? "file://" + uri : "" + uri
           const photo = {
@@ -254,7 +250,6 @@ function CreateOrder({ navigation }) {
     }
   }
 
-  console.warn("pickup_address", arrival_address)
   const handleCreate = async () => {
     try {
       handleChange("loading", true)
@@ -294,10 +289,8 @@ function CreateOrder({ navigation }) {
       handleChange("step", 4)
       // navigation.navigate('Orders')
     } catch (error) {
-      console.warn("error", error)
       handleChange("loading", false)
       const errorText = Object.values(error?.response?.data)
-      console.warn("errorText[0]", errorText[0])
       Toast.show(`Error: ${JSON.stringify(errorText[0])}`)
     }
   }
@@ -340,7 +333,6 @@ function CreateOrder({ navigation }) {
               // type: element.mime === "image/heic" ? 'image/jpg' : element.mime
               type: element.mime
             }
-            console.warn("photo", photo)
             photos.push(photo)
             avatarSourceURLs.push(uploadUri)
           }

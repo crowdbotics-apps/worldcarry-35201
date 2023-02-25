@@ -36,7 +36,6 @@ export default function JourneyStep1({
   handleOpen,
   getCurrentLocation
 }) {
-  console.warn("departureCityState", departureCityState)
   const [modalVisible, setModalVisible] = useState(false)
   const [showReturnCalendar, setShowReturnCalendar] = useState(false)
   const [markedDates, setMarkedDates] = useState({})

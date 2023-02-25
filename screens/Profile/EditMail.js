@@ -25,7 +25,6 @@ function EditMail ({ navigation }) {
   const handleChange = (name, value) => {
     setState(pre => ({ ...pre, [name]: value }))
   }
-  console.warn('user', user)
   const _editProfile = async () => {
     try {
       handleChange('loading', true)

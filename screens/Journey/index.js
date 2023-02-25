@@ -105,9 +105,7 @@ function Journey({ navigation, route }) {
       handleChange("loading", false)
       Toast.show("Journey Deleted Successfully!")
     } catch (error) {
-      console.warn("error", error)
       handleChange("loading", false)
-      console.warn("error?.response?.data", error?.response?.data)
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText[0]}`)
     }
@@ -121,7 +119,6 @@ function Journey({ navigation, route }) {
   }
 
   const getOrderType = status => {
-    console.warn("status", status)
     if (status === "ongoing") {
       // const filtered = journeys?.filter(e => e.status === status)
       return myjourneys?.ongoing || []
@@ -129,8 +126,6 @@ function Journey({ navigation, route }) {
       return myjourneys?.upcoming || []
     } else return myjourneys?.completed || []
   }
-
-  console.warn("myJourneys", myjourneys?.upcoming)
 
   return (
     <View style={styles.container}>

@@ -55,13 +55,11 @@ function EditPassword({ navigation, route }) {
         navigation.goBack()
         Toast.show("Password has been changed!")
       } else {
-        console.warn("else res", res)
         handleChange("loading", false)
         Toast.show("Something went wrong!")
       }
     } catch (error) {
       handleChange("loading", false)
-      console.warn("err", error)
       Toast.show(`Error: ${error.message}`)
     }
   }

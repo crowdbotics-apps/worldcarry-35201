@@ -54,7 +54,6 @@ function PaymentMethod ({ navigation }) {
       Toast.show(`Error: ${errorText}`)
     }
   }
-  console.warn('paymethods', paymethods)
 
   if (loading) {
     return (
