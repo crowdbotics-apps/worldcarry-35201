@@ -101,7 +101,6 @@ function LoginScreen({ navigation, route }) {
       }
       handleChange("loading", false)
       setUser(res?.data?.user)
-      console.warn("loginUser", res?.data)
       await AsyncStorage.setItem("token", res?.data?.token)
       await AsyncStorage.setItem("user", JSON.stringify(res?.data?.user))
       requestUserPermission(true)
@@ -109,7 +108,6 @@ function LoginScreen({ navigation, route }) {
       Toast.show("Logged in Successfully!")
     } catch (error) {
       handleChange("loading", false)
-      console.warn("err", error)
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText[0]}`)
     }
@@ -197,7 +195,6 @@ function LoginScreen({ navigation, route }) {
       "public_profile",
       "email"
     ])
-    console.warn("data", result)
     if (result.isCancelled) {
       alert("User cancelled the login process")
       handleChange("loading", false)
@@ -205,7 +202,6 @@ function LoginScreen({ navigation, route }) {
     }
     const data = await AccessToken.getCurrentAccessToken()
 
-    console.warn("data", data)
     if (!data) {
       Toast.show("Something went wrong obtaining access token")
       handleChange("loading", false)
@@ -238,7 +234,6 @@ function LoginScreen({ navigation, route }) {
           return
         }
         if (res?.user) {
-          console.warn("res?.user", res?.user)
           handleChange("loading", false)
           requestUserPermission(true)
           setUser(res?.user)
@@ -247,19 +242,16 @@ function LoginScreen({ navigation, route }) {
           navigation.navigate("AuthLoading")
           Toast.show("Logged in Successfully!")
         } else {
-          console.warn("else res", res)
           handleChange("loading", false)
           Toast.show("Something went wrong!")
         }
       })
       .catch(error => {
         handleChange("loading", false)
-        console.warn("err", error)
         Toast.show(`Error: ${error.message}`)
       })
       .catch(error => {
         handleChange("loading", false)
-        console.warn("errss", error)
         Toast.show(`Error: ${error.message}`)
       })
   }
@@ -320,19 +312,16 @@ function LoginScreen({ navigation, route }) {
             navigation.navigate("AuthLoading")
             Toast.show("Logged in Successfully!")
           } else {
-            console.warn("else res", res)
             handleChange("loading", false)
             Toast.show("Something went wrong!")
           }
         })
         .catch(error => {
           handleChange("loading", false)
-          console.warn("errcaaaaa", error)
           Toast.show(`Error: ${error.message}`)
         })
         .catch(error => {
           handleChange("loading", false)
-          console.warn("errss", error)
           Toast.show(`Error: ${error.message}`)
         })
     }
@@ -378,19 +367,16 @@ function LoginScreen({ navigation, route }) {
           navigation.navigate("AuthLoading")
           Toast.show("Logged in Successfully!")
         } else {
-          console.warn("else res", res)
           handleChange("loading", false)
           Toast.show("Something went wrong!")
         }
       })
       .catch(error => {
         handleChange("loading", false)
-        console.warn("err", error)
         Toast.show(`Error: ${error.message}`)
       })
       .catch(error => {
         handleChange("loading", false)
-        console.warn("errss", error)
         Toast.show(`Error: ${error.message}`)
       })
   }

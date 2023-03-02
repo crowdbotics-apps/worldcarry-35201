@@ -22,7 +22,6 @@ export default function JourneyStep3 ({
   handleDelete,
   navigation
 }) {
-  console.warn('createdJourney', createdJourney)
   return (
     <ScrollView
       style={styles.container}

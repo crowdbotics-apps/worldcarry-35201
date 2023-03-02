@@ -22,8 +22,6 @@ function RequestDetailsContent () {
     setState(pre => ({ ...pre, [name]: value }))
   }
 
-  console.warn('id', id)
-
   useEffect(() => {
     if (id) {
       _getOrder(id)

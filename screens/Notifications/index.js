@@ -117,7 +117,6 @@ function Notifications ({ navigation }) {
     }
   }
 
-  console.warn('notifications', notifications)
   return (
     <View style={styles.container}>
       <Header back title={'Notifications'} color={COLORS.darkBlack} />

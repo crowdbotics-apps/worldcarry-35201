@@ -15,21 +15,23 @@ class ReviewSerializer(serializers.ModelSerializer):
         if target_user is None or added_by is None:
             raise serializers.ValidationError("target user and added by user are required fields")
 
-        if Review.objects.filter(target_user=target_user, added_by=added_by, order=order).exists():
-            raise serializers.ValidationError("Already added review for this order")
-
-        if Review.objects.filter(target_user=target_user, added_by=added_by, journey=journey).exists():
-            raise serializers.ValidationError("Already added review for this journey")
+        # if order:
+        #     if Review.objects.filter(target_user=target_user, added_by=added_by, order=order).exists():
+        #         raise serializers.ValidationError("Already added review for this order")
+        #
+        # if journey:
+        #     if Review.objects.filter(target_user=target_user, added_by=added_by, journey=journey).exists():
+        #         raise serializers.ValidationError("Already added review for this journey")
 
         return attrs
 
     class Meta:
         model = Review
-        depth = 2
         exclude = ['id']
 
 
 class ReviewListSerializer(ReviewSerializer):
-    target_user = UserSerializer()
-    added_by = UserSerializer()
-
+    class Meta:
+        model = Review
+        depth = 2
+        fields = '__all__'

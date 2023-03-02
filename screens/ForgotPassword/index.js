@@ -48,7 +48,6 @@ function ForgotPassword ({ navigation }) {
         email
       }
       const res = await forgotpassword(payload)
-      console.warn('res?.data', res?.data)
       handleChange('loading', false)
       Toast.show(`Email has been sent to ${email}`)
       navigation.navigate('OTP', { email })

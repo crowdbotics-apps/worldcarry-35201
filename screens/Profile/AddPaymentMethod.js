@@ -75,7 +75,6 @@ function AddPaymentMethod({ navigation }) {
   const handlePayment = async () => {
     try {
       handleChange("loading", true)
-      console.warn("cardDetails", cardDetails)
       stripe
         .createPaymentMethod({
           type: "Card",
@@ -89,7 +88,6 @@ function AddPaymentMethod({ navigation }) {
           }
         })
         .then(result => {
-          console.warn("result", result?.paymentMethod?.id)
           if (result?.paymentMethod?.id) {
             _AddPayMethod(result?.paymentMethod?.id)
           } else {
@@ -99,7 +97,6 @@ function AddPaymentMethod({ navigation }) {
         })
     } catch (error) {
       handleChange("loading", false)
-      console.warn("error", error)
       // const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${JSON.stringify(error)}`)
     }
@@ -113,7 +110,6 @@ function AddPaymentMethod({ navigation }) {
       const token = await AsyncStorage.getItem("token")
       const res = await AddPayMethod(payload, token)
       handleChange("loading", false)
-      console.warn("res?.data", res?.data)
       Toast.show(`Card has been added!`)
       handleChange("modalVisible", true)
     } catch (error) {

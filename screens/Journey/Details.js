@@ -8,7 +8,8 @@ import {
   FlatList,
   Image,
   ActivityIndicator,
-  Modal
+  Modal,
+  Keyboard
 } from "react-native"
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 import { SvgXml } from "react-native-svg"
@@ -49,7 +50,6 @@ import { Alert } from "react-native"
 
 function JourneyDetails({ navigation, route }) {
   const item = route?.params?.item
-  console.warn("item", item)
   const successDelivered = route?.params?.successDelivered
   const order = route?.params?.order
   const [state, setState] = useState({
@@ -214,7 +214,6 @@ function JourneyDetails({ navigation, route }) {
         added_by: user?.id,
         target_user: order?.user?.id
       }
-      console.warn("payload", order)
       await addReview(payload, token)
       Toast.show(`You have successfully reviewed to the sender`)
       handleChange("loadingReview", false)
@@ -362,7 +361,6 @@ function JourneyDetails({ navigation, route }) {
       })
   }
   const openMap = async item => {
-    console.warn("item", item)
     const latitude =
       (item?.arrival_coords?.length > 0 && item?.arrival_coords[0]) ||
       "40.7127753"
@@ -636,7 +634,12 @@ function JourneyDetails({ navigation, route }) {
                   >
                     DELIVER FROM
                   </Text>
-                  <Text style={[styles.nameText, { color: COLORS.darkBlack }]}>
+                  <Text
+                    style={[
+                      styles.nameText,
+                      { color: COLORS.darkBlack, width: "65%" }
+                    ]}
+                  >
                     {item?.pickup_address_city}, {item?.pickup_address_country}
                   </Text>
                   <Text
@@ -651,7 +654,12 @@ function JourneyDetails({ navigation, route }) {
                   >
                     DELIVER TO
                   </Text>
-                  <Text style={[styles.nameText, { color: COLORS.darkBlack }]}>
+                  <Text
+                    style={[
+                      styles.nameText,
+                      { color: COLORS.darkBlack, width: "65%" }
+                    ]}
+                  >
                     {item?.arrival_address_city},{" "}
                     {item?.arrival_address_country}
                   </Text>
@@ -982,6 +990,7 @@ function JourneyDetails({ navigation, route }) {
               placeholder={"write review"}
               value={content}
               borderColor={COLORS.grey}
+              onSubmitEditing={() => Keyboard.dismiss()}
               name={"content"}
               onChange={handleChange}
               multiline

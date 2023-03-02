@@ -144,7 +144,6 @@ function CreateOrder({ navigation }) {
       const token = await AsyncStorage.getItem("token")
       const qs = `?url=${product_link}`
       const res = await getProductDetails(qs, token)
-      console.warn("getProductDetails", res?.data?.data)
       handleChange("loadingLink", false)
       handleChange("product_name", res?.data?.data?.title)
       let p1 = res?.data?.data?.price?.replace(/\$/g, "")
@@ -159,7 +158,6 @@ function CreateOrder({ navigation }) {
       handleChange("falseLink", false)
       handleChange("linkVerified", true)
     } catch (error) {
-      console.warn("error", error)
       handleChange("loadingLink", false)
       handleChange("linkVerified", false)
       handleChange("falseLink", true)
@@ -181,8 +179,6 @@ function CreateOrder({ navigation }) {
           // the conversion is done in native code
           let base64Str = res.base64()
           let uri = res.path()
-          console.warn("ressss.path()", res)
-          console.warn(".path()", res.path())
           const uploadUri =
             Platform.OS === "android" ? "file://" + uri : "" + uri
           const photo = {
@@ -265,13 +261,17 @@ function CreateOrder({ navigation }) {
       formData.append("expected_wait_time", expected_wait_time)
       active === 0 && formData.append("product_type", product_type)
       formData.append("payment_method_id", payment_method_id)
-      // formData.append('pickup_address', pickup_address)
+      formData.append(
+        "pickup_address_city",
+        pickup_address?.pickup_address_street_one
+      )
       // formData.append('pickup_address_coordinates', pickup_address_coordinates)
       formData.append(
         "arrival_address_coordinates",
         arrival_address_coordinates
       )
       formData.append("arrival_address_country", arrival_address_country)
+      formData.append("arrival_address_city", arrival_address?.arrival_address_street_one)
       formData.append("product_name", product_name)
       formData.append("product_link", product_link)
       formData.append("product_price", product_price)
@@ -289,14 +289,12 @@ function CreateOrder({ navigation }) {
       handleChange("step", 4)
       // navigation.navigate('Orders')
     } catch (error) {
-      console.warn("error", error)
       handleChange("loading", false)
       const errorText = Object.values(error?.response?.data)
-      console.warn("errorText[0]", errorText[0])
       Toast.show(`Error: ${JSON.stringify(errorText[0])}`)
     }
   }
-  console.warn(photos);
+  console.warn(photos)
   function get_url_extension(url) {
     return url.split(/[#?]/)[0].split(".").pop().trim()
   }
@@ -307,15 +305,15 @@ function CreateOrder({ navigation }) {
       type == "camera"
         ? ImagePicker.openCamera
         : type == ""
-          ? ImagePicker.openPicker
-          : ImagePicker.openPicker
+        ? ImagePicker.openPicker
+        : ImagePicker.openPicker
 
     OpenImagePicker({
       width: 300,
       height: 300,
       cropping: true,
       multiple: true,
-      mediaType: 'photo',
+      mediaType: "photo",
       forceJpg: true
     })
       .then(async response => {
@@ -335,7 +333,6 @@ function CreateOrder({ navigation }) {
               // type: element.mime === "image/heic" ? 'image/jpg' : element.mime
               type: element.mime
             }
-            console.warn("photo", photo)
             photos.push(photo)
             avatarSourceURLs.push(uploadUri)
           }
@@ -422,35 +419,35 @@ function CreateOrder({ navigation }) {
   const disabled =
     step === 0
       ? !product_name ||
-      !product_price ||
-      !product_type ||
-      !carrier_reward ||
-      !expected_wait_time ||
-      !description ||
-      avatarSourceURL.length === 0
+        !product_price ||
+        !product_type ||
+        !carrier_reward ||
+        !expected_wait_time ||
+        !description ||
+        avatarSourceURL.length === 0
       : step === 1
-        ? !pickup_address_country || !pickup_address
-        : step === 2
-          ? !arrival_address || !arrival_address_country
-          : // !isChecked ||
-          !payment_method_id
+      ? !pickup_address_country || !pickup_address
+      : step === 2
+      ? !arrival_address || !arrival_address_country
+      : // !isChecked ||
+        !payment_method_id
   const disabled1 =
     stepLink === 0
       ? !product_name ||
-      !product_price ||
-      !product_type ||
-      !linkVerified ||
-      !product_link ||
-      !description ||
-      avatarSourceURL.length === 0
+        !product_price ||
+        !product_type ||
+        !linkVerified ||
+        !product_link ||
+        !description ||
+        avatarSourceURL.length === 0
       : stepLink === 1
-        ? !pickup_address_country ||
+      ? !pickup_address_country ||
         !pickup_address ||
         !arrival_address ||
         !carrier_reward ||
         !expected_wait_time ||
         !arrival_address_country
-        : // !isChecked ||
+      : // !isChecked ||
         !payment_method_id
 
   return (
@@ -466,8 +463,8 @@ function CreateOrder({ navigation }) {
                 stepLink === 3 || step === 4
                   ? navigation.navigate("Orders")
                   : active === 0
-                    ? clearForm()
-                    : clearForm1()
+                  ? clearForm()
+                  : clearForm1()
               }
             >
               <Text style={styles.activeTabText}>

@@ -42,7 +42,6 @@ function OTP ({ navigation, route }) {
         otp
       }
       const res = await verifyEmail(payload)
-      console.warn('verifyEmail', res)
       handleChange('loading', false)
       AsyncStorage.removeItem('signupemail')
       navigation.navigate('SetPasswrod', { email })
@@ -63,7 +62,6 @@ function OTP ({ navigation, route }) {
         email
       }
       const res = await forgotpassword(payload)
-      console.warn('resendOTP', res)
       handleChange('loading', false)
       Toast.show(`Email has been sent to ${email}`)
     } catch (error) {

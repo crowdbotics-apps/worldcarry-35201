@@ -73,7 +73,6 @@ function Settings({ navigation }) {
         if (!response.path) {
           handleChange("uploading", false)
         } else {
-          console.warn("response", response)
           const uri = response.path
           const uploadUri =
             Platform.OS === "ios" ? uri.replace("file://", "") : uri
@@ -82,7 +81,6 @@ function Settings({ navigation }) {
             name: "userimage1.png",
             type: response.mime
           }
-          console.warn("photo", photo)
           handleChange("avatarSourceURL", uploadUri)
           handleProfile(photo)
           handleChange("uploading", false)
@@ -122,12 +120,10 @@ function Settings({ navigation }) {
       }
     } catch (error) {
       handleChange("loading", false)
-      console.warn("err", error)
       const showWError = Object.values(error.response?.data)
       Toast.show(`Error: ${showWError[0]}`)
     }
   }
-  console.warn("user", user)
 
   const list1 = [
     {

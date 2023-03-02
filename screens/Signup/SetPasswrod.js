@@ -57,13 +57,11 @@ function SetPasswrod({ navigation, route }) {
         }
         Toast.show(res?.data?.detail)
       } else {
-        console.warn("else res", res)
         handleChange("loading", false)
         Toast.show("Something went wrong!")
       }
     } catch (error) {
       handleChange("loading", false)
-      console.warn("err", error)
       Toast.show(`Error: ${error.message}`)
     }
   }

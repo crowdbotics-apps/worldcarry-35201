@@ -86,7 +86,7 @@ function ArrivalLocation ({ navigation }) {
           setMapLocationForArrival(payload)
           navigation.navigate('CreateOrder')
         })
-        .catch(error => console.warn('Geocodererror', error))
+        .catch(error => console.log('Geocodererror', error))
     } else {
       const payload = {
         arrival_address_street_one: street,

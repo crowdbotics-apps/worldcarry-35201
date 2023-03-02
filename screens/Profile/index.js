@@ -130,7 +130,7 @@ function Profile({ navigation }) {
         console.log("Geolocation permission denied")
       }
     } catch (err) {
-      console.warn(err)
+      console.log(err)
     }
   }
 
@@ -159,7 +159,7 @@ function Profile({ navigation }) {
               handleChange("userLocation", city + " " + country)
             }
           })
-          .catch(error => console.warn("Geocodererror", error))
+          .catch(error => console.log("Geocodererror", error))
       },
       error => console.log("Error", JSON.stringify(error)),
       {
@@ -190,7 +190,7 @@ function Profile({ navigation }) {
             handleChange("userLocation", city + " " + country)
           }
         })
-        .catch(error => console.warn("Geocodererror", error))
+        .catch(error => console.log("Geocodererror", error))
     })
   }
 
@@ -920,10 +920,9 @@ function Profile({ navigation }) {
               </TouchableOpacity>
             </View>
             <FlatList
-              style={{ width: "100%" }}
+              style={{ width: "100%", marginBottom: 20 }}
               data={!isMyReview ? byMeReviews : forMeReviews}
               renderItem={({ item, index }) => {
-                console.warn("item", item)
                 return (
                   <View
                     key={index}
@@ -959,7 +958,7 @@ function Profile({ navigation }) {
                           color: COLORS.primary
                         }}
                       >
-                        Buy me an iPhone 13 Pro max
+                        {item?.order?.product_name}
                       </Text>
                     </View>
                     <View

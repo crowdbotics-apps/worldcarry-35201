@@ -111,7 +111,6 @@ function PassportVerification ({ navigation }) {
     } catch (error) {
       handleChange('loading', false)
       const errorText = Object.values(error?.response?.data)
-      console.warn('errorText', error?.response?.data?.message)
       if (error?.response?.data?.message) {
         Toast.show(`Error: ${error?.response?.data?.message}`)
       } else {

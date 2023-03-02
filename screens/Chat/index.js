@@ -227,10 +227,10 @@ function Chat ({ navigation, route }) {
           description: text || state.messageText,
           is_send_now: true,
           send_date: new Date(),
-          user:
-            state.messageData?.senderId === user?.id
+          users:
+            [state.messageData?.senderId === user?.id
               ? user?.id
-              : state.messageData?.receiverId
+              : state.messageData?.receiverId]
         }
         _createNotification(payload)
         setState(prevState => ({

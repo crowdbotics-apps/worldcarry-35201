@@ -47,7 +47,6 @@ import database from "@react-native-firebase/database"
 
 function JourneyOrderDetails({ navigation, route }) {
   const item = route?.params?.item
-  console.warn("item", item)
   const successDelivered = route?.params?.successDelivered
   const active = route?.params?.active
   const order = route?.params?.order
@@ -133,7 +132,6 @@ function JourneyOrderDetails({ navigation, route }) {
     }
   }
 
-  console.warn("onRouteOrders", item)
 
   const _getJourneyDetails = async () => {
     try {
@@ -275,7 +273,6 @@ function JourneyOrderDetails({ navigation, route }) {
       })
   }
 
-  console.warn("item", item)
   const openMap = async item => {
     const latitude =
       (item?.arrival_coords?.length > 0 && item?.arrival_coords[0]) ||
@@ -405,7 +402,12 @@ function JourneyOrderDetails({ navigation, route }) {
                 >
                   DELIVER FROM
                 </Text>
-                <Text style={[styles.nameText, { color: COLORS.darkBlack }]}>
+                <Text
+                  style={[
+                    styles.nameText,
+                    { color: COLORS.darkBlack, width: "65%" }
+                  ]}
+                >
                   {item?.pickup_address_city}, {item?.pickup_address_country}
                 </Text>
                 <Text
@@ -420,7 +422,12 @@ function JourneyOrderDetails({ navigation, route }) {
                 >
                   DELIVER TO
                 </Text>
-                <Text style={[styles.nameText, { color: COLORS.darkBlack }]}>
+                <Text
+                  style={[
+                    styles.nameText,
+                    { color: COLORS.darkBlack, width: "65%" }
+                  ]}
+                >
                   {item?.arrival_address_city}, {item?.arrival_address_country}
                 </Text>
               </View>
