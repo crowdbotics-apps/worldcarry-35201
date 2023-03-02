@@ -1,4 +1,5 @@
 from admin_panel.apps.push_notification.models import *
+from admin_panel.apps.push_notification.utils import send_notification
 
 from rest_framework import serializers
 
@@ -27,7 +28,11 @@ class NotificationSerializer(serializers.ModelSerializer):
                 is_send_now=request.data.get('is_send_now'),
                 send_date=request.data.get('send_date'),
             )
-
+            send_notification(
+                user=notification.user,
+                message=notification.description,
+                title=notification.name
+            )
         return notification 
 
 
