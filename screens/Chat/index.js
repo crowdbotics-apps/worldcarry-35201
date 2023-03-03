@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from "react"
 import {
   StyleSheet,
   View,
@@ -12,28 +12,28 @@ import {
   Platform,
   ActivityIndicator,
   Modal
-} from 'react-native'
-import { Icon, Input } from 'react-native-elements'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import database from '@react-native-firebase/database'
-import EmojiBoard from 'react-native-emoji-board'
-import Toast from 'react-native-simple-toast'
-import AppContext from '../../store/Context'
-import { COLORS, FONT1REGULAR } from '../../constants'
-import userProfile from '../../assets/images/userProfile.png'
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen'
-import moment from 'moment'
-import { SvgXml } from 'react-native-svg'
-import Work from '../../assets/svg/tabs/Work.svg'
-import sendIcon from '../../assets/svg/sendIcon.svg'
-import smileIcon from '../../assets/svg/smileIcon.svg'
-import ImagePicker from 'react-native-image-crop-picker'
-import storage from '@react-native-firebase/storage'
-import { getOrderDetails } from '../../api/order'
-import EmojiPicker from 'react-native-emoji-picker-staltz'
+} from "react-native"
+import { Icon, Input } from "react-native-elements"
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import database from "@react-native-firebase/database"
+import EmojiBoard from "react-native-emoji-board"
+import Toast from "react-native-simple-toast"
+import AppContext from "../../store/Context"
+import { COLORS, FONT1REGULAR } from "../../constants"
+import userProfile from "../../assets/images/userProfile.png"
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
+import moment from "moment"
+import { SvgXml } from "react-native-svg"
+import Work from "../../assets/svg/tabs/Work.svg"
+import sendIcon from "../../assets/svg/sendIcon.svg"
+import smileIcon from "../../assets/svg/smileIcon.svg"
+import ImagePicker from "react-native-image-crop-picker"
+import storage from "@react-native-firebase/storage"
+import { getOrderDetails } from "../../api/order"
+import EmojiPicker from "react-native-emoji-picker-staltz"
 
-function Chat ({ navigation, route }) {
+function Chat({ navigation, route }) {
   const orderID = route?.params?.orderID
   // Context
   const context = useContext(AppContext)
@@ -46,7 +46,7 @@ function Chat ({ navigation, route }) {
     show: false,
     scrollViewHeight: 0,
     messages: [],
-    messageText: '',
+    messageText: "",
     messageData: null,
     uploading: false,
     orderData: null
@@ -66,7 +66,7 @@ function Chat ({ navigation, route }) {
       return true
     }
     const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
+      "hardwareBackPress",
       backAction
     )
     return () => backHandler.remove()
@@ -75,13 +75,13 @@ function Chat ({ navigation, route }) {
   useEffect(() => {
     const db = database()
     if (user) {
-      db.ref('Messages/' + messageuid).on('value', snapshot => {
+      db.ref("Messages/" + messageuid).on("value", snapshot => {
         if (snapshot.val()) {
           if (snapshot.val().senderId === user?.id) {
-            db.ref('Messages/' + messageuid)
+            db.ref("Messages/" + messageuid)
               .update({ senderRead: 0 })
               .then(res => {
-                db.ref('Messages/' + messageuid).once('value', snapshot => {
+                db.ref("Messages/" + messageuid).once("value", snapshot => {
                   if (snapshot.val()) {
                     // getMessages()
                     setState(prevState => ({
@@ -94,10 +94,10 @@ function Chat ({ navigation, route }) {
               })
           }
           if (snapshot.val().receiverId === user?.id) {
-            db.ref('Messages/' + messageuid)
+            db.ref("Messages/" + messageuid)
               .update({ receiverRead: 0 })
               .then(res => {
-                db.ref('Messages/' + messageuid).once('value', snapshot => {
+                db.ref("Messages/" + messageuid).once("value", snapshot => {
                   if (snapshot.val()) {
                     // getMessages()
                     setState(prevState => ({
@@ -138,9 +138,9 @@ function Chat ({ navigation, route }) {
 
   const _getOrderDetails = async () => {
     try {
-      const token = await AsyncStorage.getItem('token')
+      const token = await AsyncStorage.getItem("token")
       const res = await getOrderDetails(orderID, token)
-      handleChange('orderData', res?.data)
+      handleChange("orderData", res?.data)
     } catch (error) {
       const errorText = Object.values(error?.response?.data)
       Toast.show(`Error: ${errorText}`)
@@ -148,11 +148,11 @@ function Chat ({ navigation, route }) {
   }
 
   const _uploadImage = async type => {
-    handleChange('uploading', true)
+    handleChange("uploading", true)
     let OpenImagePicker =
-      type == 'camera'
+      type == "camera"
         ? ImagePicker.openCamera
-        : type == ''
+        : type == ""
         ? ImagePicker.openPicker
         : ImagePicker.openPicker
 
@@ -162,47 +162,47 @@ function Chat ({ navigation, route }) {
     })
       .then(async response => {
         if (!response.path) {
-          handleChange('uploading', false)
+          handleChange("uploading", false)
         } else {
           const uri = response.path
           const filename = Date.now()
           const uploadUri =
-            Platform.OS === 'ios' ? uri.replace('file://', '') : uri
+            Platform.OS === "ios" ? uri.replace("file://", "") : uri
           const task = storage()
-            .ref('Chat/' + filename)
+            .ref("Chat/" + filename)
             .putFile(uploadUri)
           // set progress state
-          task.on('state_changed', snapshot => {})
+          task.on("state_changed", snapshot => {})
           try {
             const durl = await task
             task.snapshot.ref.getDownloadURL().then(downloadURL => {
-              onSend(downloadURL, 'image')
+              onSend(downloadURL, "image")
             })
           } catch (e) {
             console.error(e)
           }
-          handleChange('uploading', false)
+          handleChange("uploading", false)
         }
       })
       .catch(err => {
-        handleChange('showAlert', false)
-        handleChange('uploading', false)
+        handleChange("showAlert", false)
+        handleChange("uploading", false)
       })
   }
 
   function onlySpaces(str) {
-    return /^\s*$/.test(str);
+    return /^\s*$/.test(str)
   }
 
   const onSend = (text, type) => {
-    if(onlySpaces(text || state.messageText)){
-      Toast.show('Please enter any character', Toast.LONG)
+    if (onlySpaces(text || state.messageText)) {
+      Toast.show("Please enter any character", Toast.LONG)
       return
     }
     const data = {
       text: text || state.messageText,
       timeStamp: Date.now(),
-      type: type || 'text',
+      type: type || "text",
       senderId: user?.id
     }
     let messages = state.messages.concat(data)
@@ -219,7 +219,7 @@ function Chat ({ navigation, route }) {
     }
 
     database()
-      .ref('Messages/' + messageuid)
+      .ref("Messages/" + messageuid)
       .update(values)
       .then(res => {
         const payload = {
@@ -227,30 +227,31 @@ function Chat ({ navigation, route }) {
           description: text || state.messageText,
           is_send_now: true,
           send_date: new Date(),
+          // users: [user?.id]
           users:
-            [state.messageData?.senderId === user?.id
-              ? user?.id
+            [state.messageData?.senderId !== user?.id
+              ? state.messageData?.senderId
               : state.messageData?.receiverId]
         }
         _createNotification(payload)
         setState(prevState => ({
           ...prevState,
           loading: false,
-          messageText: ''
+          messageText: ""
         }))
         downButtonHandler()
       })
       .catch(err => {
         console.log(err)
-        Toast.show('Something went wrong!', Toast.LONG)
+        Toast.show("Something went wrong!", Toast.LONG)
       })
   }
 
   const _handleSend = (message, id) => {
     var data = {
-      app_id: '15b1f37a-b123-45e3-a8c4-f0ef7e091130',
-      android_channel_id: '97ad04d8-51d2-4739-8e83-0479a7e8cd60',
-      headings: { en: user?.username ? user?.username : 'Guest User' },
+      app_id: "15b1f37a-b123-45e3-a8c4-f0ef7e091130",
+      android_channel_id: "97ad04d8-51d2-4739-8e83-0479a7e8cd60",
+      headings: { en: user?.username ? user?.username : "Guest User" },
       contents: { en: message },
       include_player_ids: [id]
     }
@@ -267,26 +268,25 @@ function Chat ({ navigation, route }) {
     //   })
   }
 
-
   return (
     <View
       style={{
-        width: '100%',
-        height: '100%',
-        alignItems: 'center',
+        width: "100%",
+        height: "100%",
+        alignItems: "center",
         backgroundColor: COLORS.backgroud
       }}
     >
       <View
         style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          width: '100%',
-          shadowColor: '#000',
+          flexDirection: "row",
+          alignItems: "center",
+          width: "100%",
+          shadowColor: "#000",
           height: hp(8),
-          paddingHorizontal: '5%',
+          paddingHorizontal: "5%",
           backgroundColor: COLORS.white,
-          shadowColor: '#000',
+          shadowColor: "#000",
           shadowOffset: {
             width: 0,
             height: 1
@@ -298,14 +298,14 @@ function Chat ({ navigation, route }) {
       >
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon
-            name='left'
-            type='antdesign'
+            name="left"
+            type="antdesign"
             color={COLORS.darkGrey}
             size={18}
           />
         </TouchableOpacity>
         <View
-          style={{ alignItems: 'center', flexDirection: 'row', marginLeft: 10 }}
+          style={{ alignItems: "center", flexDirection: "row", marginLeft: 10 }}
         >
           <Image
             style={{ width: 40, height: 40, borderRadius: 50 }}
@@ -333,13 +333,13 @@ function Chat ({ navigation, route }) {
           </Text>
         </View>
       </View>
-      <View style={{ width: '100%', alignItems: 'center', marginVertical: 10 }}>
+      <View style={{ width: "100%", alignItems: "center", marginVertical: 10 }}>
         <View
           style={{
-            maxWidth: '90%',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
+            maxWidth: "90%",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
             borderWidth: 1,
             borderColor: COLORS.borderColor1,
             backgroundColor: COLORS.white,
@@ -353,7 +353,7 @@ function Chat ({ navigation, route }) {
             style={{
               color: COLORS.primary,
               marginLeft: 10,
-              width:'60%',
+              width: "60%",
               fontFamily: FONT1REGULAR,
               fontSize: hp(1.8)
             }}
@@ -383,20 +383,20 @@ function Chat ({ navigation, route }) {
       </View>
       <View style={styles.container}>
         <KeyboardAwareScrollView
-          keyboardShouldPersistTaps={'handled'}
+          keyboardShouldPersistTaps={"handled"}
           contentContainerStyle={{
-            justifyContent: 'flex-end',
-            alignItems: 'center',
+            justifyContent: "flex-end",
+            alignItems: "center",
             flex: 1
           }}
           style={{
-            width: '100%',
-            height: '100%'
+            width: "100%",
+            height: "100%"
           }}
         >
           <FlatList
             data={state.messages}
-            keyboardDismissMode='on-drag'
+            keyboardDismissMode="on-drag"
             onContentSizeChange={(contentWidth, contentHeight) => {
               setState(prevState => ({
                 ...prevState,
@@ -410,10 +410,10 @@ function Chat ({ navigation, route }) {
                 scrollViewHeight: height
               }))
             }}
-            style={{ width: '90%', flex: 1 }}
+            style={{ width: "90%", flex: 1 }}
             contentContainerStyle={{
-              alignItems: 'flex-start',
-              justifyContent: 'flex-end'
+              alignItems: "flex-start",
+              justifyContent: "flex-end"
             }}
             ref={ref => {
               scrollView = ref
@@ -426,36 +426,36 @@ function Chat ({ navigation, route }) {
                   <View
                     key={index}
                     style={{
-                      width: '100%',
+                      width: "100%",
                       marginVertical: 10,
-                      alignItems: 'flex-end'
+                      alignItems: "flex-end"
                     }}
                   >
                     <View
                       style={{
-                        width: '100%',
-                        flexDirection: 'row',
-                        justifyContent: 'flex-end',
-                        alignItems: 'flex-start',
+                        width: "100%",
+                        flexDirection: "row",
+                        justifyContent: "flex-end",
+                        alignItems: "flex-start",
                         paddingBottom: 10
                       }}
                     >
                       <View
                         style={{
-                          backgroundColor: 'rgba(93, 95, 239, 0.15)',
-                          maxWidth: '75%',
+                          backgroundColor: "rgba(93, 95, 239, 0.15)",
+                          maxWidth: "75%",
                           borderRadius: 15,
                           borderTopRightRadius: 0,
                           padding: 15
                         }}
                       >
-                        {item?.type === 'image' ? (
+                        {item?.type === "image" ? (
                           <Image
                             source={{ uri: item?.text }}
                             style={{
                               width: 200,
                               height: 200,
-                              resizeMode: 'contain'
+                              resizeMode: "contain"
                             }}
                           />
                         ) : (
@@ -475,11 +475,11 @@ function Chat ({ navigation, route }) {
                           width: 0,
                           height: 0,
                           borderBottomWidth: 8,
-                          borderTopColor: 'transparent',
+                          borderTopColor: "transparent",
                           borderTopWidth: 0,
-                          borderBottomColor: 'transparent',
+                          borderBottomColor: "transparent",
                           borderLeftWidth: 18,
-                          borderLeftColor: 'rgba(93, 95, 239, 0.15)'
+                          borderLeftColor: "rgba(93, 95, 239, 0.15)"
                         }}
                       />
                     </View>
@@ -501,17 +501,17 @@ function Chat ({ navigation, route }) {
                   <View
                     key={index}
                     style={{
-                      width: '100%',
+                      width: "100%",
                       marginVertical: 10,
-                      alignItems: 'flex-start'
+                      alignItems: "flex-start"
                     }}
                   >
                     <View
                       style={{
-                        width: '100%',
-                        flexDirection: 'row',
-                        justifyContent: 'flex-start',
-                        alignItems: 'flex-start',
+                        width: "100%",
+                        flexDirection: "row",
+                        justifyContent: "flex-start",
+                        alignItems: "flex-start",
                         paddingBottom: 10
                       }}
                     >
@@ -520,30 +520,30 @@ function Chat ({ navigation, route }) {
                           width: 0,
                           height: 0,
                           borderBottomWidth: 8,
-                          borderTopColor: 'transparent',
+                          borderTopColor: "transparent",
                           borderTopWidth: 0,
-                          borderBottomColor: 'transparent',
+                          borderBottomColor: "transparent",
                           borderRightWidth: 18,
-                          borderRightColor: '#FFE9D9'
+                          borderRightColor: "#FFE9D9"
                         }}
                       />
                       <View
                         style={{
-                          backgroundColor: '#FFE9D9',
-                          maxWidth: '95%',
-                          alignItems: 'flex-end',
+                          backgroundColor: "#FFE9D9",
+                          maxWidth: "95%",
+                          alignItems: "flex-end",
                           borderRadius: 15,
                           borderTopLeftRadius: 0,
                           padding: 15
                         }}
                       >
-                        {item?.type === 'image' ? (
+                        {item?.type === "image" ? (
                           <Image
                             source={{ uri: item?.text }}
                             style={{
                               width: 200,
                               height: 200,
-                              resizeMode: 'contain'
+                              resizeMode: "contain"
                             }}
                           />
                         ) : (
@@ -577,19 +577,19 @@ function Chat ({ navigation, route }) {
           />
           {state.uploading && (
             <View
-              style={{ width: '100%', alignItems: 'center', marginBottom: 10 }}
+              style={{ width: "100%", alignItems: "center", marginBottom: 10 }}
             >
-              <ActivityIndicator size={'small'} color={COLORS.primary} />
+              <ActivityIndicator size={"small"} color={COLORS.primary} />
             </View>
           )}
           {/* <EmojiBoard showBoard={show} onClick={onClickEmoji} /> */}
 
           <View
             style={{
-              width: '100%',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
+              width: "100%",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
               borderTopRightRadius: 10,
               borderTopLeftRadius: 10,
               height: 70,
@@ -598,22 +598,22 @@ function Chat ({ navigation, route }) {
           >
             <View
               style={{
-                flexDirection: 'row',
-                width: '95%',
+                flexDirection: "row",
+                width: "95%",
                 height: 50,
                 paddingRight: 3,
                 paddingLeft: 10,
                 borderWidth: 1,
                 borderRadius: 30,
                 borderColor: COLORS.primary,
-                alignItems: 'center',
-                justifyContent: 'space-between'
+                alignItems: "center",
+                justifyContent: "space-between"
               }}
             >
               <TouchableOpacity
                 onPress={() => {
                   inputRef.current?.blur()
-                  handleChange('show', !show)
+                  handleChange("show", !show)
                 }}
               >
                 <SvgXml xml={smileIcon} />
@@ -621,7 +621,7 @@ function Chat ({ navigation, route }) {
               <Input
                 ref={inputRef}
                 // keyboardType=''
-                placeholderTextColor='rgba(36, 36, 36, 0.4)'
+                placeholderTextColor="rgba(36, 36, 36, 0.4)"
                 inputStyle={{
                   fontSize: hp(2),
                   color: COLORS.darkGrey,
@@ -632,21 +632,21 @@ function Chat ({ navigation, route }) {
                   borderBottomWidth: 0,
                   backgroundColor: COLORS.backgroud
                 }}
-                containerStyle={{ paddingLeft: 0, height: 40, width: '75%' }}
+                containerStyle={{ paddingLeft: 0, height: 40, width: "75%" }}
                 onChangeText={message =>
                   setState(prevState => ({
                     ...prevState,
                     messageText: message
                   }))
                 }
-                onFocus={() => handleChange('show', false)}
+                onFocus={() => handleChange("show", false)}
                 value={state.messageText}
                 onSubmitEditing={() =>
-                  state.messageText ? onSend() : console.log('')
+                  state.messageText ? onSend() : console.log("")
                 }
                 blurOnSubmit={false}
-                returnKeyType='send'
-                placeholder={'Type your message'}
+                returnKeyType="send"
+                placeholder={"Type your message"}
               />
               {/* <TouchableOpacity
               disabled={orderData?.status === 'Completed'}
@@ -658,12 +658,12 @@ function Chat ({ navigation, route }) {
               <SvgXml xml={insertIcon} />
             </TouchableOpacity> */}
               <TouchableOpacity
-                disabled={orderData?.status === 'Completed'}
-                style={{ opacity: orderData?.status === 'Completed' ? 0.4 : 1 }}
+                disabled={orderData?.status === "Completed"}
+                style={{ opacity: orderData?.status === "Completed" ? 0.4 : 1 }}
                 onPress={() => {
-                  state.messageText && orderData?.status !== 'Completed'
+                  state.messageText && orderData?.status !== "Completed"
                     ? onSend()
-                    : console.log('')
+                    : console.log("")
                 }}
               >
                 <SvgXml xml={sendIcon} height={40} />
@@ -675,20 +675,20 @@ function Chat ({ navigation, route }) {
               onEmojiSelected={onClickEmoji}
               rows={6}
               hideClearButton
-              modalStyle={{ height: '50%' }}
-              backgroundStyle={{ backgroundColor: '#fff', height: '50%' }}
-              onPressOutside={() => handleChange('show', false)}
-              containerStyle={{ height: '100%' }}
+              modalStyle={{ height: "50%" }}
+              backgroundStyle={{ backgroundColor: "#fff", height: "50%" }}
+              onPressOutside={() => handleChange("show", false)}
+              containerStyle={{ height: "100%" }}
               localizedCategories={[
                 // Always in this order:
-                'Smileys and emotion',
-                'People and body',
-                'Animals and nature',
-                'Food and drink',
-                'Activities',
-                'Travel and places',
-                'Objects',
-                'Symbols'
+                "Smileys and emotion",
+                "People and body",
+                "Animals and nature",
+                "Food and drink",
+                "Activities",
+                "Travel and places",
+                "Objects",
+                "Symbols"
               ]}
             />
           )}
@@ -700,9 +700,9 @@ function Chat ({ navigation, route }) {
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    width: "100%",
     flex: 1,
-    alignItems: 'center'
+    alignItems: "center"
   }
 })
 

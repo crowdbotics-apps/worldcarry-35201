@@ -18,7 +18,7 @@ import messaging from "@react-native-firebase/messaging"
 import { Alert, Platform, SafeAreaView } from "react-native"
 import { StripeProvider } from "@stripe/stripe-react-native"
 import { getDeviceId } from "react-native-device-info"
-import PushNotification from "react-native-push-notification"
+import PushNotification, { Importance } from "react-native-push-notification"
 import PushNotificationIOS from "@react-native-community/push-notification-ios"
 
 function App() {
@@ -155,7 +155,7 @@ function App() {
       active: active,
       type: Platform.OS
     }
-    console.warn('payload',payload);
+    console.warn("payload", payload)
     await registerDevice(payload, tokenA)
   }
 
@@ -172,26 +172,32 @@ function App() {
   }
 
   useEffect(() => {
-    requestUserPermission()
+    // requestUserPermission()
     PushNotification.createChannel({
       channelId: "com.worldcarry_35201",
-      channelName: "com.worldcarry_35201"
+      channelName: "com.worldcarry_35201Name",
+      importance: Importance.HIGH
     })
   }, [])
 
   const setOnMessage = async () => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.warn('onMessage',remoteMessage);
+      console.warn("onMessage", remoteMessage)
       var localNotification = {
         id: 0, // (optional) Valid unique 32 bit integer specified as string.
         title: remoteMessage.notification.title, // (optional)
-        message: remoteMessage.notification.body // (required)
+        message: remoteMessage.notification.body, // (required)
         // data: remoteMessage.data
       }
 
       Platform.OS == "android" &&
         (localNotification = {
           ...localNotification,
+          priority: "high",
+          playSound: true,
+          vibrate: true,
+          vibration: 300,
+          priority: "high",
           channelId: "com.worldcarry_35201" // (required) channelId, if the channel doesn't exist, notification will not trigger.
         })
       PushNotification.localNotification(localNotification)
@@ -200,8 +206,8 @@ function App() {
           console.log("TOKEN:", token)
         },
         onNotification: function (notification) {
-          console.warn('notification',notification);
-          const { data, title } = notification
+          console.warn("onNotification", notification)
+          // const { data, title } = notification
           notification.finish(PushNotificationIOS.FetchResult.NoData)
         },
         onRegistrationError: function (err) {
@@ -216,10 +222,17 @@ function App() {
         popInitialNotification: true,
         requestPermissions: true
       })
+
+      PushNotification.popInitialNotification(notification => {
+        console.warn("Initial Notification", notification)
+      })
+      PushNotification.getChannels(function (channel_ids) {
+        console.log("channel_ids", channel_ids) // ['channel_id_1']
+      })
       // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage))
     })
     messaging().onNotificationOpenedApp(remoteMessage => {
-      console.warn('onNotificationOpenedApp',remoteMessage);
+      console.warn("onNotificationOpenedApp", remoteMessage)
       console.log(
         "Notification caused app to open from background state:",
         remoteMessage.notification
