@@ -21,7 +21,10 @@ def create_notification(data:dict) -> Notification:
             title=notification.name,
             message=notification.description,
             data={
-                "image": notification.image
+                "image": notification.image,
+                "type": notification.type,
+                "object_id": notification.object_id,
+                "content_type": notification.content_type
             }
         )
     return notification

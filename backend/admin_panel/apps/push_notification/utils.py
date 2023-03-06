@@ -27,8 +27,7 @@ def send_notification(user, title, message, data = {}):
                         "title": title,
                         "text": message
                     },
-                    'data': {
-                    }
+                    "data": data
                 }
             resp = requests.post(url, headers=headers, json=payload)
     except Exception as e:
