@@ -21,7 +21,7 @@ function AuthLoading({ navigation }) {
   } = context
 
   useEffect(() => {
-    _bootstrapAsync()
+    // _bootstrapAsync()
     navigation.addListener("focus", () => {
       _bootstrapAsync()
     })
