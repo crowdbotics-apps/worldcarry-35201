@@ -1,5 +1,6 @@
 from admin_panel.apps.push_notification.utils import send_notification
 from admin_panel.apps.push_notification.models import Notification
+from django.forms.models import model_to_dict
 
 
 def create_notification(data:dict) -> Notification:
@@ -21,10 +22,10 @@ def create_notification(data:dict) -> Notification:
             title=notification.name,
             message=notification.description,
             data={
-                "image": notification.image,
+                "image": notification.image.url if notification.image else None,
                 "type": notification.type,
-                "object_id": notification.object_id,
-                "content_type": notification.content_type
+                "object_id": str(notification.object_id),
+                "content_type":  model_to_dict(notification.content_type)
             }
         )
     return notification
