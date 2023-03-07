@@ -2,6 +2,8 @@ from admin_panel.apps.push_notification.utils import send_notification
 from admin_panel.apps.push_notification.models import Notification
 from django.forms.models import model_to_dict
 
+from home.api.v1.serializers import UserSerializer
+
 
 def create_notification(data:dict) -> Notification:
     notification = Notification.objects.create(
@@ -25,7 +27,8 @@ def create_notification(data:dict) -> Notification:
                 "image": notification.image.url if notification.image else None,
                 "type": notification.type,
                 "object_id": str(notification.object_id),
-                "content_type":  model_to_dict(notification.content_type)
+                "content_type":  model_to_dict(notification.content_type),
+                "user": UserSerializer(notification.user).data
             }
         )
     return notification
