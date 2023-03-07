@@ -670,6 +670,7 @@ function Chat({ navigation, route }) {
               </TouchableOpacity>
             </View>
           </View>
+        </KeyboardAwareScrollView>
           {show && (
             <EmojiPicker
               onEmojiSelected={onClickEmoji}
@@ -692,7 +693,6 @@ function Chat({ navigation, route }) {
               ]}
             />
           )}
-        </KeyboardAwareScrollView>
       </View>
     </View>
   )
