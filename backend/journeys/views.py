@@ -74,8 +74,8 @@ class JourneyOrderRequest(APIView):
         if user == 'sender':
             try:
                 create_notification({
-                    "name": "Order Request",
-                    "description": f"A Shipper {request.user.get_full_name()} requested you an an order, Plz click here to see order description.",
+                    "name": f"A Shipper {request.user.name} requested you an an order",
+                    "description": f"A Shipper {request.user.name} requested you an an order, Plz click here to see order description.",
                     "user": journey.user,
                     "object_id":journey.id,
                     "content_type": generic_models.ContentType.objects.get(model="journey"),
@@ -92,7 +92,7 @@ class JourneyOrderRequest(APIView):
             if order.deliver_before_date < timezone.now().date():
                 return Response({"message": "You Can't Accept Past Order"}, status=status.HTTP_400_BAD_REQUEST)
             try:
-                create_notification({"name": "Order Request", "description": f"A Carrier {request.user.get_full_name()} requested you for journey. plz click here to see full order description",
+                create_notification({"name": f"A Carrier {request.user.name} requested you for journey.", "description": f"A Carrier {request.user.name} requested you for journey. plz click here to see full order description",
                                      "user": order.user, "object_id":order.id, "content_type": generic_models.ContentType.objects.get(model="order"),"type": "journey_request"})
             except Exception as e:
                 print(e)
