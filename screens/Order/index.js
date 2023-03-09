@@ -49,9 +49,10 @@ import { addReview } from "../../api/journey"
 import { Rating } from "react-native-ratings"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import database from "@react-native-firebase/database"
-import { useFocusEffect } from "@react-navigation/native"
+import { CommonActions, useFocusEffect } from "@react-navigation/native"
 
-function Order({ navigation }) {
+function Order({ navigation, route }) {
+  const type = route?.params?.type
   const [state, setState] = useState({
     loading: false,
     active: "Requested",
@@ -99,6 +100,14 @@ function Order({ navigation }) {
     order
   } = state
   const { orders, _getOrders, user } = context
+
+  useEffect(() => {
+    if (type === "order_accepted_request") {
+      handleChange("active", "In Transit")
+      handleChange("activeStatus", "In Transit")
+      navigation.dispatch(CommonActions.setParams({ object_id: "", type: "" }))
+    }
+  }, [type])
 
   useFocusEffect(
     useCallback(() => {
@@ -194,6 +203,11 @@ function Order({ navigation }) {
     }
   }
 
+  const sortByDate = array => {
+    return array?.sort(function (a, b) {
+      return moment.utc(b?.created_at).diff(moment.utc(a?.created_at))
+    })
+  }
   const getOrderType = status => {
     if (status) {
       if (status === "Unpaid") {
@@ -203,12 +217,14 @@ function Order({ navigation }) {
             e.status === "Accepted" ||
             e.status === "Requested"
         )
-        return filtered || []
+        const list = sortByDate(filtered) || []
+        return list
       } else {
         const filtered = orders?.filter(
           e => e.status?.toLowerCase() === status?.toLowerCase()
         )
-        return filtered || []
+        const list = sortByDate(filtered) || []
+        return list
       }
     } else return []
   }
@@ -235,7 +251,6 @@ function Order({ navigation }) {
         Toast.show("Something went wrong!")
       })
   }
-
 
   return (
     <View style={styles.container}>
@@ -362,76 +377,76 @@ function Order({ navigation }) {
               )}
               {(item?.status === "Accepted" ||
                 item?.status === "In transit") && (
-                  <>
-                    <View style={styles.hline} />
-                    <AppButton
-                      title={"Show QR Code"}
-                      outlined
-                      color={COLORS.darkBlack}
-                      backgroundColor={COLORS.white}
-                      titleLight
-                      prefix={
-                        <SvgXml xml={qrSymbol} style={{ marginRight: 5 }} />
-                      }
-                      onPress={() => {
-                        handleChange("showQR", true)
-                        handleChange("showQRImage", item?.qr_code)
-                        handleChange("product_name", item?.product_name)
-                        handleChange("product_id", item?.id)
-                        handleChange(
-                          "pickup_address_country",
-                          item?.pickup_address_country
-                        )
-                        handleChange(
-                          "arrival_address_country",
-                          item?.arrival_address_country
-                        )
-                      }}
-                    />
-                    <View
-                      style={[
-                        styles.rowBetween,
-                        { width: "100%", marginTop: 10 }
-                      ]}
-                    >
-                      <View style={[styles.row, { width: "40%" }]}>
-                        <Image
-                          style={{
-                            width: 50,
-                            height: 50,
-                            borderRadius: 50,
-                            marginRight: 10
-                          }}
-                          source={
-                            item?.carrier?.profile?.photo
-                              ? { uri: item?.carrier?.profile?.photo }
-                              : userProfile
-                          }
-                        />
-                        <View>
-                          <Text style={styles.nameText}>
-                            {item?.carrier?.name}
-                          </Text>
-                          <Text style={styles.postedText}>Order Carrier</Text>
-                        </View>
-                      </View>
-                      <View style={{ alignItems: "flex-end" }}>
-                        <AppButton
-                          title={"Chat"}
-                          outlined
-                          width={"60%"}
-                          backgroundColor={COLORS.white}
-                          color={COLORS.darkBlack}
-                          titleLight
-                          prefix={
-                            <SvgXml xml={chatIcon} style={{ marginRight: 8 }} />
-                          }
-                          onPress={() => createMessageList(item)}
-                        />
+                <>
+                  <View style={styles.hline} />
+                  <AppButton
+                    title={"Show QR Code"}
+                    outlined
+                    color={COLORS.darkBlack}
+                    backgroundColor={COLORS.white}
+                    titleLight
+                    prefix={
+                      <SvgXml xml={qrSymbol} style={{ marginRight: 5 }} />
+                    }
+                    onPress={() => {
+                      handleChange("showQR", true)
+                      handleChange("showQRImage", item?.qr_code)
+                      handleChange("product_name", item?.product_name)
+                      handleChange("product_id", item?.id)
+                      handleChange(
+                        "pickup_address_country",
+                        item?.pickup_address_country
+                      )
+                      handleChange(
+                        "arrival_address_country",
+                        item?.arrival_address_country
+                      )
+                    }}
+                  />
+                  <View
+                    style={[
+                      styles.rowBetween,
+                      { width: "100%", marginTop: 10 }
+                    ]}
+                  >
+                    <View style={[styles.row, { width: "40%" }]}>
+                      <Image
+                        style={{
+                          width: 50,
+                          height: 50,
+                          borderRadius: 50,
+                          marginRight: 10
+                        }}
+                        source={
+                          item?.carrier?.profile?.photo
+                            ? { uri: item?.carrier?.profile?.photo }
+                            : userProfile
+                        }
+                      />
+                      <View>
+                        <Text style={styles.nameText}>
+                          {item?.carrier?.name}
+                        </Text>
+                        <Text style={styles.postedText}>Order Carrier</Text>
                       </View>
                     </View>
-                  </>
-                )}
+                    <View style={{ alignItems: "flex-end" }}>
+                      <AppButton
+                        title={"Chat"}
+                        outlined
+                        width={"60%"}
+                        backgroundColor={COLORS.white}
+                        color={COLORS.darkBlack}
+                        titleLight
+                        prefix={
+                          <SvgXml xml={chatIcon} style={{ marginRight: 8 }} />
+                        }
+                        onPress={() => createMessageList(item)}
+                      />
+                    </View>
+                  </View>
+                </>
+              )}
               {item?.status === "Received" && (
                 <>
                   <View style={[styles.row, { width: "40%" }]}>

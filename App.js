@@ -5,7 +5,7 @@ import Toast from "react-native-simple-toast"
 import { getMyReviews, getProfile } from "./api/auth"
 import RootStackNav from "./navigation/RootStackNav"
 import AppContext from "./store/Context"
-import { NavigationContainer } from "@react-navigation/native"
+import { NavigationContainer, useNavigation } from "@react-navigation/native"
 import { MenuProvider } from "react-native-popup-menu"
 import {
   createNotification,
@@ -19,7 +19,6 @@ import { Alert, Platform, SafeAreaView } from "react-native"
 import { StripeProvider } from "@stripe/stripe-react-native"
 import { getDeviceId } from "react-native-device-info"
 import PushNotification, { Importance } from "react-native-push-notification"
-import PushNotificationIOS from "@react-native-community/push-notification-ios"
 
 function App() {
   const [user, setUser] = useState(null)
@@ -143,118 +142,20 @@ function App() {
     }
   }
 
-  async function registerAppWithFCM(active) {
-    await messaging().deleteToken()
-    const token = await messaging().getToken()
-    const tokenA = await AsyncStorage.getItem("token")
-    await messaging().registerDeviceForRemoteMessages()
-    const payload = {
-      name: user?.name,
-      registration_id: token,
-      device_id: token,
-      active: active,
-      type: Platform.OS
-    }
-    console.warn("payload", payload)
-    await registerDevice(payload, tokenA)
-  }
+  
+  
 
-  async function requestUserPermission(active) {
-    const authStatus = await messaging().requestPermission()
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL
-
-    if (enabled) {
-      registerAppWithFCM(active)
-      setOnMessage()
-    }
-  }
-
+  
   useEffect(() => {
     // requestUserPermission()
     PushNotification.createChannel({
       channelId: "com.worldcarry_35201",
-      channelName: "com.worldcarry_35201Name",
+      channelName: "com.worldcarry_35201",
       importance: Importance.HIGH
     })
   }, [])
 
-  const setOnMessage = async () => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.warn("onMessage", remoteMessage)
-      var localNotification = {
-        id: 0, // (optional) Valid unique 32 bit integer specified as string.
-        title: remoteMessage.notification.title, // (optional)
-        message: remoteMessage.notification.body, // (required)
-        // data: remoteMessage.data
-      }
-
-      Platform.OS == "android" &&
-        (localNotification = {
-          ...localNotification,
-          priority: "high",
-          playSound: true,
-          vibrate: true,
-          vibration: 300,
-          priority: "high",
-          channelId: "com.worldcarry_35201" // (required) channelId, if the channel doesn't exist, notification will not trigger.
-        })
-      PushNotification.localNotification(localNotification)
-      PushNotification.configure({
-        onRegister: function (token) {
-          console.log("TOKEN:", token)
-        },
-        onNotification: function (notification) {
-          console.warn("onNotification", notification)
-          // const { data, title } = notification
-          notification.finish(PushNotificationIOS.FetchResult.NoData)
-        },
-        onRegistrationError: function (err) {
-          console.error(err.message, err)
-        },
-        senderID: "487049617739",
-        permissions: {
-          alert: true,
-          badge: true,
-          sound: true
-        },
-        popInitialNotification: true,
-        requestPermissions: true
-      })
-
-      PushNotification.popInitialNotification(notification => {
-        console.warn("Initial Notification", notification)
-      })
-      PushNotification.getChannels(function (channel_ids) {
-        console.log("channel_ids", channel_ids) // ['channel_id_1']
-      })
-      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage))
-    })
-    messaging().onNotificationOpenedApp(remoteMessage => {
-      console.warn("onNotificationOpenedApp", remoteMessage)
-      console.log(
-        "Notification caused app to open from background state:",
-        remoteMessage.notification
-      )
-    })
-
-    // Quiet and Background State -> Check whether an initial notification is available
-    messaging()
-      .getInitialNotification()
-      .then(remoteMessage => {
-        if (remoteMessage) {
-          console.log(
-            "Notification caused app to open from quit state:",
-            remoteMessage.notification
-          )
-        }
-      })
-      .catch(error => console.log("failed", error))
-    messaging().setBackgroundMessageHandler(async remoteMessage => {
-      console.log("Message handled in the background!", remoteMessage)
-    })
-  }
+ 
 
   return (
     <AppContext.Provider
@@ -280,7 +181,6 @@ function App() {
         _getForMeReviews,
         forMeReviews,
         byMeReviews,
-        requestUserPermission,
         _createNotification,
         completedOrders,
         _getMyJourneys,
