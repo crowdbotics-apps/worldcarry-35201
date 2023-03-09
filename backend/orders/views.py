@@ -127,7 +127,8 @@ class UpdateOrderStatus(APIView):
                 order.save()
                 try:
                     create_notification({
-                        "name": f"Order for {order.product_name} has been moved to transit.", "description": f"Order for {order.product_name} has been moved to transit.",
+                        "name": f"Your {order.product_name} is on the way!", 
+                        "description": f"Your {order.product_name} is on the way!",
                         "user": order.user, "object_id":order.id, "content_type": generic_models.ContentType.objects.get(model="order"),
                         "type": "order_accepted_request"
                     })
@@ -142,8 +143,10 @@ class UpdateOrderStatus(APIView):
             order.save()
             try:
                 create_notification({
-                        "name": f"Order for {order.product_name} has been received.",
-                        "description": f"Order for {order.product_name} has been received.",
+
+                    
+                        "name": f"New order for {order.product_name} received!",
+                        "description": f"New order for {order.product_name} received!",
                         "user": order.user,
                         "object_id":order.id, "content_type": generic_models.ContentType.objects.get(model="order"),
                         "type": "order_accepted_request"
