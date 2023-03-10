@@ -117,7 +117,7 @@ function AuthLoading({ navigation }) {
       console.warn("onNotificationOpenedApp", remoteMessage)
       console.log(
         "Notification caused app to open from background state:",
-        remoteMessage.notification
+        remoteMessage
       )
       handleNotification(remoteMessage.notification.title, remoteMessage.data)
     })
@@ -134,10 +134,10 @@ function AuthLoading({ navigation }) {
                 remoteMessage.data
               )
             }
-          }, 3500)
+          }, 1000)
           console.log(
             "Notification caused app to open from quit state:",
-            remoteMessage.notification
+            remoteMessage
           )
         }
       })
@@ -148,10 +148,21 @@ function AuthLoading({ navigation }) {
   }
 
   const handleNotification = (title, data) => {
+    console.warn("data", data)
     if (data?.type === "order_accepted_request") {
-      console.log("order_accepted_request")
       navigation.navigate("Orders", {
         object_id: data?.object_id,
+        type: data?.type
+      })
+    }
+    if (data?.type === "journey_request") {
+      navigation.navigate("OrderDetails", {
+        item: { id: data?.object_id }
+      })
+    }
+    if (data?.type === "order_request") {
+      navigation.navigate("JourneyDetails", {
+        item: { id: data?.object_id },
         type: data?.type
       })
     }

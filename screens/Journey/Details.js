@@ -39,7 +39,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import Toast from "react-native-simple-toast"
 import { addReview, getJourneyDetails, makeOffer } from "../../api/journey"
 import { getOnrouteOrders, updateOrderStatus } from "../../api/order"
-import { useFocusEffect } from "@react-navigation/native"
+import { CommonActions, useFocusEffect } from "@react-navigation/native"
 import { Rating } from "react-native-ratings"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
 import database from "@react-native-firebase/database"
@@ -50,6 +50,7 @@ import { Alert } from "react-native"
 
 function JourneyDetails({ navigation, route }) {
   const item = route?.params?.item
+  const type = route?.params?.type
   const successDelivered = route?.params?.successDelivered
   const order = route?.params?.order
   const [state, setState] = useState({
@@ -106,6 +107,13 @@ function JourneyDetails({ navigation, route }) {
     { title: "In Transit", total: onRouteOrders?.in_transit_count || 0 },
     { title: "Delivered", total: onRouteOrders?.delivered_count || 0 }
   ]
+
+  useEffect(() => {
+    if (type === "order_request") {
+      handleChange("active", "Accepted")
+      navigation.dispatch(CommonActions.setParams({ type: "" }))
+    }
+  }, [type])
 
   useFocusEffect(
     useCallback(() => {
