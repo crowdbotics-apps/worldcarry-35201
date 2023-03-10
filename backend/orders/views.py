@@ -130,7 +130,7 @@ class UpdateOrderStatus(APIView):
                         "name": f"Your {order.product_name} is on the way!", 
                         "description": f"Your {order.product_name} is on the way!",
                         "user": order.user, "object_id":order.id, "content_type": generic_models.ContentType.objects.get(model="order"),
-                        "type": "order_accepted_request"
+                        "type": "order_delivery"
                     })
                 except Exception as e:
                     print(e)
