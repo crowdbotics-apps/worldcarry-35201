@@ -102,9 +102,14 @@ function Order({ navigation, route }) {
   const { orders, _getOrders, user } = context
 
   useEffect(() => {
-    if (type === "order_accepted_request") {
+    if (type === "order_delivery") {
       handleChange("active", "In Transit")
       handleChange("activeStatus", "In Transit")
+      navigation.dispatch(CommonActions.setParams({ object_id: "", type: "" }))
+    }
+    if (type === "order_accepted_request") {
+      handleChange("active", "Received")
+      handleChange("activeStatus", "Received")
       navigation.dispatch(CommonActions.setParams({ object_id: "", type: "" }))
     }
   }, [type])

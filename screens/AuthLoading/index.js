@@ -155,6 +155,12 @@ function AuthLoading({ navigation }) {
         type: data?.type
       })
     }
+    if (data?.type === "order_delivery") {
+      navigation.navigate("Orders", {
+        object_id: data?.object_id,
+        type: data?.type
+      })
+    }
     if (data?.type === "journey_request") {
       navigation.navigate("OrderDetails", {
         item: { id: data?.object_id }
